@@ -14,7 +14,7 @@ export default function Products() {
 
         const getMembers = async  () => {
             try {
-                const res = await axiosPrivate.get('/members', {
+                const res = await axiosPrivate.get('/product', {
                     signal: controller.signal
                 });
                 isMounted && setItems(res.data.data);

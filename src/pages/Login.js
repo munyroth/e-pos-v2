@@ -60,16 +60,20 @@ export default function Login() {
 
         setIsLoading(true);
 
-        const formData = new FormData();
-        formData.append("email", email.value);
-        formData.append("password", password.value);
+        const data = {
+            phone: email.value,
+            password: password.value
+        }
 
         try {
-            const res = await axios.post(LOGIN_URL, formData,
-                {
-                    withCredentials: true
-                });
-            login(res?.data.data.token, res?.data.data.role.name_en, res?.data.data.stores);
+            const res = await axios.post(LOGIN_URL, data, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(res.data)
+            login(res?.data.data.token, "Admin", "Admin");
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('មានបញ្ហាក្នុងការចូល សូមព្យាយាមម្តងទៀត');
@@ -134,7 +138,7 @@ export default function Login() {
                                     <input
                                         id="email"
                                         name="email"
-                                        type="email"
+                                        type="text"
                                         autoComplete="email"
                                         ref={userRef}
                                         onChange={handleChange}

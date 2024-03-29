@@ -15,7 +15,7 @@ export default function Products() {
 
         const getUser = async  () => {
             try {
-                const res = await axiosPrivate.get('/store_branches/'+Cookies.get('storeId'), {
+                const res = await axiosPrivate.get('/shop', {
                     signal: controller.signal
                 });
                 isMounted && setItems(res.data.data);

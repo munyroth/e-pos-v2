@@ -35,7 +35,7 @@ export default function Items() {
         const controller = new AbortController();
 
         const getItems = async  () => {
-            const res = await axiosPrivate.get('/items/store/'+Cookies.get('storeId'), {
+            const res = await axiosPrivate.get('/product', {
                 signal: controller.signal
             });
             isMounted && setItems(res.data.data);
@@ -132,20 +132,20 @@ export default function Items() {
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
-                                             src={item.image_url} alt={item.name}/>
+                                             src={item.image_url} alt={item.name_kh}/>
                                         <div className="pl-3">
-                                            <div className="text-base font-semibold">{item.name}</div>
-                                            <div className="text-xs font-normal text-gray-500">{item.UPC}</div>
+                                            <div className="text-base font-semibold">{item.name_kh}</div>
+                                            <div className="text-xs font-normal text-gray-500">{item.barcode}</div>
                                         </div>
                                     </th>
                                     <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <div className="pl-3">
                                             <div className="text-base font-semibold text-main">{item.price}៛</div>
-                                            <div className="text-xs font-normal text-red-500">{item.cost}៛</div>
+                                            <div className="text-xs font-normal text-red-500">{item.price}៛</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        {item.quantity}
+                                        {item.price}
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
