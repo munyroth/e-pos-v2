@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = (token, role, stores) => {
-        Cookies.set('token', token, { expires: 15 });
+        Cookies.set('token', token);
         if (role === 'Admin' || role === 'Owner') {
             setAuth({ token: token, permissions: ['view_profile', 'view_dashboard'] });
             if (stores.length === 0) navigate(location.state?.path || '/admin/stores/add', { replace: true });

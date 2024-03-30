@@ -374,7 +374,7 @@ export default function StockIn() {
                         </div>
                     </div>
                 </div>
-                <div className="absolute top-0 w-full flex items-center justify-between dark:bg-gray-900">
+                <div className="absolute top-0 w-full flex items-center justify-between">
                     <nav className="flex" aria-label="Breadcrumb">
                         <ol className="inline-flex items-center space-x-1">
                             <li className="inline-flex items-center">

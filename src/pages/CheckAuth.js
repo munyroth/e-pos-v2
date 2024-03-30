@@ -10,10 +10,8 @@ const CheckAuth = () => {
     let store = Cookies.get('storeId');
 
     return (
-        (auth?.token || token)
-            ? (store === undefined)
-                ? <Navigate to='/admin/stores/add' state={{ from: location }} replace />
-                : <Navigate to='/cashier' state={{ from: location }} replace />
+        (auth.token || token)
+            ? <Navigate to='/admin/dashboard' state={{ from: location }} replace />
             : <Navigate to='/login' state={{ from: location }} replace />
     )
 };

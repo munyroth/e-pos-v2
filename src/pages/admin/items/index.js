@@ -20,7 +20,7 @@ export default function Items() {
         const controller = new AbortController();
 
         try {
-            const res = await axiosPrivate.delete('/items/'+id, {
+            const res = await axiosPrivate.delete('/product/'+id, {
                 signal: controller.signal
             });
             setItems(items.filter(item => item.id !== id ));
@@ -53,7 +53,7 @@ export default function Items() {
 
     return (
         <>
-            <div className="h-10 mb-4 flex items-center justify-between dark:bg-gray-900">
+            <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">ទំនិញ</h1>
                 <Link
                     to="stock_in"
@@ -87,9 +87,6 @@ export default function Items() {
                         </th>
                         <th scope="col" className="w-1/6 px-6 py-3">
                             តម្លៃ
-                        </th>
-                        <th scope="col" className="w-1/6 px-6 py-3">
-                            បរិមាណ
                         </th>
                         <th scope="col" className="w-1/6 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
@@ -140,12 +137,8 @@ export default function Items() {
                                     </th>
                                     <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <div className="pl-3">
-                                            <div className="text-base font-semibold text-main">{item.price}៛</div>
-                                            <div className="text-xs font-normal text-red-500">{item.price}៛</div>
+                                            <div className="text-base font-semibold text-main">${item.price}</div>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {item.price}
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
@@ -153,7 +146,7 @@ export default function Items() {
                                             កែ
                                         </button>
                                         <button
-                                            className="pl-3 font-medium text-red-600 dark:text-blue-500 hover:underline"
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
 
                                             onClick={() => {
                                                 setDeleteId(item.id);

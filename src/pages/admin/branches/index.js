@@ -1,31 +1,30 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import Cookies from "js-cookie";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function Products() {
     const axiosPrivate = useAxiosPrivate();
 
-    const [items, setItems] = useState();
+    const [shop, setShop] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getUser = async  () => {
+        const getShop = async () => {
             try {
                 const res = await axiosPrivate.get('/shop', {
                     signal: controller.signal
                 });
-                isMounted && setItems(res.data.data);
+                isMounted && setShop(res.data.data);
                 setIsLoading(false);
             } catch (err) {
 
             }
         }
 
-        getUser();
+        getShop();
 
         return () => {
             isMounted = false;
@@ -35,7 +34,7 @@ export default function Products() {
 
     return (
         <>
-            <div className="flex items-center justify-between dark:bg-gray-900">
+            <div className="flex items-center justify-between">
                 <h2 className="m-5 text-4xl font-bold text-gray-900 dark:text-white">សាខា</h2>
                 <Link
                     to="add"
@@ -68,7 +67,10 @@ export default function Products() {
                             ឈ្មោះ
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            អាសយដ្ឋាន
+                            ចំនួនលក់សរុប
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            ចំណូលសរុប
                         </th>
                         <th scope="col" className="px-6 py-3 rounded-r-lg">
                             សកម្មភាព
@@ -78,14 +80,17 @@ export default function Products() {
                     <tbody>
                     {isLoading
                         ? <>Loading...</>
-                        : items.map(item => (
+                        : shop.map(item => (
                             <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    {item.address_km}
+                                    {item.name}
                                 </th>
                                 <td className="px-6 py-4">
-                                    {item.address_km}
+                                    {item.orders_count}
+                                </td>
+                                <td className="px-6 py-4">
+                                    ${parseFloat(item?.orders_sum_total ?? 0).toFixed(2)}
                                 </td>
                                 <td className="px-6 py-4">
                                     <a href="#"

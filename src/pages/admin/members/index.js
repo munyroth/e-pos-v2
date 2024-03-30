@@ -5,7 +5,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 export default function Products() {
     const axiosPrivate = useAxiosPrivate();
 
-    const [items, setItems] = useState();
+    const [member, setMember] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -14,10 +14,10 @@ export default function Products() {
 
         const getMembers = async  () => {
             try {
-                const res = await axiosPrivate.get('/product', {
+                const res = await axiosPrivate.get('/employee', {
                     signal: controller.signal
                 });
-                isMounted && setItems(res.data.data);
+                isMounted && setMember(res.data.data);
                 setIsLoading(false);
             } catch (err) {
 
@@ -34,7 +34,7 @@ export default function Products() {
 
     return (
         <>
-            <div className="flex items-center justify-between dark:bg-gray-900">
+            <div className="flex items-center justify-between">
                 <h2 className="m-5 text-4xl font-bold text-gray-900 dark:text-white">សមាជិក</h2>
                 <Link
                     to="add"
@@ -74,10 +74,10 @@ export default function Products() {
                             ឈ្មោះ
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            តម្លៃ
+                            លេខទូរស័ព្ទ
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            បរិមាណ
+                            តួនាទី
                         </th>
                         <th scope="col" className="px-6 py-3 rounded-r-lg">
                             សកម្មភាព
@@ -87,7 +87,7 @@ export default function Products() {
                     <tbody>
                     {isLoading
                         ? <>Loading...</>
-                        : items.map(item => (
+                        : member.map(item => (
                             <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
                                 <td className="w-4 p-4">
                                     <div className="flex items-center">
@@ -102,17 +102,19 @@ export default function Products() {
                                          src={item.image_url} alt={item.name}/>
                                     <div className="pl-3">
                                         <div className="text-base font-semibold">{item.name}</div>
-                                        <div className="text-xs font-normal text-gray-500">{item.UPC}</div>
                                     </div>
                                 </th>
-                                <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="pl-3">
-                                        <div className="text-base font-semibold">{item.price}៛</div>
-                                        <div className="text-xs font-normal text-gray-500">{item.cost}៛</div>
-                                    </div>
+                                <td className="px-6 py-4">
+                                    {item.phone}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {item.quantity}
+                                    {item.role === "manager" ? (
+                                        "អ្នកគ្រប់គ្រង"
+                                    ) : item.role === "sale" ? (
+                                        "អ្នកលក់"
+                                    ) : (
+                                        "សមាជិក"
+                                    )}
                                 </td>
                                 <td className="px-6 py-4">
                                     <a href="#"

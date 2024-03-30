@@ -17,7 +17,7 @@ const Authentication = () => {
 
     const getUser = async  () => {
         try {
-            const res = await axios.get('/profile', {
+            const res = await axios.get('/admin/user', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',

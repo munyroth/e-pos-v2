@@ -19,7 +19,7 @@ export default function Navbar() {
 
         const getUser = async  () => {
             try {
-                const res = await axiosPrivate.get('/profile', {
+                const res = await axiosPrivate.get('/user', {
                     signal: controller.signal
                 });
                 isMounted && setUser(res.data.data)
@@ -37,13 +37,13 @@ export default function Navbar() {
     }, []);
 
     return (
-        <Disclosure as="nav" className="px-4 border-b dark:bg-gray-800">
+        <Disclosure as="nav" className="px-4 border-b dark:bg-gray-800 dark:border-gray-700">
             {({ open }) => (
                 <>
                     <div className="relative flex h-16 items-center justify-between">
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                {user?.stores[0]?.name_km}
+                            <div className="text-white absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                {user?.name}
                             </div>
                         </div>
 
@@ -52,7 +52,7 @@ export default function Navbar() {
                                 <div className="w-36 flex items-center justify-center space-x-4">
                                     <img
                                         className="h-10 w-10 rounded-full"
-                                        src={user?.avatar}
+                                        src={user?.img_url}
                                         alt="profile"
                                     />
                                     <div className="font-medium dark:text-white">

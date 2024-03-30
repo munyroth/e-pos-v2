@@ -3,7 +3,6 @@ import Admin from "../pages/admin";
 import Dashboard from "../pages/admin/dashboard";
 import Items from "../pages/admin/items";
 import Bills from "../pages/admin/bills";
-import Invoices from "../pages/admin/invoices";
 import Members from "../pages/admin/members";
 import Branches from "../pages/admin/branches";
 import AddStore from "../pages/admin/stores/add";
@@ -30,13 +29,13 @@ const RoutePath = () => {
                         <Route path="/admin/" element={<Admin />}>
                             <Route exact path="profile" element={<Profile />} />
                             <Route exact path="cashier" element={<Cashier />} />
-                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]} />}>
-                                <Route exact path="dashboard" element={<Dashboard />} />
-                            </Route>
+                            <Route exact path="dashboard" element={<Dashboard />} />
+                            {/*<Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]} />}>*/}
+                            {/*    <Route exact path="dashboard" element={<Dashboard />} />*/}
+                            {/*</Route>*/}
                             <Route exact path="items" element={<Items />} />
                             <Route exact path="items/stock_in" element={<StockIn />} />
                             <Route exact path="bills" element={<Bills />} />
-                            <Route exact path="invoices" element={<Invoices />} />
                             <Route exact path="members" element={<Members />} />
                             <Route exact path="branches" element={<Branches />} />
                             <Route exact path="stores/add" element={<AddStore />} />

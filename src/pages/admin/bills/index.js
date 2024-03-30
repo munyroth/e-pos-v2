@@ -14,7 +14,7 @@ export default function Items() {
     const getBillDetail = (billId) => {
         const controller = new AbortController();
         const getItems = async  () => {
-            const res = await axiosPrivate.get('/bills/'+billId, {
+            const res = await axiosPrivate.get('/order/'+billId, {
                 signal: controller.signal
             });
             console.log(res.data.data);
@@ -34,7 +34,7 @@ export default function Items() {
         const controller = new AbortController();
         setIsLoading(true);
         const getItems = async  () => {
-            const res = await axiosPrivate.get('/bills/store/'+Cookies.get('storeId'), {
+            const res = await axiosPrivate.get('/order/', {
                 signal: controller.signal
             });
             isMounted && setBills(res.data.data);
@@ -56,7 +56,7 @@ export default function Items() {
 
     return (
         <div className="relative flex flex-col h-full">
-            <div className="h-10 mb-4 flex items-center justify-between dark:bg-gray-900">
+            <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">វិក្កយប័ត្រ</h1>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
@@ -104,26 +104,23 @@ export default function Items() {
                                 </li>
                             : bills.map(bill => (
                                     <li
-                                        className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-100"
+                                        className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
 
                                         onClick={() => getBillDetail(bill.id)}
                                     >
                                         <div className="w-full flex items-center">
                                             <div className="text-base flex-1 min-w-0">
                                                 <p className="font-medium text-gray-900 truncate dark:text-white">
-                                                    លេខវិក្កយបត្រ #{bill.id}
+                                                    លេខវិក្កយបត្រ #{bill.invoice_no}
                                                 </p>
                                                 <p className="text-gray-500 truncate dark:text-gray-400">
-                                                    អ្នកចេញវិក្កយបត្រ: {bill.purchased_by}
+                                                    អ្នកលក់: {bill.user.name}
                                                 </p>
                                             </div>
                                             <div
                                                 className="text-end text-base font-semibold text-gray-900 truncate dark:text-white">
-                                                <p>
-                                                    ទំនិញសរុប {bill.total_item}
-                                                </p>
                                                 <p className="text-2xl">
-                                                    {bill.total_price}៛
+                                                    ${bill.total}
                                                 </p>
                                             </div>
                                         </div>
@@ -139,39 +136,36 @@ export default function Items() {
                         </h5>
                         {(bill !== null)
                         ? <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
-                                អ្នកចេញវិក្កយបត្រ: {bill.purchased_by?.name}
+                                អ្នកចេញវិក្កយបត្រ: {bill.user?.name}
                             </h5>
                         : <div></div>}
                     </div>
                     <div className="flex-1">
                         <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
-                            {(bill !== null) ? bill.bill_details?.map(item => (
+                            {(bill !== null) ? bill.order_details?.map(item => (
                                     <li className="p-3 border border-gray-200 rounded-lg flow-root dark:bg-gray-800 dark:border-gray-700">
                                         <div className="flex items-center space-x-4">
                                             <div className="flex-shrink-0">
                                                 <img
                                                     className="w-20 h-20"
-                                                    src={item.item.image_url}
-                                                    alt={item.item.name} />
+                                                    src={item.img_url}
+                                                    alt={item.name_kh} />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-gray-900 truncate dark:text-white">
-                                                    {item.item.name}
+                                                    {item.name_kh}
                                                 </p>
                                                 <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                    {item.item.UPC}
+                                                    {item.barcode}
                                                 </p>
                                                 <div className="flex justify-between items-end">
                                                     <div className="flex">
-                                                        <div className="relative rounded-md mr-2 text-red-500">
-                                                            ទិញ {item.item_cost}៛
-                                                        </div>
                                                         <div className="relative rounded-md text-main">
-                                                            លក់ {item.item_price}៛
+                                                            តម្លៃ {item.price}៛
                                                         </div>
                                                     </div>
-                                                    <div className="">
-                                                        បរិមាណ {item.item_quantity}
+                                                    <div className="text-gray-900 truncate dark:text-white">
+                                                        បរិមាណ {item.qty}
                                                     </div>
                                                 </div>
                                             </div>
