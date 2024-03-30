@@ -1,23 +1,27 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Pagination from "../../../components/pagination";
 
 export default function Products() {
     const axiosPrivate = useAxiosPrivate();
 
     const [member, setMember] = useState([]);
+    const [meta, setMeta] = useState({});
+    const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getMembers = async  () => {
+        const getMembers = async () => {
             try {
                 const res = await axiosPrivate.get('/employee', {
                     signal: controller.signal
                 });
                 isMounted && setMember(res.data.data);
+                setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
 
@@ -34,8 +38,8 @@ export default function Products() {
 
     return (
         <>
-            <div className="flex items-center justify-between">
-                <h2 className="m-5 text-4xl font-bold text-gray-900 dark:text-white">សមាជិក</h2>
+            <div className="h-10 mb-4 flex items-center justify-between">
+                <h1 className="">សមាជិក</h1>
                 <Link
                     to="add"
                     type="button"
@@ -53,9 +57,11 @@ export default function Products() {
                                   clipRule="evenodd"></path>
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
-                           className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="ស្វែងរកសមាជិកដោយឈ្មោះ"/>
+                    <input
+                        type="text"
+                        id="table-search-users"
+                        className="input w-80 pl-10"
+                        placeholder="ស្វែងរក"/>
                 </div>
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
@@ -127,6 +133,13 @@ export default function Products() {
                     </tbody>
                 </table>
             </div>
+            <Pagination
+                content={content}
+                meta={meta}
+                setMeta={setMeta}
+                setItems={setMember}
+                setLoader={setIsLoading}
+                url="/employee"/>
         </>
     )
 }

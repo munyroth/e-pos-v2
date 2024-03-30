@@ -109,7 +109,8 @@ class LineChart extends Component {
                                 breakpoint: 2000,
                                 options: {
                                     chart: {
-                                        width: "2000",
+                                        width: "1250",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -117,7 +118,8 @@ class LineChart extends Component {
                                 breakpoint: 1900,
                                 options: {
                                     chart: {
-                                        width: "475",
+                                        width: "1200",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -125,7 +127,8 @@ class LineChart extends Component {
                                 breakpoint: 1800,
                                 options: {
                                     chart: {
-                                        width: "450",
+                                        width: "1150",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -133,7 +136,8 @@ class LineChart extends Component {
                                 breakpoint: 1700,
                                 options: {
                                     chart: {
-                                        width: "425",
+                                        width: "1100",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -141,7 +145,8 @@ class LineChart extends Component {
                                 breakpoint: 1600,
                                 options: {
                                     chart: {
-                                        width: "390",
+                                        width: "1050",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -158,7 +163,8 @@ class LineChart extends Component {
                                 breakpoint: 1400,
                                 options: {
                                     chart: {
-                                        width: "330",
+                                        width: "950",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -166,7 +172,8 @@ class LineChart extends Component {
                                 breakpoint: 1300,
                                 options: {
                                     chart: {
-                                        width: "300",
+                                        width: "900",
+                                        height: "300"
                                     },
                                 }
                             },
@@ -174,7 +181,8 @@ class LineChart extends Component {
                                 breakpoint: 1200,
                                 options: {
                                     chart: {
-                                        width: "200",
+                                        width: "850",
+                                        height: "300"
                                     },
                                 }
                             },

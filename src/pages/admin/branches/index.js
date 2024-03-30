@@ -1,11 +1,14 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Pagination from "../../../components/pagination";
 
 export default function Products() {
     const axiosPrivate = useAxiosPrivate();
 
     const [shop, setShop] = useState([]);
+    const [meta, setMeta] = useState({});
+    const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -18,6 +21,7 @@ export default function Products() {
                     signal: controller.signal
                 });
                 isMounted && setShop(res.data.data);
+                setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
 
@@ -53,9 +57,11 @@ export default function Products() {
                                   clipRule="evenodd"></path>
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
-                           className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="ស្វែងរកសាខាដោយឈ្មោះ"/>
+                    <input
+                        type="text"
+                        id="table-search-users"
+                        className="input w-80 pl-10"
+                        placeholder="ស្វែងរក"/>
                 </div>
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
@@ -103,6 +109,13 @@ export default function Products() {
                     </tbody>
                 </table>
             </div>
+            <Pagination
+                content={content}
+                meta={meta}
+                setMeta={setMeta}
+                setItems={setShop}
+                setLoader={setIsLoading}
+                url="/shop"/>
         </>
     )
 }

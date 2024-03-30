@@ -19,7 +19,7 @@
 
 @layer components {
     .input {
-        @apply block py-2 text-base text-gray-900 leading-6 rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-main placeholder:text-gray-400 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main;
+        @apply block py-2 text-base text-gray-900 leading-6 rounded-md border border-gray-300 bg-gray-50 focus:ring-main focus:border-main dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-main;
     }
     .input-error {
         @apply block py-2 text-base text-red-900 leading-6 rounded-md bg-red-50 border-0 shadow-sm ring-1 ring-inset ring-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 placeholder:text-red-700;
