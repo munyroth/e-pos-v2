@@ -19,6 +19,7 @@ import {AuthProvider} from "../features/auth/AuthProvider";
 import React from "react";
 import CheckAuth from "../pages/CheckAuth";
 import StockIn from "../pages/admin/items/StockIn"
+import Register from "../pages/Register";
 
 const RoutePath = () => {
     return (
@@ -49,6 +50,7 @@ const RoutePath = () => {
                     </Route>
 
                     <Route exact path="login" element={<Login />} />
+                    <Route exact path="register" element={<Register />} />
                     <Route exact path="/" element={<CheckAuth />} />
                     <Route path="*" element={<Page404 />} />
                 </Routes>

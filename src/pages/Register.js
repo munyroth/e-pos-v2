@@ -3,9 +3,9 @@ import {Link} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
 
-const LOGIN_URL = '/login'
+const LOGIN_URL = '/register'
 
-export default function Login() {
+export default function Register() {
     const {login} = useAuth();
 
     const userRef = useRef();
@@ -13,7 +13,9 @@ export default function Login() {
 
     const [isValidate, setIsValidate] = useState({
         phone: false,
-        password: false
+        password: false,
+        name: false,
+        otp: false
     });
     const [isLoading, setIsLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
@@ -29,14 +31,20 @@ export default function Login() {
         setErrMsg('');
     }
 
-    const handleLogin = async e => {
+    const handleRegister = async e => {
         e.preventDefault();
-        const {phone, password} = e.target;
-        if (phone.value.length === 0 && password.value.length === 0) {
+        const {phone, password, name, otp} = e.target;
+        if (phone.value.length === 0 &&
+            password.value.length === 0 &&
+            name.value.length === 0 &&
+            otp.value.length === 0
+        ) {
             setIsValidate(prevData => {
                 return {
                     phone: true,
-                    password: true
+                    password: true,
+                    name: true,
+                    otp: true
                 }
             });
             return false;
@@ -56,13 +64,31 @@ export default function Login() {
                 }
             });
             return false;
+        } else if (name.value.length === 0) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    name: true
+                }
+            });
+            return false;
+        } else if (otp.value.length === 0) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    otp: true
+                }
+            });
+            return false;
         }
 
         setIsLoading(true);
 
         const data = {
             phone: phone.value,
-            password: password.value
+            password: password.value,
+            name: name.value,
+            otp: otp.value
         }
 
         try {
@@ -73,9 +99,7 @@ export default function Login() {
                 }
             });
             if (res.data.status === 200) login(res.data.data.token, "Admin", "Admin");
-            else if (res.data.status === 401) {
-                setErrMsg('លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ');
-            } else if (res.data.status === 422) {
+            else if (res.data.status === 422) {
                 setErrMsg(res.data.message);
             } else {
                 setErrMsg(res.data.message);
@@ -105,10 +129,46 @@ export default function Login() {
 
                 <div
                     className="mt-10 w-full bg-white rounded-lg shadow dark:border sm:mx-auto sm:w-full sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                    <form className="p-6 space-y-6 md:space-y-6 sm:p-8" onSubmit={handleLogin}>
+                    <form className="p-6 space-y-6 md:space-y-6 sm:p-8" onSubmit={handleRegister}>
                         <h1 className="text-center">
-                            ចូលគណនី
+                            ចុះឈ្មោះគណនី
                         </h1>
+                        {isValidate.name
+                            ? <div>
+                                <label htmlFor="name" className="label-error">
+                                    ឈ្មោះ
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        autoComplete="name"
+                                        ref={userRef}
+                                        onChange={handleChange}
+
+                                        className="input-error w-full"
+                                        placeholder="សូមបញ្ចូលឈ្មោះ"
+                                    />
+                                </div>
+                            </div>
+                            : <div>
+                                <label htmlFor="name" className="dark:text-white">
+                                    ឈ្មោះ
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        autoComplete="name"
+                                        ref={userRef}
+                                        onChange={handleChange}
+
+                                        className="input w-full"
+                                    />
+                                </div>
+                            </div>}
                         {isValidate.phone
                             ? <div>
                                 <label htmlFor="phone" className="label-error">
@@ -145,10 +205,50 @@ export default function Login() {
                                     />
                                 </div>
                             </div>}
+                        {isValidate.otp
+                            ? <div>
+                                <label htmlFor="otp" className="label-error">
+                                    លេខ OTP
+                                </label>
+                                <div className="mt-2">
+                                    <input
+                                        id="otp"
+                                        name="otp"
+                                        type="text"
+                                        autoComplete="otp"
+                                        onChange={handleChange}
+
+                                        className="input-error w-full"
+                                        placeholder="សូមបញ្ចូលលេខ OTP"
+                                    />
+                                </div>
+                            </div>
+                            : <div>
+                                <label htmlFor="otp" className="dark:text-white">
+                                    លេខ OTP
+                                </label>
+                                <div className="mt-2 relative">
+                                    <input
+                                        id="otp"
+                                        name="otp"
+                                        type="text"
+                                        autoComplete="otp"
+                                        onChange={handleChange}
+
+                                        className="input w-full"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-1 right-4 rounded-2xl font-medium text-blue-600 hover:underline dark:text-blue-500">
+                                        ផ្ញើ OTP
+                                    </button>
+                                </div>
+                            </div>
+                        }
                         {isValidate.password
                             ? <div>
                                 <label htmlFor="password" className="label-error">
-                                    ពាក្យសំងាត់
+                                    បង្កើតពាក្យសំងាត់
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -165,7 +265,7 @@ export default function Login() {
                             </div>
                             : <div>
                                 <label htmlFor="password" className="dark:text-white">
-                                    ពាក្យសំងាត់
+                                    បង្កើតពាក្យសំងាត់
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -186,22 +286,18 @@ export default function Login() {
                         >
                             {errMsg}
                         </p>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <input id="remember" aria-describedby="remember" type="checkbox"
-                                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                                       required=""/>
-                                <label htmlFor="remember" className="text-gray-500 dark:text-gray-300 ms-2 text-sm">
-                                    ចង់ចាំខ្ញុំ
-                                </label>
-                            </div>
-                            <Link
-                                to="#"
-                                className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                                ភ្លេចពាក្យសំងាត់?
+                        <div className="flex items-center">
+                            <input id="terms" aria-describedby="terms" type="checkbox"
+                                   className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                                   required=""/>
+                            <label htmlFor="terms"
+                                   className="text-gray-500 dark:text-gray-300 ms-2 text-sm">
+                                I accept the <Link
+                                className="font-medium text-blue-600 hover:underline dark:text-blue-500" to="#">
+                                Terms and Conditions
                             </Link>
+                            </label>
                         </div>
-
                         <div>
                             {isLoading
                                 ? <button
@@ -226,16 +322,16 @@ export default function Login() {
                                     type="submit"
                                     className="button w-full"
                                 >
-                                    ចូល
+                                    ចុះឈ្មោះ
                                 </button>
                             }
                         </div>
                         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                            មិនទាន់មានគណនី?
+                            មានគណនី?
                             <Link
-                                to="/register"
+                                to="/login"
                                 className="ml-2 font-medium text-blue-600 hover:underline dark:text-blue-500">
-                                ចុះឈ្មោះ
+                                ចូល
                             </Link>
                         </p>
                     </form>
