@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
+import Loading from "../../../components/loading";
 
 export default function Products() {
     const axiosPrivate = useAxiosPrivate();
@@ -38,8 +39,8 @@ export default function Products() {
 
     return (
         <>
-            <div className="flex items-center justify-between">
-                <h2 className="m-5 text-4xl font-bold text-gray-900 dark:text-white">សាខា</h2>
+            <div className="h-10 mb-4 flex items-center justify-between">
+                <h1 className="">សាខា</h1>
                 <Link
                     to="add"
                     type="button"
@@ -85,9 +86,9 @@ export default function Products() {
                     </thead>
                     <tbody>
                     {isLoading
-                        ? <>Loading...</>
+                        ? null
                         : shop.map(item => (
-                            <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                            <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                     {item.name}
@@ -109,6 +110,9 @@ export default function Products() {
                     </tbody>
                 </table>
             </div>
+            {isLoading && (
+                <Loading/>
+            )}
             <Pagination
                 content={content}
                 meta={meta}

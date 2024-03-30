@@ -2,6 +2,7 @@ import LineChart from "../../../components/charts/LineChart";
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Loading from "../../../components/loading";
 
 
 export default function Dashboard() {
@@ -78,7 +79,7 @@ export default function Dashboard() {
                                 onClick={() => {
                                     setActiveTab(30);
                                 }}
-                                className={classNames((activeTab === 4) ? 'text-main border-main rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300', 'inline-block p-4 border-b-2 rounded-t-lg')}
+                                className={classNames((activeTab === 30) ? 'text-main border-main rounded-t-lg active dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300', 'inline-block p-4 border-b-2 rounded-t-lg')}
                             >
                                 ខែនេះ
                             </button>
@@ -88,9 +89,7 @@ export default function Dashboard() {
                 </div>
             </div>
             {isLoading ? (
-                <div className="flex justify-center items-center h-96">
-                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-main"></div>
-                </div>
+                <Loading/>
             ) : (
                 <div className="grid grid-cols-4 gap-4">
                     <div className="h-full">
@@ -149,7 +148,7 @@ export default function Dashboard() {
                                 title="ចំនួនលក់"/>
                         </div>
                     </div>
-                    <div className="col-span-2 flex items-start row-span-2">
+                    <div className="col-span-2 flex items-start row-span-2 mb-4">
                         <div
                             className="w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 sm:pb-2 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
@@ -196,7 +195,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-2 flex items-start row-span-2">
+                    <div className="col-span-2 flex items-start row-span-2 mb-4">
                         <div
                             className="w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 sm:pb-2 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
