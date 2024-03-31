@@ -8,7 +8,7 @@ const LOGIN_URL = '/login'
 export default function Login() {
     const {login} = useAuth();
 
-    const userRef = useRef();
+    const phoneRef = useRef();
     const errRef = useRef();
 
     const [isValidate, setIsValidate] = useState({
@@ -72,7 +72,7 @@ export default function Login() {
                     'Content-Type': 'application/json'
                 }
             });
-            if (res.data.status === 200) login(res.data.data.token, "Admin", "Admin");
+            if (res.data.status === 200) login(res.data.data.token, res.data.data.user.role);
             else if (res.data.status === 401) {
                 setErrMsg('លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ');
             } else if (res.data.status === 422) {
@@ -89,7 +89,7 @@ export default function Login() {
     }
 
     useEffect(() => {
-        userRef.current.focus();
+        phoneRef.current.focus();
     }, [])
 
     return (
@@ -120,7 +120,7 @@ export default function Login() {
                                         name="phone"
                                         type="text"
                                         autoComplete="email"
-                                        ref={userRef}
+                                        ref={phoneRef}
                                         onChange={handleChange}
 
                                         className="input-error w-full"
@@ -138,7 +138,7 @@ export default function Login() {
                                         name="phone"
                                         type="text"
                                         autoComplete="email"
-                                        ref={userRef}
+                                        ref={phoneRef}
                                         onChange={handleChange}
 
                                         className="input w-full"
