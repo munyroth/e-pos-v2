@@ -3,8 +3,10 @@ import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
+import search from "../../../functions/search";
 
 export default function Products() {
+    let url = '/employee';
     const axiosPrivate = useAxiosPrivate();
 
     const [member, setMember] = useState([]);
@@ -14,16 +16,19 @@ export default function Products() {
     const [isEmpty, setIsEmpty] = useState(false);
 
     useEffect(() => {
+        meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    }, [meta]);
+
+    useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
         const getMembers = async () => {
             try {
-                const res = await axiosPrivate.get('/employee', {
+                const res = await axiosPrivate.get(url, {
                     signal: controller.signal
                 });
                 isMounted && setMember(res.data.data);
-                res.data.data.length === 0 && setIsEmpty(true);
                 setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
@@ -43,13 +48,15 @@ export default function Products() {
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">សមាជិក</h1>
-                <Link
-                    to="add"
+                <button
+                    onClick={() => {
+
+                    }}
                     type="button"
-                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-1 active:outline-none active:ring-blue-300"
                 >
                     បន្ថែមសមាជិក
-                </Link>
+                </button>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -61,6 +68,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
+                        onChange={(e) => search(e, setContent, setIsLoading, setMember, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -155,7 +163,7 @@ export default function Products() {
                 setMeta={setMeta}
                 setItems={setMember}
                 setLoader={setIsLoading}
-                url="/employee"/>
+                url={url}/>
         </>
     )
 }

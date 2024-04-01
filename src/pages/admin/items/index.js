@@ -5,8 +5,10 @@ import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
 import toast, {Toaster} from "react-hot-toast";
 import BaseDialog from "../../../components/dialog";
+import search from "../../../functions/search";
 
 export default function Items() {
+    let url = '/product';
     const axiosPrivate = useAxiosPrivate();
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -64,7 +66,7 @@ export default function Items() {
 
         const addProduct = async () => {
             try {
-                const response = await axiosPrivate.post('/product', formData, {
+                const response = await axiosPrivate.post(url, formData, {
                     signal: controller.signal
                 });
 
@@ -81,7 +83,6 @@ export default function Items() {
                     setData(newData);
                     setImageURL("");
                     setIsImage(false);
-                    setItems([response.data.data, ...items]);
                     isEmpty && setIsEmpty(false);
 
                     toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
@@ -111,53 +112,41 @@ export default function Items() {
         const controller = new AbortController();
 
         try {
-            const res = await axiosPrivate.delete('/product/' + id, {
+            const res = await axiosPrivate.delete(url + '/' + id, {
                 signal: controller.signal
             });
-            setItems(items.filter(item => item.id !== id));
             setOpenModalDelete(false);
         } catch (err) {
 
         }
     }
 
-    const searchProduct = async (e) => {
-        setContent(e.target.value);
-        setIsLoading(true);
-        const controller = new AbortController();
-        const res = await axiosPrivate.get('/product', {
-            signal: controller.signal,
-            params: {
-                content: e.target.value,
-                page: 1
-            }
-        });
-        setItems(res.data.data);
-        setMeta(res.data.meta);
-        setIsLoading(false);
-    }
+    useEffect(() => {
+        meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    }, [meta]);
 
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
         const getItems = async () => {
-            const res = await axiosPrivate.get('/product', {
+            const res = await axiosPrivate.get(url, {
                 signal: controller.signal
             });
             isMounted && setItems(res.data.data);
             setMeta(res.data.meta);
-            res.data.data.length === 0 && setIsEmpty(true);
             setIsLoading(false);
         }
 
-        getItems().catch(() => console.log("fail"));
+        if (!openModalAddItem && !openModalDelete) {
+            getItems().catch(() => console.log("fail"));
+        }
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, [axiosPrivate]);
+    }, [axiosPrivate, openModalAddItem, openModalDelete]);
 
     return (
         <>
@@ -168,7 +157,7 @@ export default function Items() {
                         setOpenModalAddItem(true);
                     }}
                     type="button"
-                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-4 active:outline-none active:ring-blue-300"
+                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-1 active:outline-none active:ring-blue-300"
                 >
                     បន្ថែមទំនិញ
                 </button>
@@ -183,7 +172,7 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={searchProduct}
+                        onChange={(e) => search(e, setContent, setIsLoading, setItems, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -265,7 +254,7 @@ export default function Items() {
                 setMeta={setMeta}
                 setItems={setItems}
                 setLoader={setIsLoading}
-                url="/product"/>
+                url={url}/>
 
             <BaseDialog
                 openModal={openModalDelete}

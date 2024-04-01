@@ -3,8 +3,10 @@ import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
+import search from "../../../functions/search";
 
 export default function Products() {
+    let url = '/shop';
     const axiosPrivate = useAxiosPrivate();
 
     const [shop, setShop] = useState([]);
@@ -14,16 +16,19 @@ export default function Products() {
     const [isEmpty, setIsEmpty] = useState(false);
 
     useEffect(() => {
+        meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    }, [meta]);
+
+    useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
 
         const getShop = async () => {
             try {
-                const res = await axiosPrivate.get('/shop', {
+                const res = await axiosPrivate.get(url, {
                     signal: controller.signal
                 });
                 isMounted && setShop(res.data.data);
-                res.data.data.length === 0 && setIsEmpty(true);
                 setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
@@ -61,6 +66,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
+                        onChange={(e) => search(e, setContent, setIsLoading, setShop, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -131,7 +137,7 @@ export default function Products() {
                 setMeta={setMeta}
                 setItems={setShop}
                 setLoader={setIsLoading}
-                url="/shop"/>
+                url={url}/>
         </>
     )
 }
