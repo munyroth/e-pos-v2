@@ -23,6 +23,12 @@ export const AuthProvider = ({children}) => {
         }
     };
 
+    const register = (token) => {
+        Cookies.set('token', token);
+        setAuth({token: token, permissions: ['view_profile', 'view_dashboard']});
+        navigate(location.state?.path || '/stores/add', {replace: true});
+    }
+
     const login = (token, role) => {
         Cookies.set('token', token);
         if (role === 'admin') {
@@ -50,5 +56,8 @@ export const AuthProvider = ({children}) => {
         }
     };
 
-    return <AuthContext.Provider value={{auth, setAuth, setUser, login, logout}}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider
+        value={{auth, setAuth, setUser, register, login, logout}}>
+        {children}
+    </AuthContext.Provider>;
 };

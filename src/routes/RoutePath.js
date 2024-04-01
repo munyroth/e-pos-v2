@@ -20,6 +20,7 @@ import React from "react";
 import CheckAuth from "../pages/CheckAuth";
 import StockIn from "../pages/admin/items/StockIn"
 import Register from "../pages/Register";
+import Stores from "../pages/admin/stores";
 
 const RoutePath = () => {
     return (
@@ -27,6 +28,8 @@ const RoutePath = () => {
             <AuthProvider>
                 <Routes>
                     <Route element={<Authentication />}>
+                        <Route exact path="stores" element={<Stores />} />
+                        <Route exact path="stores/add" element={<AddStore />} />
                         <Route path="/admin/" element={<Admin />}>
                             <Route exact path="profile" element={<Profile />} />
                             <Route exact path="cashier" element={<Cashier />} />
@@ -39,7 +42,6 @@ const RoutePath = () => {
                             <Route exact path="bills" element={<Bills />} />
                             <Route exact path="members" element={<Members />} />
                             <Route exact path="branches" element={<Branches />} />
-                            <Route exact path="stores/add" element={<AddStore />} />
                         </Route>
 
                         <Route element={<Home />}>

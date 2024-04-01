@@ -43,7 +43,7 @@ export default function Pagination(
     const renderPageNumbers = () => {
         const pages = [];
         const maxPagesToShow = 9;
-        const sidePagesToShow = 2;
+        const sidePagesToShow = totalPages === 1 ? 1 : 2;
 
         let startPage = Math.max(1, meta.page - Math.floor(maxPagesToShow / 2));
         let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);

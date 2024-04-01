@@ -53,7 +53,7 @@ export default class Sidebar extends Component {
                                 <NavLink
                                     to="dashboard"
                                     className={({isActive} ) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        isActive ? 'bg-main text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
                                 >
@@ -72,7 +72,7 @@ export default class Sidebar extends Component {
                                 <NavLink
                                     to="items"
                                     className={({isActive} ) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        isActive ? 'bg-main text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
                                 >
@@ -92,7 +92,7 @@ export default class Sidebar extends Component {
                                 <NavLink
                                     to="bills"
                                     className={({isActive} ) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        isActive ? 'bg-main text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
                                 >
@@ -117,7 +117,7 @@ export default class Sidebar extends Component {
                                 <NavLink
                                     to="members"
                                     className={({isActive} ) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        isActive ? 'bg-main text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
                                 >
@@ -139,7 +139,7 @@ export default class Sidebar extends Component {
                                 <NavLink
                                     to="branches"
                                     className={({isActive} ) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        isActive ? 'bg-main text-white' : 'text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
                                 >
