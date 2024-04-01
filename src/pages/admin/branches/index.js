@@ -11,6 +11,7 @@ export default function Products() {
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isEmpty, setIsEmpty] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -22,6 +23,7 @@ export default function Products() {
                     signal: controller.signal
                 });
                 isMounted && setShop(res.data.data);
+                res.data.data.length === 0 && setIsEmpty(true);
                 setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
@@ -87,26 +89,36 @@ export default function Products() {
                     <tbody>
                     {isLoading
                         ? null
-                        : shop.map(item => (
-                            <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                        : isEmpty
+                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    {item.name}
+                                    <div className="w-10 h-10"></div>
+                                    <div className="pl-3" role="status">
+                                        <span className="">មិនមានសាខា</span>
+                                    </div>
                                 </th>
-                                <td className="px-6 py-4">
-                                    {item.orders_count}
-                                </td>
-                                <td className="px-6 py-4">
-                                    ${parseFloat(item?.orders_sum_total ?? 0).toFixed(2)}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <a href="#"
-                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        កែ
-                                    </a>
-                                </td>
                             </tr>
-                        ))}
+                            : shop.map(item => (
+                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                                    <th scope="row"
+                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                        {item.name}
+                                    </th>
+                                    <td className="px-6 py-4">
+                                        {item.orders_count}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        ${parseFloat(item?.orders_sum_total ?? 0).toFixed(2)}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <a href="#"
+                                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែ
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
             </div>

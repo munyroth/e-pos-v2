@@ -34,7 +34,7 @@ export const AuthProvider = ({children}) => {
         if (role === 'admin') {
             setAuth({token: token, permissions: ['view_profile', 'view_dashboard']});
             Cookies.set('branchIndex', 0, {expires: 15});
-            navigate(location.state?.path || '/admin/dashboard', {replace: true});
+            navigate(location.state?.path || '/stores', {replace: true});
         } else {
             setAuth({token: token, permissions: ['view_profile']});
             navigate(location.state?.path || '/cashier', {replace: true});
@@ -48,7 +48,7 @@ export const AuthProvider = ({children}) => {
                 signal: controller.signal
             });
             Cookies.remove('token');
-            Cookies.remove('storeId');
+            Cookies.remove('shopId');
             setAuth({token: '', permissions: []});
             navigate(location.state?.path || '/login', {replace: true});
         } catch (err) {

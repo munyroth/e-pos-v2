@@ -45,7 +45,7 @@ export default function AddStore() {
         setIsLoading(true);
 
         const formData = new FormData();
-        formData.append("img", data.image);
+        data.image && formData.append("img", data.image);
         formData.append("name", data.name);
         formData.append("type", data.type);
 
@@ -58,15 +58,14 @@ export default function AddStore() {
             if (res.data.status === 201) {
                 Cookies.set('shopId', res.data.data.id);
                 navigate(location.state?.path || "/admin/dashboard", {replace: true});
-            }
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('មានបញ្ហាក្នុងការបញ្ចូល សូមព្យាយាមម្តងទៀត');
-            } else if (err.response?.status === 422) {
-                setErrMsg('សូមបញ្ចុលរូបភាព និងឈ្មោះហាង');
+            } else if (res.data.status === 422) {
+                setErrMsg(res.data.message);
             } else {
                 setErrMsg('មានបញ្ហាក្នុងការបញ្ចូល សូមព្យាយាមម្តងទៀត');
+                setIsLoading(false)
             }
+        } catch (err) {
+            setErrMsg('មានបញ្ហាក្នុងការបញ្ចូល សូមព្យាយាមម្តងទៀត');
             errRef.current.focus();
             setIsLoading(false);
         }
@@ -122,7 +121,6 @@ export default function AddStore() {
                                     name="image"
                                     className="hidden" accept=".png, .jpg, .jpeg"
                                     onChange={handleChange}
-                                    required
                                 />
                             </label>
                         </div>

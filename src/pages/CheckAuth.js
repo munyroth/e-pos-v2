@@ -3,16 +3,18 @@ import useAuth from "../hooks/useAuth";
 import Cookies from "js-cookie";
 
 const CheckAuth = () => {
-    const { auth } = useAuth();
+    const {auth} = useAuth();
     const location = useLocation();
 
     let token = Cookies.get('token');
-    let store = Cookies.get('storeId');
+    let shop = Cookies.get('shopId');
 
     return (
         (auth.token || token)
-            ? <Navigate to='/admin/dashboard' state={{ from: location }} replace />
-            : <Navigate to='/login' state={{ from: location }} replace />
+            ? shop
+                ? <Navigate to='/admin/dashboard' state={{from: location}} replace/>
+                : <Navigate to='/stores' state={{from: location}} replace/>
+            : <Navigate to='/login' state={{from: location}} replace/>
     )
 };
 

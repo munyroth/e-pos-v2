@@ -41,7 +41,7 @@ export default function Stores() {
 
     return (
         <BaseForm>
-            <ul className="h-96 space-y-2 font-medium p-6 md:space-y-6 sm:p-8">
+            <ul className="space-y-2 font-medium p-6 md:space-y-6 sm:p-8">
                 {isLoading
                     ? null
                     : shop.map(item => (
@@ -52,7 +52,7 @@ export default function Stores() {
                                         navigate('/admin/dashboard')
                                     }
                                 }
-                                className="text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites">
+                                className="text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 w-full p-2 rounded-lg dark:text-white">
                                 {item.name}
                             </li>
                         )

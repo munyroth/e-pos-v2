@@ -1,13 +1,27 @@
 import {Fragment, useEffect, useRef, useState} from 'react';
-import {Link} from "react-router-dom";
-import {Dialog, Transition} from '@headlessui/react';
-import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
+import {ExclamationTriangleIcon, PlusCircleIcon} from '@heroicons/react/24/outline';
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
+import toast, {Toaster} from "react-hot-toast";
+import BaseDialog from "../../../components/dialog";
 
 export default function Items() {
     const axiosPrivate = useAxiosPrivate();
+
+    const [openModalAddItem, setOpenModalAddItem] = useState(false);
+    const cancelModalAddItemRef = useRef(null);
+
+    const [isLoadingAdd, setIsLoadingAdd] = useState(false);
+    const [isImage, setIsImage] = useState(false);
+    const [imageURL, setImageURL] = useState("");
+    const [data, setData] = useState({
+        category_id: 1,
+        barcode: "",
+        name: "",
+        price: "",
+        file: null
+    });
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
@@ -18,6 +32,80 @@ export default function Items() {
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
+
+    const handleChangeAdd = e => {
+        const {name, value, type, files} = e.target;
+        setData(prevFormData => {
+            return {
+                ...prevFormData,
+                [name]: type === "file" ? files[0] : value
+            }
+        });
+
+        if (files && files[0]) {
+            setImageURL(URL.createObjectURL(e.target.files[0]));
+            setIsImage(true);
+        }
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        setIsLoadingAdd(true);
+
+        const formData = new FormData();
+        formData.append('category_id', data.category_id);
+        formData.append('barcode', data.barcode);
+        formData.append('name_en', data.name);
+        formData.append('name_kh', data.name);
+        formData.append('price', data.price);
+        data.file && formData.append('file', data.file);
+
+        const controller = new AbortController();
+
+        const addProduct = async () => {
+            try {
+                const response = await axiosPrivate.post('/product', formData, {
+                    signal: controller.signal
+                });
+
+                if (response.data.status === 201) {
+                    // Update state after successful request
+                    const newData = {
+                        category_id: 1,
+                        barcode: "",
+                        name: "",
+                        price: "",
+                        file: null
+                    };
+                    setOpenModalAddItem(false);
+                    setData(newData);
+                    setImageURL("");
+                    setIsImage(false);
+                    setItems([response.data.data, ...items]);
+                    isEmpty && setIsEmpty(false);
+
+                    toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
+                } else toast.error(response.data.message);
+
+                return response;
+            } catch (error) {
+                // Handle errors
+                console.error('Error adding product:', error);
+                toast.error('មានបញ្ហាក្នុងការបញ្ចូល');
+                return Promise.reject(error);
+            } finally {
+                setIsLoadingAdd(false);
+            }
+        }
+
+        addProduct()
+            .then(() => {
+                // Do something after successful addition
+            })
+            .catch(() => {
+                // Do something in case of error
+            });
+    }
 
     const handleDelete = async id => {
         const controller = new AbortController();
@@ -75,13 +163,15 @@ export default function Items() {
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">ទំនិញ</h1>
-                <Link
-                    to="stock_in"
+                <button
+                    onClick={() => {
+                        setOpenModalAddItem(true);
+                    }}
                     type="button"
                     className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-4 active:outline-none active:ring-blue-300"
                 >
-                    បន្ថែមទំនិញទៅក្នុងស្តុក
-                </Link>
+                    បន្ថែមទំនិញ
+                </button>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -120,8 +210,7 @@ export default function Items() {
                     {isLoading
                         ? null
                         : isEmpty
-                            ?
-                            <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                     <div className="w-10 h-10"></div>
@@ -177,79 +266,179 @@ export default function Items() {
                 setItems={setItems}
                 setLoader={setIsLoading}
                 url="/product"/>
-            <Transition.Root show={openModalDelete} as={Fragment}>
-                <Dialog as="div" className="relative z-10" initialFocus={cancelModalDeleteRef}
-                        onClose={setOpenModalDelete}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
-                    </Transition.Child>
 
-                    <div className="fixed inset-0 z-10 overflow-y-auto">
-                        <div
-                            className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <Dialog.Panel
-                                    className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                                        <div className="sm:flex sm:items-start">
-                                            <div
-                                                className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                                <ExclamationTriangleIcon className="h-6 w-6 text-red-600"
-                                                                         aria-hidden="true"/>
-                                            </div>
-                                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                                <Dialog.Title as="h3"
-                                                              className="text-base font-semibold leading-6 text-gray-900">
-                                                    លុបទំនិញ
-                                                </Dialog.Title>
-                                                <div className="mt-2">
-                                                    <p className="text-sm text-gray-500">
-                                                        តើអ្នកពិតជាចង់លុបទំនិញនេះ? ទំនិញនឹងលុបចេញ
-                                                        សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
-                                                    </p>
-                                                </div>
-                                            </div>
+            <BaseDialog
+                openModal={openModalDelete}
+                setOpenModal={setOpenModalDelete}
+                cancelModalDeleteRef={cancelModalDeleteRef}
+                icon={
+                    <div
+                        className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-200">
+                        <ExclamationTriangleIcon className="h-6 w-6 text-red-600"
+                                                 aria-hidden="true"/>
+                    </div>
+                }
+                title="លុបទំនិញ"
+                button={
+                    <button
+                        type="button"
+                        className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                        onClick={() => handleDelete(deleteId)}
+                    >
+                        លុប
+                    </button>
+                }>
+                <p className="text-center text-sm text-gray-500">
+                    តើអ្នកពិតជាចង់លុបទំនិញនេះ?
+                </p>
+                <p className="text-center text-sm text-gray-500">
+                    ទំនិញនឹងលុបចេញ និងមិនអាចត្រឡប់វិញបានទេ!
+                </p>
+            </BaseDialog>
+
+            <BaseDialog
+                openModal={openModalAddItem}
+                setOpenModal={setOpenModalAddItem}
+                cancelModalDeleteRef={cancelModalAddItemRef}
+                icon={
+                    <div
+                        className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <PlusCircleIcon className="h-6 w-6 text-green-600"
+                                        aria-hidden="true"/>
+                    </div>
+                }
+                title="បន្ថែមទំនិញ"
+                button={isLoadingAdd
+                    ? <button disabled type="button"
+                              className="disabled rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+                    >
+                        <svg aria-hidden="true" role="status"
+                             className="inline w-4 h-4 mr-3 text-white animate-spin"
+                             viewBox="0 0 100 101"
+                             fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="#E5E7EB"/>
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentColor"/>
+                        </svg>
+                        កំពុងផ្ទុក...
+                    </button>
+                    : <button
+                        type="button"
+                        className="rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+                        onClick={handleSubmit}
+                    >
+                        បន្ថែម
+                    </button>
+                }>
+                <form className="space-y-6">
+                    <div>
+                        <label
+                            className="font-medium leading-6 text-gray-900 dark:text-white">
+                            រូបភាព
+                        </label>
+                        <div className="mt-2 flex items-center justify-center w-full">
+                            <div className="w-full h-64">
+                                <label htmlFor="image"
+                                       className="flex items-center justify-center w-full h-full">
+                                    {isImage ? (
+                                        <img src={imageURL} alt="image"
+                                             className="h-full rounded-lg"/>
+                                    ) : (
+                                        <div
+
+                                            className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                            <svg aria-hidden="true"
+                                                 className="w-10 h-10 mb-3 text-gray-400"
+                                                 fill="none"
+                                                 stroke="currentColor"
+                                                 viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      strokeWidth="2"
+                                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                            </svg>
+                                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                                <span className="font-semibold">Click to upload</span> or
+                                                drag and drop</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                JPG or PNG (MAX. 800x400px)
+                                            </p>
                                         </div>
-                                    </div>
-                                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                            onClick={() => handleDelete(deleteId)}
-                                        >
-                                            លុប
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                            onClick={() => setOpenModalDelete(false)}
-                                            ref={cancelModalDeleteRef}
-                                        >
-                                            បោះបង់
-                                        </button>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
+                                    )}
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        name="image"
+                                        className="hidden" accept=".png, .jpg, .jpeg"
+                                        onChange={handleChangeAdd}
+                                        required
+                                    />
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </Dialog>
-            </Transition.Root>
+                    <div>
+                        <label htmlFor="name"
+                               className="font-medium leading-6 text-gray-900 dark:text-white">
+                            ឈ្មោះទំនិញ
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                autoComplete="false"
+                                value={data.name}
+                                onChange={handleChangeAdd}
+
+                                className="input w-full"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="price"
+                               className="font-medium leading-6 text-gray-900 dark:text-white">
+                            តម្លៃ
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="text"
+                                id="price"
+                                name="price"
+                                autoComplete="false"
+                                value={data.price}
+                                onChange={handleChangeAdd}
+
+                                className="input w-full"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="barcode"
+                               className="font-medium leading-6 text-gray-900 dark:text-white">
+                            បារកូដ
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="text"
+                                id="barcode"
+                                name="barcode"
+                                autoComplete="false"
+                                value={data.barcode}
+                                onChange={handleChangeAdd}
+
+                                className="input w-full"
+                            />
+                        </div>
+                    </div>
+                </form>
+            </BaseDialog>
+            <Toaster/>
         </>
     )
 }
