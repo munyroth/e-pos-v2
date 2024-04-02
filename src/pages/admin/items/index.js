@@ -18,18 +18,19 @@ export default function Items() {
     const [isImage, setIsImage] = useState(false);
     const [imageURL, setImageURL] = useState("");
     const [data, setData] = useState({
-        category_id: 1,
+        category: null,
         barcode: "",
         name: "",
         price: "",
-        file: null
+        image: null
     });
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
 
-    const [items, setItems] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -55,43 +56,37 @@ export default function Items() {
         setIsLoadingAdd(true);
 
         const formData = new FormData();
-        formData.append('category_id', data.category_id);
+        formData.append('category_id', data.category ? data.category : categories[0].id);
         formData.append('barcode', data.barcode);
         formData.append('name_en', data.name);
         formData.append('name_kh', data.name);
         formData.append('price', data.price);
-        data.file && formData.append('file', data.file);
+        data.image && formData.append('file', data.image);
 
         const controller = new AbortController();
 
         const addProduct = async () => {
+            console.log(data.image)
+            console.log(formData.get('category_id'));
+            console.log(formData.get('barcode'));
+            console.log(formData.get('name_en'));
+            console.log(formData.get('name_kh'));
+            console.log(formData.get('price'));
+            console.log(formData.get('file'));
             try {
                 const response = await axiosPrivate.post(url, formData, {
                     signal: controller.signal
                 });
 
                 if (response.data.status === 201) {
-                    // Update state after successful request
-                    const newData = {
-                        category_id: 1,
-                        barcode: "",
-                        name: "",
-                        price: "",
-                        file: null
-                    };
                     setOpenModalAddItem(false);
-                    setData(newData);
-                    setImageURL("");
-                    setIsImage(false);
                     isEmpty && setIsEmpty(false);
-
                     toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
                 } else toast.error(response.data.message);
 
                 return response;
             } catch (error) {
                 // Handle errors
-                console.error('Error adding product:', error);
                 toast.error('មានបញ្ហាក្នុងការបញ្ចូល');
                 return Promise.reject(error);
             } finally {
@@ -133,13 +128,38 @@ export default function Items() {
             const res = await axiosPrivate.get(url, {
                 signal: controller.signal
             });
-            isMounted && setItems(res.data.data);
+            isMounted && setProducts(res.data.data);
             setMeta(res.data.meta);
             setIsLoading(false);
         }
 
+        const getCategories = async () => {
+            const res = await axiosPrivate.get('/category?is_all=true', {
+                signal: controller.signal
+            });
+            setCategories(res.data.data);
+        }
+
         if (!openModalAddItem && !openModalDelete) {
-            getItems().catch(() => console.log("fail"));
+            getItems().catch(() => console.log("can't get items"));
+        }
+
+        if (openModalAddItem) {
+            getCategories().catch(() => console.log("can't get categories"));
+        }
+
+        // Reset form data when modal is closed
+        if (!openModalAddItem) {
+            const newData = {
+                category: null,
+                barcode: "",
+                name: "",
+                price: "",
+                image: null
+            };
+            setData(newData);
+            setImageURL("");
+            setIsImage(false);
         }
 
         return () => {
@@ -172,7 +192,7 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => search(e, setContent, setIsLoading, setItems, setMeta, url)}
+                        onChange={(e) => search(e, setContent, setIsLoading, setProducts, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -208,7 +228,7 @@ export default function Items() {
                                     </div>
                                 </th>
                             </tr>
-                            : items.map(item => (
+                            : products.map(item => (
                                 <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
@@ -252,7 +272,7 @@ export default function Items() {
                 content={content}
                 meta={meta}
                 setMeta={setMeta}
-                setItems={setItems}
+                setItems={setProducts}
                 setLoader={setIsLoading}
                 url={url}/>
 
@@ -329,7 +349,7 @@ export default function Items() {
                             រូបភាព
                         </label>
                         <div className="mt-2 flex items-center justify-center w-full">
-                            <div className="w-full h-64">
+                            <div className="w-full h-32">
                                 <label htmlFor="image"
                                        className="flex items-center justify-center w-full h-full">
                                     {isImage ? (
@@ -380,7 +400,7 @@ export default function Items() {
                                 type="text"
                                 id="name"
                                 name="name"
-                                autoComplete="false"
+                                autoComplete="name"
                                 value={data.name}
                                 onChange={handleChangeAdd}
 
@@ -388,12 +408,35 @@ export default function Items() {
                             />
                         </div>
                     </div>
+                    <div className="">
+                        <label htmlFor="category"
+                               className="font-medium leading-6 text-gray-900 dark:text-white">
+                            ប្រភេទ
+                        </label>
+                        <div className="mt-2">
+                            <select
+                                onChange={handleChangeAdd}
+                                id="category"
+                                name="category"
+                                autoComplete="category"
+                                className="select w-full"
+                            >
+                                {categories.map(category => (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div>
                         <label htmlFor="price"
                                className="font-medium leading-6 text-gray-900 dark:text-white">
                             តម្លៃ
                         </label>
-                        <div className="mt-2">
+                        <div className="relative mt-2 rounded-md shadow-sm">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <span className="text-gray-500 sm:text-sm dark:text-gray-200">$</span>
+                            </div>
+
                             <input
                                 type="text"
                                 id="price"
@@ -402,8 +445,22 @@ export default function Items() {
                                 value={data.price}
                                 onChange={handleChangeAdd}
 
-                                className="input w-full"
+                                // className="input w-full"
+                                className="input w-full py-1.5 pl-7 pr-20"
+                                placeholder="0.00"
                             />
+                            <div className="absolute inset-y-0 right-0 flex items-center">
+                                <label htmlFor="currency" className="sr-only">
+                                    Currency
+                                </label>
+                                <select
+                                    id="currency"
+                                    name="currency"
+                                    className="h-full select-input"
+                                >
+                                    <option>USD</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
