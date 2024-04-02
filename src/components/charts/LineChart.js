@@ -39,7 +39,7 @@ class LineChart extends Component {
                                 enabled: false
                             },
                             toolbar: {
-                                show: false
+                                show: true
                             }
                         },
                         fill: {
@@ -71,7 +71,9 @@ class LineChart extends Component {
                             strokeDashArray: 10
                         },
                         markers: {
-                            size: 1
+                            size: 4,
+                            colors: ['#32a852'],
+                            strokeWidth: 2,
                         },
                         xaxis: {
                             axisBorder: {
@@ -94,16 +96,16 @@ class LineChart extends Component {
                             offsetY: -40,
                             offsetX: -5
                         },
-                        theme: {
-                            mode: 'light',
-                            palette: 'palette1',
-                            monochrome: {
-                                enabled: false,
-                                color: '#255aee',
-                                shadeTo: 'light',
-                                shadeIntensity: 0.65
-                            },
-                        },
+                        // theme: {
+                        //     mode: 'light',
+                        //     palette: 'palette1',
+                        //     monochrome: {
+                        //         enabled: false,
+                        //         color: '#255aee',
+                        //         shadeTo: 'light',
+                        //         shadeIntensity: 0.65
+                        //     },
+                        // },
                         responsive: [
                             {
                                 breakpoint: 2000,
