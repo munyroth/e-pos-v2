@@ -95,41 +95,41 @@ export default function Dashboard() {
                     <div className="h-full">
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="text-white">
+                            <div className="dark:text-white">
                                 <h5 className="text-lg">ចំនួនលក់សរុប</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 text-white">{report?.total_sales}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales}</p>
                         </div>
                     </div>
                     <div className="h-full">
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="text-white">
+                            <div className="dark:text-white">
                                 <h5 className="text-lg">ចំនួនទំនិញលក់សរុប</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 text-white">{report?.total_items_sales}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report?.total_items_sales}</p>
                         </div>
                     </div>
                     <div className="h-full">
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="text-white">
+                            <div className="dark:text-white">
                                 <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយក្រដាសប្រាក់</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 text-white">{report?.total_sales_by_payment_type?.cash}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales_by_payment_type?.cash}</p>
                         </div>
                     </div>
                     <div className="h-full">
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="text-white">
+                            <div className="dark:text-white">
                                 <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយអនឡាញ</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 text-white">{report?.total_sales_by_payment_type?.khqr}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales_by_payment_type?.khqr}</p>
                         </div>
                     </div>
                     <div className="col-span-4 flex items-start h-full">

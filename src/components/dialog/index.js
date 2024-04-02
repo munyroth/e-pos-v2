@@ -35,7 +35,7 @@ export default function BaseDialog(props) {
                         >
                             <Dialog.Panel
                                 className="relative transform overflow-hidden rounded-lg text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                <div className="px-6 pt-6 sm:px-8 sm:pt-8 dark:bg-gray-900">
+                                <div className="bg-gray-50 px-6 pt-6 sm:px-8 sm:pt-8 dark:bg-gray-900">
                                     <div className="pb-6 sm:pb-8 flex items-center justify-center">
                                         {icon}
                                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">

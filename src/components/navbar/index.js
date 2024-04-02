@@ -56,7 +56,7 @@ export default function Navbar() {
             {({open}) => (
                 <>
                     <div className="relative flex h-16 items-center justify-between">
-                        <div className="text-white pl-3">
+                        <div className="dark:text-white pl-3">
                             {shop?.name}
                         </div>
 

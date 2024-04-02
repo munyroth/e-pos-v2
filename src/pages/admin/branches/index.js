@@ -48,13 +48,15 @@ export default function Products() {
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">សាខា</h1>
-                <Link
-                    to="add"
+                <button
+                    onClick={() => {
+
+                    }}
                     type="button"
-                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-1 active:outline-none active:ring-blue-300"
                 >
                     បន្ថែមសាខា
-                </Link>
+                </button>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
