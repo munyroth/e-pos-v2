@@ -28,13 +28,15 @@ export default function Items() {
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
+    const [updateId, setUpdateId] = useState(0);
 
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
     const handleChangeAdd = e => {
         const {name, value, type, files} = e.target;
@@ -51,7 +53,8 @@ export default function Items() {
         }
     }
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
+        console.log('submit');
         e.preventDefault();
         setIsLoadingAdd(true);
 
@@ -65,54 +68,69 @@ export default function Items() {
 
         const controller = new AbortController();
 
-        const addProduct = async () => {
-            console.log(data.image)
-            console.log(formData.get('category_id'));
-            console.log(formData.get('barcode'));
-            console.log(formData.get('name_en'));
-            console.log(formData.get('name_kh'));
-            console.log(formData.get('price'));
-            console.log(formData.get('file'));
-            try {
-                const response = await axiosPrivate.post(url, formData, {
-                    signal: controller.signal
-                });
-
-                if (response.data.status === 201) {
-                    setOpenModalAddItem(false);
-                    isEmpty && setIsEmpty(false);
-                    toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
-                } else toast.error(response.data.message);
-
-                return response;
-            } catch (error) {
-                // Handle errors
-                toast.error('មានបញ្ហាក្នុងការបញ្ចូល');
-                return Promise.reject(error);
-            } finally {
-                setIsLoadingAdd(false);
-            }
-        }
-
-        addProduct()
-            .then(() => {
-                // Do something after successful addition
-            })
-            .catch(() => {
-                // Do something in case of error
+        try {
+            const response = await axiosPrivate.post(url, formData, {
+                signal: controller.signal
             });
+
+            if (response.data.status === 201) {
+                setOpenModalAddItem(false);
+                isEmpty && setIsEmpty(false);
+                toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
+            } else toast.error(response.data.message);
+        } catch (error) {
+            toast.error('មានបញ្ហាក្នុងការបញ្ចូល');
+        } finally {
+            setIsLoadingAdd(false);
+        }
+    }
+
+    const handleUpdate = async id => {
+        console.log('update');
+        setIsLoadingAdd(true);
+
+        const formData = new FormData();
+        formData.append('category_id', data.category ? data.category : categories[0].id);
+        formData.append('barcode', data.barcode);
+        formData.append('name_en', data.name);
+        formData.append('name_kh', data.name);
+        formData.append('price', data.price);
+        data.image && formData.append('file', data.image);
+
+        const controller = new AbortController();
+
+        try {
+            const res = await axiosPrivate.post(url + '/' + id + '?_method=PUT', formData, {
+                signal: controller.signal
+            });
+
+            if (res.data.status === 200) {
+                setOpenModalAddItem(false);
+                toast.success('បានកែប្រែទំនិញជោគជ័យ');
+            } else toast.error(res.data.message);
+        } catch (error) {
+            toast.error('មានបញ្ហាក្នុងការកែប្រែ');
+        } finally {
+            setIsLoadingAdd(false);
+        }
     }
 
     const handleDelete = async id => {
+        setIsLoadingDelete(true)
         const controller = new AbortController();
 
         try {
             const res = await axiosPrivate.delete(url + '/' + id, {
                 signal: controller.signal
             });
-            setOpenModalDelete(false);
+            if (res.data.status === 200) {
+                setOpenModalDelete(false);
+                toast.success('បានលុបទំនិញជោគជ័យ');
+            } else toast.error(res.data.message);
         } catch (err) {
-
+            toast.error('មានបញ្ហាក្នុងការលុប');
+        } finally {
+            setIsLoadingDelete(false);
         }
     }
 
@@ -160,6 +178,7 @@ export default function Items() {
             setData(newData);
             setImageURL("");
             setIsImage(false);
+            setUpdateId(0);
         }
 
         return () => {
@@ -233,7 +252,12 @@ export default function Items() {
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
-                                             src={item.img_url} alt={item.name_kh}/>
+                                             src={
+                                                 item.img_url
+                                                     ? item.img_url
+                                                     : 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+
+                                             } alt={item.name_kh}/>
                                         <div className="pl-3">
                                             <div className="text-base font-semibold">{item.name_kh}</div>
                                             <div className="text-xs font-normal text-gray-500">{item.barcode}</div>
@@ -246,6 +270,21 @@ export default function Items() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
+                                            onClick={() => {
+                                                setData({
+                                                    category: item.category_id,
+                                                    barcode: item.barcode,
+                                                    name: item.name_kh,
+                                                    price: item.price,
+                                                    image: null
+                                                });
+                                                if (item.img_url) {
+                                                    setImageURL(item.img_url);
+                                                    setIsImage(true);
+                                                }
+                                                setUpdateId(item.id);
+                                                setOpenModalAddItem(true);
+                                            }}
                                             className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                             កែ
                                         </button>
@@ -290,11 +329,26 @@ export default function Items() {
                 title="លុបទំនិញ"
                 button={
                     <button
+                        disabled={isLoadingDelete ? true : ""}
                         type="button"
-                        className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                        className="rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
                         onClick={() => handleDelete(deleteId)}
-                    >
-                        លុប
+                    >{isLoadingDelete ? (
+                        <>
+                            <svg aria-hidden="true" role="status"
+                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
+                                 viewBox="0 0 100 101"
+                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="#E5E7EB"/>
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentColor"/>
+                            </svg>
+                            កំពុងលុប...
+                        </>
+                    ) : ('លុប')}
                     </button>
                 }>
                 <p className="text-center text-sm text-gray-500">
@@ -317,29 +371,28 @@ export default function Items() {
                     </div>
                 }
                 title="បន្ថែមទំនិញ"
-                button={isLoadingAdd
-                    ? <button disabled type="button"
-                              className="disabled rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
-                    >
-                        <svg aria-hidden="true" role="status"
-                             className="inline w-4 h-4 mr-3 text-white animate-spin"
-                             viewBox="0 0 100 101"
-                             fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                fill="#E5E7EB"/>
-                            <path
-                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                fill="currentColor"/>
-                        </svg>
-                        កំពុងផ្ទុក...
-                    </button>
-                    : <button
+                button={
+                    <button
+                        disabled={isLoadingAdd ? true : ""}
                         type="button"
-                        className="rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
-                        onClick={handleSubmit}
-                    >
-                        បន្ថែម
+                        className="rounded-md bg-green-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+                        onClick={updateId ? () => handleUpdate(updateId) : handleSubmit}
+                    >{isLoadingAdd ? (
+                        <>
+                            <svg aria-hidden="true" role="status"
+                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
+                                 viewBox="0 0 100 101"
+                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="#E5E7EB"/>
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentColor"/>
+                            </svg>
+                            កំពុងរក្សាទុក...
+                        </>
+                    ) : ('រក្សាទុក')}
                     </button>
                 }>
                 <form className="space-y-6">
