@@ -1,6 +1,6 @@
 import {axiosPrivate} from "../api/axios";
 
-const search = async (
+const searchData = async (
     e,
     setContent,
     setIsLoading,
@@ -23,4 +23,4 @@ const search = async (
     setIsLoading(false);
 }
 
-export default search;
+export default searchData;

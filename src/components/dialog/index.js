@@ -2,7 +2,14 @@ import {Fragment} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 
 export default function BaseDialog(props) {
-    const {openModal, setOpenModal, cancelModalDeleteRef, icon, title, button} = props;
+    const {
+        icon,
+        title,
+        openModal,
+        setOpenModal,
+        cancelModalDeleteRef,
+        button
+    } = props;
 
     return (
         <Transition.Root show={openModal} as={Fragment}>

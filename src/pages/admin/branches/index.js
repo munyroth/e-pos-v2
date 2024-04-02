@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
-import search from "../../../functions/search";
+import searchData from "../../../requestApi/searchData";
 
 export default function Products() {
     let url = '/shop';
@@ -67,7 +67,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => search(e, setContent, setIsLoading, setShop, setMeta, url)}
+                        onChange={(e) => searchData(e, setContent, setIsLoading, setShop, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"

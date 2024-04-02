@@ -104,8 +104,8 @@ export default function Navbar() {
                                                     key={shop.id}
                                                     className={({active}) =>
                                                         classNames(
-                                                            active ? 'bg-gray-700 text-white' : 'text-gray-900',
-                                                            'relative cursor-default select-none py-2 pl-3 pr-9 dark:text-white dark:hover:bg-gray-700'
+                                                            active ? 'bg-gray-200 text-gray-900' : 'text-gray-900',
+                                                            'relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white'
                                                         )
                                                     }
                                                     value={shop.id}
@@ -123,7 +123,7 @@ export default function Navbar() {
                                                             {selected ? (
                                                                 <span
                                                                     className={classNames(
-                                                                        active ? 'text-white' : 'text-main',
+                                                                        active ? 'text-main' : 'text-main',
                                                                         'absolute inset-y-0 right-0 flex items-center px-2'
                                                                     )}
                                                                 >

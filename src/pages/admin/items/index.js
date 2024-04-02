@@ -1,11 +1,13 @@
 import {Fragment, useEffect, useRef, useState} from 'react';
-import {ExclamationTriangleIcon, PlusCircleIcon} from '@heroicons/react/24/outline';
+import {Toaster} from "react-hot-toast";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
-import toast, {Toaster} from "react-hot-toast";
-import BaseDialog from "../../../components/dialog";
-import search from "../../../functions/search";
+import searchData from "../../../requestApi/searchData";
+import postData from "../../../requestApi/postData";
+import deleteData from "../../../requestApi/deleteData";
+import DeleteDialog from "../../../components/dialog/DeleteDialog";
+import FormDialog from "../../../components/dialog/FormDialog";
 
 export default function Items() {
     let url = '/product';
@@ -53,11 +55,7 @@ export default function Items() {
         }
     }
 
-    const handleSubmit = async e => {
-        console.log('submit');
-        e.preventDefault();
-        setIsLoadingAdd(true);
-
+    const constructFormData = (data, categories) => {
         const formData = new FormData();
         formData.append('category_id', data.category ? data.category : categories[0].id);
         formData.append('barcode', data.barcode);
@@ -65,73 +63,22 @@ export default function Items() {
         formData.append('name_kh', data.name);
         formData.append('price', data.price);
         data.image && formData.append('file', data.image);
+        return formData;
+    }
 
-        const controller = new AbortController();
-
-        try {
-            const response = await axiosPrivate.post(url, formData, {
-                signal: controller.signal
-            });
-
-            if (response.data.status === 201) {
-                setOpenModalAddItem(false);
-                isEmpty && setIsEmpty(false);
-                toast.success('បានបញ្ចូលទំនិញជោគជ័យ');
-            } else toast.error(response.data.message);
-        } catch (error) {
-            toast.error('មានបញ្ហាក្នុងការបញ្ចូល');
-        } finally {
-            setIsLoadingAdd(false);
-        }
+    const handleSubmit = async e => {
+        e.preventDefault();
+        const formData = constructFormData(data, categories);
+        await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលទំនិញ');
     }
 
     const handleUpdate = async id => {
-        console.log('update');
-        setIsLoadingAdd(true);
-
-        const formData = new FormData();
-        formData.append('category_id', data.category ? data.category : categories[0].id);
-        formData.append('barcode', data.barcode);
-        formData.append('name_en', data.name);
-        formData.append('name_kh', data.name);
-        formData.append('price', data.price);
-        data.image && formData.append('file', data.image);
-
-        const controller = new AbortController();
-
-        try {
-            const res = await axiosPrivate.post(url + '/' + id + '?_method=PUT', formData, {
-                signal: controller.signal
-            });
-
-            if (res.data.status === 200) {
-                setOpenModalAddItem(false);
-                toast.success('បានកែប្រែទំនិញជោគជ័យ');
-            } else toast.error(res.data.message);
-        } catch (error) {
-            toast.error('មានបញ្ហាក្នុងការកែប្រែ');
-        } finally {
-            setIsLoadingAdd(false);
-        }
+        const formData = constructFormData(data, categories);
+        await postData(`${url}/${id}?_method=PUT`, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែទំនិញ');
     }
 
     const handleDelete = async id => {
-        setIsLoadingDelete(true)
-        const controller = new AbortController();
-
-        try {
-            const res = await axiosPrivate.delete(url + '/' + id, {
-                signal: controller.signal
-            });
-            if (res.data.status === 200) {
-                setOpenModalDelete(false);
-                toast.success('បានលុបទំនិញជោគជ័យ');
-            } else toast.error(res.data.message);
-        } catch (err) {
-            toast.error('មានបញ្ហាក្នុងការលុប');
-        } finally {
-            setIsLoadingDelete(false);
-        }
+        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
     }
 
     useEffect(() => {
@@ -168,17 +115,19 @@ export default function Items() {
 
         // Reset form data when modal is closed
         if (!openModalAddItem) {
-            const newData = {
-                category: null,
-                barcode: "",
-                name: "",
-                price: "",
-                image: null
-            };
-            setData(newData);
-            setImageURL("");
-            setIsImage(false);
-            setUpdateId(0);
+            // wait for the modal to close
+            setTimeout(() => {
+                setData({
+                    category: null,
+                    barcode: "",
+                    name: "",
+                    price: "",
+                    image: null
+                });
+                setImageURL("");
+                setIsImage(false);
+                setUpdateId(0);
+            }, 200);
         }
 
         return () => {
@@ -210,30 +159,29 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => search(e, setContent, setIsLoading, setProducts, setMeta, url)}
+                        onChange={(e) => searchData(e, setContent, setIsLoading, setProducts, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
                         placeholder="ស្វែងរក"/>
                 </div>
             </div>
-            <div className="dark:bg-gray-800 dark:border-gray-700">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead
-                        className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+            <div className="relative overflow-x-auto rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
+                <table className="w-full text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="w-3/6 px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-3/6 px-6 py-3">
                             ឈ្មោះ
                         </th>
                         <th scope="col" className="w-1/6 px-6 py-3">
                             តម្លៃ
                         </th>
-                        <th scope="col" className="w-1/6 px-6 py-3 rounded-r-lg">
+                        <th scope="col" className="w-1/6 px-6 py-3">
                             សកម្មភាព
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
                         : isEmpty
@@ -247,13 +195,12 @@ export default function Items() {
                                 </th>
                             </tr>
                             : products.map(item => (
-                                <tr className="border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                                <tr className="hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600">
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
-                                             src={
-                                                 item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
-                                             } alt={item.name_kh}/>
+                                             src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                                             alt={item.name_kh}/>
                                         <div className="pl-3">
                                             <div className="text-base font-semibold">{item.name_kh}</div>
                                             <div className="text-xs font-normal text-gray-500">{item.barcode}</div>
@@ -282,11 +229,10 @@ export default function Items() {
                                                 setOpenModalAddItem(true);
                                             }}
                                             className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            កែ
+                                            កែប្រែ
                                         </button>
                                         <button
                                             className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-
                                             onClick={() => {
                                                 setDeleteId(item.id);
                                                 setOpenModalDelete(true);
@@ -311,86 +257,26 @@ export default function Items() {
                 setLoader={setIsLoading}
                 url={url}/>
 
-            <BaseDialog
-                openModal={openModalDelete}
-                setOpenModal={setOpenModalDelete}
+            <DeleteDialog
+                title="ទំនិញ"
+                openModalDelete={openModalDelete}
+                setOpenModalDelete={setOpenModalDelete}
                 cancelModalDeleteRef={cancelModalDeleteRef}
-                icon={
-                    <div
-                        className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-200">
-                        <ExclamationTriangleIcon className="h-6 w-6 text-red-600"
-                                                 aria-hidden="true"/>
-                    </div>
-                }
-                title="លុបទំនិញ"
-                button={
-                    <button
-                        disabled={isLoadingDelete ? true : ""}
-                        type="button"
-                        className="rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                        onClick={() => handleDelete(deleteId)}
-                    >{isLoadingDelete ? (
-                        <>
-                            <svg aria-hidden="true" role="status"
-                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
-                                 viewBox="0 0 100 101"
-                                 fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="#E5E7EB"/>
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentColor"/>
-                            </svg>
-                            កំពុងលុប...
-                        </>
-                    ) : ('លុប')}
-                    </button>
-                }>
-                <p className="text-center text-sm text-gray-500">
-                    តើអ្នកពិតជាចង់លុបទំនិញនេះ?
-                </p>
-                <p className="text-center text-sm text-gray-500">
-                    ទំនិញនឹងលុបចេញ និងមិនអាចត្រឡប់វិញបានទេ!
-                </p>
-            </BaseDialog>
+                isLoadingDelete={isLoadingDelete}
+                handleDelete={handleDelete}
+                deleteId={deleteId}
+            />
 
-            <BaseDialog
+            <FormDialog
+                title="ទំនិញ"
                 openModal={openModalAddItem}
                 setOpenModal={setOpenModalAddItem}
-                cancelModalDeleteRef={cancelModalAddItemRef}
-                icon={
-                    <div
-                        className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <PlusCircleIcon className="h-6 w-6 text-green-600"
-                                        aria-hidden="true"/>
-                    </div>
-                }
-                title="បន្ថែមទំនិញ"
-                button={
-                    <button
-                        disabled={isLoadingAdd ? true : ""}
-                        type="button"
-                        className="rounded-md bg-green-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
-                        onClick={updateId ? () => handleUpdate(updateId) : handleSubmit}
-                    >{isLoadingAdd ? (
-                        <>
-                            <svg aria-hidden="true" role="status"
-                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
-                                 viewBox="0 0 100 101"
-                                 fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="#E5E7EB"/>
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentColor"/>
-                            </svg>
-                            កំពុងរក្សាទុក...
-                        </>
-                    ) : ('រក្សាទុក')}
-                    </button>
-                }>
+                cancelModalRef={cancelModalAddItemRef}
+                isLoading={isLoadingAdd}
+                updateId={updateId}
+                handleUpdate={handleUpdate}
+                handleAdd={handleSubmit}
+            >
                 <form className="space-y-6">
                     <div>
                         <label
@@ -532,7 +418,7 @@ export default function Items() {
                         </div>
                     </div>
                 </form>
-            </BaseDialog>
+            </FormDialog>
             <Toaster/>
         </>
     )
