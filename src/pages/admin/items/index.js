@@ -252,9 +252,7 @@ export default function Items() {
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
                                              src={
-                                                 item.img_url
-                                                     ? item.img_url
-                                                     : 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+                                                 item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
                                              } alt={item.name_kh}/>
                                         <div className="pl-3">
                                             <div className="text-base font-semibold">{item.name_kh}</div>

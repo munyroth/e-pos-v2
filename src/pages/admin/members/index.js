@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
@@ -9,7 +8,7 @@ export default function Products() {
     let url = '/employee';
     const axiosPrivate = useAxiosPrivate();
 
-    const [member, setMember] = useState([]);
+    const [members, setMembers] = useState([]);
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +27,7 @@ export default function Products() {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal
                 });
-                isMounted && setMember(res.data.data);
+                isMounted && setMembers(res.data.data);
                 setMeta(res.data.meta);
                 setIsLoading(false);
             } catch (err) {
@@ -67,7 +66,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => search(e, setContent, setIsLoading, setMember, setMeta, url)}
+                        onChange={(e) => search(e, setContent, setIsLoading, setMembers, setMeta, url)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -113,7 +112,7 @@ export default function Products() {
                                     </div>
                                 </th>
                             </tr>
-                            : member.map(item => (
+                            : members.map(member => (
                                 <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
                                     {/*<td className="w-4 p-4">*/}
                                     {/*    <div className="flex items-center">*/}
@@ -125,18 +124,20 @@ export default function Products() {
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
-                                             src={item.image_url} alt={item.name}/>
+                                             src={
+                                                 member.image_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
+                                             } alt={member.name}/>
                                         <div className="pl-3">
-                                            <div className="text-base font-semibold">{item.name}</div>
+                                            <div className="text-base font-semibold">{member.name}</div>
                                         </div>
                                     </th>
                                     <td className="px-6 py-4">
-                                        {item.phone}
+                                        {member.phone}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {item.role === "manager" ? (
+                                        {member.role === "manager" ? (
                                             "អ្នកគ្រប់គ្រង"
-                                        ) : item.role === "sale" ? (
+                                        ) : member.role === "sale" ? (
                                             "អ្នកលក់"
                                         ) : (
                                             "សមាជិក"
@@ -160,7 +161,7 @@ export default function Products() {
                 content={content}
                 meta={meta}
                 setMeta={setMeta}
-                setItems={setMember}
+                setItems={setMembers}
                 setLoader={setIsLoading}
                 url={url}/>
         </>
