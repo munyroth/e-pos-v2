@@ -4,7 +4,7 @@ import {axiosPrivate} from "../../api/axios";
 export default function Pagination(
     {content, meta, setMeta, setItems, setLoader, url}
 ) {
-    let totalPages = Math.ceil(meta.total / meta.size);
+    let totalPages = Math.ceil(meta.total / meta.size) || 1;
 
     const searchProduct = async (content, page) => {
         setLoader(true)
@@ -141,9 +141,12 @@ export default function Pagination(
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                     <p className="text-sm text-gray-700 dark:text-white">
-                        Showing <span className="font-medium">{meta.page}</span> to <span
-                        className="font-medium">{totalPages}</span> of{' '}
-                        <span className="font-medium">{meta.total}</span> results
+                        កំពុង​បង្ហាញ​
+                        <span className="font-medium"> {meta.page}</span>
+                        /
+                        <span className="font-medium">{totalPages} </span>
+                        នៃលទ្ធផលសរុប
+                        <span className="font-medium"> {meta.total}</span>
                     </p>
                 </div>
                 <div>

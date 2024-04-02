@@ -53,8 +53,7 @@ export default function Products() {
 
                     }}
                     type="button"
-                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-1 active:outline-none active:ring-blue-300"
-                >
+                    className="button">
                     បន្ថែមសមាជិក
                 </button>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>

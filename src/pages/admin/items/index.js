@@ -196,8 +196,7 @@ export default function Items() {
                         setOpenModalAddItem(true);
                     }}
                     type="button"
-                    className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-50 shadow-sm hover:bg-blue-600 active:ring-1 active:outline-none active:ring-blue-300"
-                >
+                    className="button">
                     បន្ថែមទំនិញ
                 </button>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
@@ -256,7 +255,6 @@ export default function Items() {
                                                  item.img_url
                                                      ? item.img_url
                                                      : 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
-
                                              } alt={item.name_kh}/>
                                         <div className="pl-3">
                                             <div className="text-base font-semibold">{item.name_kh}</div>

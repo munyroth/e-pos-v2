@@ -52,7 +52,7 @@ export default function Stores() {
                                         navigate('/admin/dashboard')
                                     }
                                 }
-                                className="text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 w-full p-2 rounded-lg dark:text-white">
+                                className="cursor-pointer text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 w-full p-2 rounded-lg dark:text-white">
                                 {item.name}
                             </li>
                         )
