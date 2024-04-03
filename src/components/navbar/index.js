@@ -104,7 +104,7 @@ export default function Navbar() {
                                                     key={shop.id}
                                                     className={({active}) =>
                                                         classNames(
-                                                            active ? 'bg-gray-200 text-gray-900' : 'text-gray-900',
+                                                            active ? 'bg-gray-200 text-gray-900 dark:bg-gray-700' : 'text-gray-900',
                                                             'relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white'
                                                         )
                                                     }

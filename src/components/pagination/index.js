@@ -141,11 +141,11 @@ export default function Pagination(
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                     <p className="text-sm text-gray-700 dark:text-white">
-                        កំពុង​បង្ហាញ​
-                        <span className="font-medium"> {meta.page}</span>
-                        /
-                        <span className="font-medium">{totalPages} </span>
-                        នៃលទ្ធផលសរុប
+                        ទំព័រទី
+                        <span className="font-medium"> {meta.page} </span>
+                        នៃទំព័រសរុប
+                        <span className="font-medium"> {totalPages} </span>
+                        | លទ្ធផលសរុប
                         <span className="font-medium"> {meta.total}</span>
                     </p>
                 </div>

@@ -55,7 +55,7 @@ export default function Items() {
         }
     }
 
-    const constructFormData = (data, categories) => {
+    const constructFormData = (data, categories, isUpdate) => {
         const formData = new FormData();
         formData.append('category_id', data.category ? data.category : categories[0].id);
         formData.append('barcode', data.barcode);
@@ -63,6 +63,7 @@ export default function Items() {
         formData.append('name_kh', data.name);
         formData.append('price', data.price);
         data.image && formData.append('file', data.image);
+        isUpdate && formData.append('file', 'keep');
         return formData;
     }
 
@@ -73,7 +74,7 @@ export default function Items() {
     }
 
     const handleUpdate = async id => {
-        const formData = constructFormData(data, categories);
+        const formData = constructFormData(data, categories, true);
         await postData(`${url}/${id}?_method=PUT`, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែទំនិញ');
     }
 
