@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Toaster} from "react-hot-toast";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
@@ -8,10 +8,19 @@ import postData from "../../../requestApi/postData";
 import deleteData from "../../../requestApi/deleteData";
 import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import FormDialog from "../../../components/dialog/FormDialog";
+import Input from "../../../components/form/Input";
 
 export default function Items() {
     let url = '/product';
     const axiosPrivate = useAxiosPrivate();
+
+    const [isValidate, setIsValidate] = useState({
+        image: false,
+        name: false,
+        category: false,
+        price: false,
+        barcode: false
+    });
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
     const cancelModalAddItemRef = useRef(null);
@@ -42,6 +51,12 @@ export default function Items() {
 
     const handleChangeAdd = e => {
         const {name, value, type, files} = e.target;
+        setIsValidate(prevData => {
+            return {
+                ...prevData,
+                [name]: false
+            }
+        });
         setData(prevFormData => {
             return {
                 ...prevFormData,
@@ -67,13 +82,69 @@ export default function Items() {
         return formData;
     }
 
+    const handleValidation = () => {
+        let isValid = true;
+        if (!data.image) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    image: true
+                }
+            });
+            isValid = false;
+        }
+        if (!data.name) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    name: true
+                }
+            });
+            isValid = false;
+        }
+        if (!data.category) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    category: true
+                }
+            });
+            isValid = false;
+        }
+        if (!data.price) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    price: true
+                }
+            });
+            isValid = false;
+        }
+        if (!data.barcode) {
+            setIsValidate(prevData => {
+                return {
+                    ...prevData,
+                    barcode: true
+                }
+            });
+            isValid = false;
+        }
+        return isValid;
+    }
+
     const handleSubmit = async e => {
         e.preventDefault();
+        if (!handleValidation()) {
+            return false;
+        }
         const formData = constructFormData(data, categories);
         await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលទំនិញ');
     }
 
     const handleUpdate = async id => {
+        if (!handleValidation()) {
+            return false;
+        }
         const formData = constructFormData(data, categories, true);
         await postData(`${url}/${id}?_method=PUT`, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែទំនិញ');
     }
@@ -128,6 +199,14 @@ export default function Items() {
                 setImageURL("");
                 setIsImage(false);
                 setUpdateId(0);
+
+                setIsValidate({
+                    image: false,
+                    name: false,
+                    category: false,
+                    price: false,
+                    barcode: false
+                });
             }, 200);
         }
 
@@ -326,28 +405,20 @@ export default function Items() {
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="name"
-                               className="font-medium leading-6 text-gray-900 dark:text-white">
-                            ឈ្មោះទំនិញ
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                autoComplete="name"
-                                value={data.name}
-                                onChange={handleChangeAdd}
-
-                                className="input w-full"
-                            />
-                        </div>
-                    </div>
+                    <Input
+                        title="ឈ្មោះទំនិញ"
+                        type="text"
+                        id="name"
+                        onChange={handleChangeAdd}
+                        value={data.name}
+                        autoComplete="name"
+                        isRequire={true}
+                        isValidate={isValidate.name}
+                    />
                     <div className="">
                         <label htmlFor="category"
                                className="font-medium leading-6 text-gray-900 dark:text-white">
-                            ប្រភេទ
+                            ប្រភេទ <span className="text-red-600">*</span>
                         </label>
                         <div className="mt-2">
                             <select
@@ -366,7 +437,7 @@ export default function Items() {
                     <div>
                         <label htmlFor="price"
                                className="font-medium leading-6 text-gray-900 dark:text-white">
-                            តម្លៃ
+                            តម្លៃ <span className="text-red-600">*</span>
                         </label>
                         <div className="relative mt-2 rounded-md shadow-sm">
                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -400,24 +471,16 @@ export default function Items() {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="barcode"
-                               className="font-medium leading-6 text-gray-900 dark:text-white">
-                            បារកូដ
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                type="text"
-                                id="barcode"
-                                name="barcode"
-                                autoComplete="false"
-                                value={data.barcode}
-                                onChange={handleChangeAdd}
-
-                                className="input w-full"
-                            />
-                        </div>
-                    </div>
+                    <Input
+                        title="បារកូដ"
+                        type="text"
+                        id="barcode"
+                        onChange={handleChangeAdd}
+                        value={data.barcode}
+                        autoComplete="barcode"
+                        isRequire={true}
+                        isValidate={isValidate.barcode}
+                    />
                 </form>
             </FormDialog>
             <Toaster/>
