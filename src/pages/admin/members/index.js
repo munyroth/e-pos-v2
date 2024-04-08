@@ -1,18 +1,101 @@
-import {useEffect, useState} from "react";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import React, {useEffect, useRef, useState} from "react";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
 import searchData from "../../../requestApi/searchData";
+import handleChange from "../../../features/handleChange";
+import handleValidation from "../../../features/validation/validation";
+import postData from "../../../requestApi/postData";
+import deleteData from "../../../requestApi/deleteData";
+import getData from "../../../requestApi/getData";
+import FormDialog from "../../../components/dialog/FormDialog";
+import Input from "../../../components/form/Input";
+import DeleteDialog from "../../../components/dialog/DeleteDialog";
+import {Toaster} from "react-hot-toast";
+import InputImage from "../../../components/form/InputImage";
+import Select from "../../../components/form/Select";
 
 export default function Products() {
     let url = '/employee';
-    const axiosPrivate = useAxiosPrivate();
 
     const [members, setMembers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
+
+    const [openModalAddItem, setOpenModalAddItem] = useState(false);
+    const cancelModalAddItemRef = useRef(null);
+    const [updateId, setUpdateId] = useState(0);
+    const [isLoadingAdd, setIsLoadingAdd] = useState(false);
+    const [isImage, setIsImage] = useState(false);
+    const [imageURL, setImageURL] = useState("");
+    const [data, setData] = useState({
+        name: "",
+        role: "",
+        phone: "",
+        password: "",
+        image: null
+    });
+
+    const [isValidate, setIsValidate] = useState({
+        name: false,
+        role: false,
+        phone: false,
+        password: false,
+        image: false
+    });
+
+    const [openModalDelete, setOpenModalDelete] = useState(false);
+    const cancelModalDeleteRef = useRef(null);
+    const [deleteId, setDeleteId] = useState(0);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+    const handleChangeAdd = e => {
+        handleChange(
+            e,
+            setData,
+            setIsValidate,
+            setIsImage,
+            setImageURL,
+        )
+    }
+
+    const constructFormData = (data, isUpdate) => {
+        let formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('role', data.role);
+        formData.append('phone', data.phone);
+        formData.append('password', data.password);
+        data.image && formData.append('file', data.image);
+        isUpdate && formData.append('file', 'keep');
+        return formData;
+    }
+
+    const handleSubmit = async e => {
+        e.preventDefault();
+        if (!handleValidation(
+            ['image', 'name', 'role', 'phone', 'password'],
+            data,
+            setIsValidate
+        )) return;
+        const formData = constructFormData(data);
+        await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសមាជិកដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសមាជិក');
+    }
+
+    const handleUpdate = async id => {
+        if (!handleValidation(
+            ['name', 'role', 'phone'],
+            data,
+            setIsValidate
+        )) return;
+        const formData = constructFormData(data, true);
+        await postData(`${url}/${id}?_method=PUT`, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែសមាជិកដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែសមាជិក');
+    }
+
+    const handleDelete = async id => {
+        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
+    }
 
     useEffect(() => {
         meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
@@ -22,26 +105,61 @@ export default function Products() {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getMembers = async () => {
-            try {
-                const res = await axiosPrivate.get(url, {
-                    signal: controller.signal
-                });
-                isMounted && setMembers(res.data.data);
-                setMeta(res.data.meta);
-                setIsLoading(false);
-            } catch (err) {
-
-            }
+        // Get members
+        if (!openModalAddItem && !openModalDelete) {
+            getData(
+                controller,
+                isMounted,
+                url,
+                meta.page,
+                setMembers,
+                setMeta,
+                setIsLoading
+            ).then(r => r).catch(e => e)
         }
 
-        getMembers();
+        // Get roles
+        if (openModalAddItem) {
+            getData(
+                controller,
+                isMounted,
+                '/role',
+                0,
+                setRoles,
+                null,
+                null
+            ).then(r => r).catch(e => e)
+        }
+
+        // Reset form data when modal is closed
+        if (!openModalAddItem) {
+            // wait for the modal to close
+            setTimeout(() => {
+                setData({
+                    name: "",
+                    role: "",
+                    phone: "",
+                    password: "",
+                    image: null
+                });
+                setIsValidate({
+                    name: false,
+                    role: false,
+                    phone: false,
+                    password: false,
+                    image: false
+                });
+                setIsImage(false);
+                setImageURL("");
+                setUpdateId(0);
+            }, 200);
+        }
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, []);
+    }, [openModalAddItem, openModalDelete]);
 
     return (
         <>
@@ -49,7 +167,7 @@ export default function Products() {
                 <h1 className="">សមាជិក</h1>
                 <button
                     onClick={() => {
-
+                        setOpenModalAddItem(true);
                     }}
                     type="button"
                     className="button">
@@ -66,7 +184,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, setContent, setIsLoading, setMembers, setMeta, url)}
+                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setMembers, setMeta)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -125,7 +243,7 @@ export default function Products() {
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <img className="w-10 h-10"
                                              src={
-                                                 member.image_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
+                                                 member.img_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
                                              } alt={member.name}/>
                                         <div className="pl-3">
                                             <div className="text-base font-semibold">{member.name}</div>
@@ -144,10 +262,34 @@ export default function Products() {
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <a href="#"
-                                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            កែ
-                                        </a>
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(member.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    name: member.name,
+                                                    role: member.role,
+                                                    phone: member.phone,
+                                                    password: "",
+                                                    image: null
+                                                });
+                                                if (member.img_url) {
+                                                    setImageURL(member.img_url);
+                                                    setIsImage(true);
+                                                }
+                                            }}
+                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(member.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -164,6 +306,81 @@ export default function Products() {
                 setItems={setMembers}
                 setLoader={setIsLoading}
                 url={url}/>
+
+            <FormDialog
+                title="សមាជិក"
+                openModal={openModalAddItem}
+                setOpenModal={setOpenModalAddItem}
+                cancelModalRef={cancelModalAddItemRef}
+                isLoading={isLoadingAdd}
+                updateId={updateId}
+                handleUpdate={handleUpdate}
+                handleAdd={handleSubmit}
+            >
+                <InputImage
+                    title="រូបភាព"
+                    id="image"
+                    onChange={handleChangeAdd}
+                    image={imageURL}
+                    isImage={isImage}
+                    isRequire={true}
+                    isValidate={isValidate.image}
+                />
+                <Input
+                    title="ឈ្មោះសមាជិក"
+                    type="text"
+                    id="name"
+                    onChange={handleChangeAdd}
+                    value={data.name}
+                    autoComplete="name"
+                    isRequire={true}
+                    isValidate={isValidate.name}
+                />
+                <Select
+                    title="តួនាទី"
+                    id="role"
+                    onChange={handleChangeAdd}
+                    value={data.role}
+                    selectOptions={
+                        roles.map(role => ({
+                            id: role,
+                            name: role === "manager" ? "អ្នកគ្រប់គ្រង" : role === "sale" ? "អ្នកលក់" : "សមាជិក"
+                        }))
+                    }
+                    isRequire={true}
+                    isValidate={isValidate.role}
+                />
+                <Input
+                    title="លេខទូរស័ព្ទ"
+                    type="text"
+                    id="phone"
+                    onChange={handleChangeAdd}
+                    value={data.phone}
+                    autoComplete="phone"
+                    isRequire={true}
+                    isValidate={isValidate.phone}
+                />
+                <Input
+                    title="ពាក្យសម្ងាត់"
+                    type="password"
+                    id="password"
+                    onChange={handleChangeAdd}
+                    value={data.password}
+                    autoComplete="password"
+                    isRequire={true}
+                    isValidate={isValidate.password}
+                />
+            </FormDialog>
+            <DeleteDialog
+                title="សមាជិក"
+                openModalDelete={openModalDelete}
+                setOpenModalDelete={setOpenModalDelete}
+                cancelModalDeleteRef={cancelModalDeleteRef}
+                isLoadingDelete={isLoadingDelete}
+                handleDelete={handleDelete}
+                deleteId={deleteId}
+            />
+            <Toaster/>
         </>
     )
 }

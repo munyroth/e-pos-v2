@@ -1,19 +1,73 @@
-import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import React, {useEffect, useRef, useState} from "react";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
 import searchData from "../../../requestApi/searchData";
+import handleChange from "../../../features/handleChange";
+import handleValidation from "../../../features/validation/validation";
+import postData from "../../../requestApi/postData";
+import deleteData from "../../../requestApi/deleteData";
+import getData from "../../../requestApi/getData";
+import Input from "../../../components/form/Input";
+import DeleteDialog from "../../../components/dialog/DeleteDialog";
+import {Toaster} from "react-hot-toast";
+import FormDialog from "../../../components/dialog/FormDialog";
 
 export default function Products() {
     let url = '/shop';
-    const axiosPrivate = useAxiosPrivate();
 
     const [shop, setShop] = useState([]);
     const [meta, setMeta] = useState({});
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
+
+    const [openModalAddItem, setOpenModalAddItem] = useState(false);
+    const cancelModalAddItemRef = useRef(null);
+    const [updateId, setUpdateId] = useState(0);
+    const [isLoadingAdd, setIsLoadingAdd] = useState(false);
+    const [data, setData] = useState({
+        name: "",
+    });
+
+    const [isValidate, setIsValidate] = useState({
+        name: false,
+    });
+
+    const [openModalDelete, setOpenModalDelete] = useState(false);
+    const cancelModalDeleteRef = useRef(null);
+    const [deleteId, setDeleteId] = useState(0);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+    const handleChangeAdd = e => {
+        handleChange(
+            e,
+            setData,
+            setIsValidate
+        )
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!handleValidation(
+            ['name'],
+            data,
+            setIsValidate
+        )) return;
+        await postData(url, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសាខា');
+    }
+
+    const handleUpdate = async id => {
+        if (!handleValidation(
+            ['name'],
+            data,
+            setIsValidate
+        )) return;
+        await postData(`${url}/${id}?_method=PUT`, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែសាខា');
+    }
+
+    const handleDelete = async id => {
+        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបសាខា')
+    }
 
     useEffect(() => {
         meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
@@ -23,26 +77,38 @@ export default function Products() {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getShop = async () => {
-            try {
-                const res = await axiosPrivate.get(url, {
-                    signal: controller.signal
-                });
-                isMounted && setShop(res.data.data);
-                setMeta(res.data.meta);
-                setIsLoading(false);
-            } catch (err) {
-
-            }
+        // Fetch data
+        if (!openModalAddItem && !openModalDelete) {
+            getData(
+                controller,
+                isMounted,
+                url,
+                meta.page,
+                setShop,
+                setMeta,
+                setIsLoading
+            ).then(r => r).catch(e => e);
         }
 
-        getShop();
+        // Reset form data when modal is closed
+        if (!openModalAddItem) {
+            // wait for the modal to close
+            setTimeout(() => {
+                setData({
+                    name: "",
+                });
+                setIsValidate({
+                    name: false,
+                });
+                setUpdateId(0);
+            }, 200);
+        }
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, []);
+    }, [openModalAddItem, openModalDelete]);
 
     return (
         <>
@@ -50,7 +116,7 @@ export default function Products() {
                 <h1 className="">សាខា</h1>
                 <button
                     onClick={() => {
-
+                        setOpenModalAddItem(true);
                     }}
                     type="button"
                     className="button">
@@ -67,7 +133,7 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, setContent, setIsLoading, setShop, setMeta, url)}
+                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setShop, setMeta)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -119,10 +185,26 @@ export default function Products() {
                                         ${parseFloat(item?.orders_sum_total ?? 0).toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <a href="#"
-                                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            កែ
-                                        </a>
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(item.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    name: item.name
+                                                });
+                                            }}
+                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(item.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -139,6 +221,37 @@ export default function Products() {
                 setItems={setShop}
                 setLoader={setIsLoading}
                 url={url}/>
+
+            <FormDialog
+                title="សាខា"
+                openModal={openModalAddItem}
+                setOpenModal={setOpenModalAddItem}
+                cancelModalRef={cancelModalAddItemRef}
+                isLoading={isLoadingAdd}
+                updateId={updateId}
+                handleUpdate={handleUpdate}
+                handleAdd={handleSubmit}
+            >
+                <Input
+                    title="ឈ្មោះ"
+                    type="text"
+                    id="name"
+                    handleChange={handleChangeAdd}
+                    value={data.name}
+                    isValidate={isValidate.name}
+                    isRequire={true}
+                />
+            </FormDialog>
+            <DeleteDialog
+                title="លុបសាខា"
+                openModalDelete={openModalDelete}
+                setOpenModalDelete={setOpenModalDelete}
+                cancelModalDeleteRef={cancelModalDeleteRef}
+                isLoadingDelete={isLoadingDelete}
+                handleDelete={handleDelete}
+                deleteId={deleteId}
+            />
+            <Toaster/>
         </>
     )
 }

@@ -57,7 +57,9 @@ export default function FormDialog(props) {
                 ) : ('រក្សាទុក')}
                 </button>
             }>
-            {props.children}
+            <form className="space-y-6">
+                {props.children}
+            </form>
         </BaseDialog>
     );
 }

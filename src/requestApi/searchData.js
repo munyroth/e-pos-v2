@@ -2,11 +2,11 @@ import {axiosPrivate} from "../api/axios";
 
 const searchData = async (
     e,
+    url,
     setContent,
     setIsLoading,
-    setMember,
+    setData,
     setMeta,
-    url,
 ) => {
     setContent(e.target.value);
     setIsLoading(true);
@@ -18,7 +18,7 @@ const searchData = async (
             page: 1
         }
     });
-    setMember(res.data.data);
+    setData(res.data.data);
     setMeta(res.data.meta);
     setIsLoading(false);
 }

@@ -1,6 +1,5 @@
 import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Toaster} from "react-hot-toast";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
 import searchData from "../../../requestApi/searchData";
@@ -9,22 +8,25 @@ import deleteData from "../../../requestApi/deleteData";
 import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import FormDialog from "../../../components/dialog/FormDialog";
 import Input from "../../../components/form/Input";
+import handleValidation from "../../../features/validation/validation";
+import getData from "../../../requestApi/getData";
+import handleChange from "../../../features/handleChange";
+import InputImage from "../../../components/form/InputImage";
+import Select from "../../../components/form/Select";
 
 export default function Items() {
     let url = '/product';
-    const axiosPrivate = useAxiosPrivate();
 
-    const [isValidate, setIsValidate] = useState({
-        image: false,
-        name: false,
-        category: false,
-        price: false,
-        barcode: false
-    });
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [meta, setMeta] = useState({});
+    const [content, setContent] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
     const cancelModalAddItemRef = useRef(null);
-
+    const [updateId, setUpdateId] = useState(0);
     const [isLoadingAdd, setIsLoadingAdd] = useState(false);
     const [isImage, setIsImage] = useState(false);
     const [imageURL, setImageURL] = useState("");
@@ -36,43 +38,32 @@ export default function Items() {
         image: null
     });
 
+    const [isValidate, setIsValidate] = useState({
+        image: false,
+        name: false,
+        category: false,
+        price: false,
+        barcode: false
+    });
+
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
-    const [updateId, setUpdateId] = useState(0);
-
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [meta, setMeta] = useState({});
-    const [content, setContent] = useState('');
-    const [isEmpty, setIsEmpty] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
     const handleChangeAdd = e => {
-        const {name, value, type, files} = e.target;
-        setIsValidate(prevData => {
-            return {
-                ...prevData,
-                [name]: false
-            }
-        });
-        setData(prevFormData => {
-            return {
-                ...prevFormData,
-                [name]: type === "file" ? files[0] : value
-            }
-        });
-
-        if (files && files[0]) {
-            setImageURL(URL.createObjectURL(e.target.files[0]));
-            setIsImage(true);
-        }
+        handleChange(
+            e,
+            setData,
+            setIsValidate,
+            setIsImage,
+            setImageURL,
+        )
     }
 
     const constructFormData = (data, categories, isUpdate) => {
         const formData = new FormData();
-        formData.append('category_id', data.category ? data.category : categories[0].id);
+        formData.append('category_id', data.category || categories[0].id);
         formData.append('barcode', data.barcode);
         formData.append('name_en', data.name);
         formData.append('name_kh', data.name);
@@ -82,69 +73,23 @@ export default function Items() {
         return formData;
     }
 
-    const handleValidation = () => {
-        let isValid = true;
-        if (!data.image) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    image: true
-                }
-            });
-            isValid = false;
-        }
-        if (!data.name) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    name: true
-                }
-            });
-            isValid = false;
-        }
-        if (!data.category) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    category: true
-                }
-            });
-            isValid = false;
-        }
-        if (!data.price) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    price: true
-                }
-            });
-            isValid = false;
-        }
-        if (!data.barcode) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    barcode: true
-                }
-            });
-            isValid = false;
-        }
-        return isValid;
-    }
-
     const handleSubmit = async e => {
         e.preventDefault();
-        if (!handleValidation()) {
-            return false;
-        }
+        if (!handleValidation(
+            ['image', 'name', 'category', 'price', 'barcode'],
+            data,
+            setIsValidate
+        )) return;
         const formData = constructFormData(data, categories);
         await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលទំនិញ');
     }
 
     const handleUpdate = async id => {
-        if (!handleValidation()) {
-            return false;
-        }
+        if (!handleValidation(
+            ['name', 'category', 'price', 'barcode'],
+            data,
+            setIsValidate
+        )) return;
         const formData = constructFormData(data, categories, true);
         await postData(`${url}/${id}?_method=PUT`, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែទំនិញ');
     }
@@ -161,28 +106,26 @@ export default function Items() {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getItems = async () => {
-            const res = await axiosPrivate.get(url, {
-                signal: controller.signal
-            });
-            isMounted && setProducts(res.data.data);
-            setMeta(res.data.meta);
-            setIsLoading(false);
-        }
-
-        const getCategories = async () => {
-            const res = await axiosPrivate.get('/category?is_all=true', {
-                signal: controller.signal
-            });
-            setCategories(res.data.data);
-        }
-
         if (!openModalAddItem && !openModalDelete) {
-            getItems().catch(() => console.log("can't get items"));
+            getData(
+                controller,
+                isMounted,
+                url,
+                meta.page,
+                setProducts,
+                setMeta,
+                setIsLoading
+            ).then(r => r).catch(e => e);
         }
 
         if (openModalAddItem) {
-            getCategories().catch(() => console.log("can't get categories"));
+            getData(
+                controller,
+                isMounted,
+                '/category?is_all=true',
+                0,
+                setCategories
+            ).then(r => r).catch(e => e);
         }
 
         // Reset form data when modal is closed
@@ -196,10 +139,6 @@ export default function Items() {
                     price: "",
                     image: null
                 });
-                setImageURL("");
-                setIsImage(false);
-                setUpdateId(0);
-
                 setIsValidate({
                     image: false,
                     name: false,
@@ -207,6 +146,9 @@ export default function Items() {
                     price: false,
                     barcode: false
                 });
+                setImageURL("");
+                setIsImage(false);
+                setUpdateId(0);
             }, 200);
         }
 
@@ -214,7 +156,7 @@ export default function Items() {
             isMounted = false;
             controller.abort();
         }
-    }, [axiosPrivate, openModalAddItem, openModalDelete]);
+    }, [openModalAddItem, openModalDelete]);
 
     return (
         <>
@@ -239,7 +181,7 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, setContent, setIsLoading, setProducts, setMeta, url)}
+                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setProducts, setMeta)}
                         type="text"
                         id="table-search-users"
                         className="input w-80 pl-10"
@@ -294,6 +236,8 @@ export default function Items() {
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => {
+                                                setUpdateId(item.id);
+                                                setOpenModalAddItem(true);
                                                 setData({
                                                     category: item.category_id,
                                                     barcode: item.barcode,
@@ -305,8 +249,6 @@ export default function Items() {
                                                     setImageURL(item.img_url);
                                                     setIsImage(true);
                                                 }
-                                                setUpdateId(item.id);
-                                                setOpenModalAddItem(true);
                                             }}
                                             className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                             កែប្រែ
@@ -337,16 +279,6 @@ export default function Items() {
                 setLoader={setIsLoading}
                 url={url}/>
 
-            <DeleteDialog
-                title="ទំនិញ"
-                openModalDelete={openModalDelete}
-                setOpenModalDelete={setOpenModalDelete}
-                cancelModalDeleteRef={cancelModalDeleteRef}
-                isLoadingDelete={isLoadingDelete}
-                handleDelete={handleDelete}
-                deleteId={deleteId}
-            />
-
             <FormDialog
                 title="ទំនិញ"
                 openModal={openModalAddItem}
@@ -357,132 +289,68 @@ export default function Items() {
                 handleUpdate={handleUpdate}
                 handleAdd={handleSubmit}
             >
-                <form className="space-y-6">
-                    <div>
-                        <label
-                            className="font-medium leading-6 text-gray-900 dark:text-white">
-                            រូបភាព
-                        </label>
-                        <div className="mt-2 flex items-center justify-center w-full">
-                            <div className="w-full h-32">
-                                <label htmlFor="image"
-                                       className="flex items-center justify-center w-full h-full">
-                                    {isImage ? (
-                                        <img src={imageURL} alt="image"
-                                             className="h-full rounded-lg"/>
-                                    ) : (
-                                        <div
-
-                                            className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                            <svg aria-hidden="true"
-                                                 className="w-10 h-10 mb-3 text-gray-400"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 viewBox="0 0 24 24"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path strokeLinecap="round"
-                                                      strokeLinejoin="round"
-                                                      strokeWidth="2"
-                                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                            </svg>
-                                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                <span className="font-semibold">Click to upload</span> or
-                                                drag and drop</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                JPG or PNG (MAX. 800x400px)
-                                            </p>
-                                        </div>
-                                    )}
-                                    <input
-                                        type="file"
-                                        id="image"
-                                        name="image"
-                                        className="hidden" accept=".png, .jpg, .jpeg"
-                                        onChange={handleChangeAdd}
-                                        required
-                                    />
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <Input
-                        title="ឈ្មោះទំនិញ"
-                        type="text"
-                        id="name"
-                        onChange={handleChangeAdd}
-                        value={data.name}
-                        autoComplete="name"
-                        isRequire={true}
-                        isValidate={isValidate.name}
-                    />
-                    <div className="">
-                        <label htmlFor="category"
-                               className="font-medium leading-6 text-gray-900 dark:text-white">
-                            ប្រភេទ <span className="text-red-600">*</span>
-                        </label>
-                        <div className="mt-2">
-                            <select
-                                onChange={handleChangeAdd}
-                                id="category"
-                                name="category"
-                                autoComplete="category"
-                                className="select w-full"
-                            >
-                                {categories.map(category => (
-                                    <option key={category.id} value={category.id}>{category.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="price"
-                               className="font-medium leading-6 text-gray-900 dark:text-white">
-                            តម្លៃ <span className="text-red-600">*</span>
-                        </label>
-                        <div className="relative mt-2 rounded-md shadow-sm">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <span className="text-gray-500 sm:text-sm dark:text-gray-200">$</span>
-                            </div>
-
-                            <input
-                                type="text"
-                                id="price"
-                                name="price"
-                                autoComplete="false"
-                                value={data.price}
-                                onChange={handleChangeAdd}
-
-                                // className="input w-full"
-                                className="input w-full py-1.5 pl-7 pr-20"
-                                placeholder="0.00"
-                            />
-                            <div className="absolute inset-y-0 right-0 flex items-center">
-                                <label htmlFor="currency" className="sr-only">
-                                    Currency
-                                </label>
-                                <select
-                                    id="currency"
-                                    name="currency"
-                                    className="h-full select-input"
-                                >
-                                    <option>USD</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Input
-                        title="បារកូដ"
-                        type="text"
-                        id="barcode"
-                        onChange={handleChangeAdd}
-                        value={data.barcode}
-                        autoComplete="barcode"
-                        isRequire={true}
-                        isValidate={isValidate.barcode}
-                    />
-                </form>
+                <InputImage
+                    title="រូបភាព"
+                    id="image"
+                    onChange={handleChangeAdd}
+                    image={imageURL}
+                    isImage={isImage}
+                    isRequire={true}
+                    isValidate={isValidate.image}
+                />
+                <Input
+                    title="ឈ្មោះទំនិញ"
+                    type="text"
+                    id="name"
+                    onChange={handleChangeAdd}
+                    value={data.name}
+                    autoComplete="name"
+                    isRequire={true}
+                    isValidate={isValidate.name}
+                />
+                <Select
+                    title="ប្រភេទ"
+                    id="category"
+                    onChange={handleChangeAdd}
+                    value={data.category}
+                    selectOptions={categories}
+                    isRequire={true}
+                    isValidate={isValidate.category}
+                />
+                <Input
+                    title="តម្លៃ"
+                    id="price"
+                    onChange={handleChangeAdd}
+                    value={data.price}
+                    placeholder="0.00"
+                    leading="$"
+                    selectId="currency"
+                    selectOptions={[
+                        {value: "USD", label: "USD"}
+                    ]}
+                    isRequire={true}
+                    isValidate={isValidate.price}
+                />
+                <Input
+                    title="បារកូដ"
+                    type="text"
+                    id="barcode"
+                    onChange={handleChangeAdd}
+                    value={data.barcode}
+                    autoComplete="barcode"
+                    isRequire={true}
+                    isValidate={isValidate.barcode}
+                />
             </FormDialog>
+            <DeleteDialog
+                title="ទំនិញ"
+                openModalDelete={openModalDelete}
+                setOpenModalDelete={setOpenModalDelete}
+                cancelModalDeleteRef={cancelModalDeleteRef}
+                isLoadingDelete={isLoadingDelete}
+                handleDelete={handleDelete}
+                deleteId={deleteId}
+            />
             <Toaster/>
         </>
     )

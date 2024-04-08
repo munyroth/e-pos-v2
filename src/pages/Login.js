@@ -1,9 +1,10 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
 import BaseForm from "../components/form";
 import Input from "../components/form/Input";
+import handleValidation from "../features/validation/validation";
 
 const LOGIN_URL = '/login'
 
@@ -16,6 +17,10 @@ export default function Login() {
         phone: false,
         password: false
     });
+    const [data, setData] = useState({
+        phone: '',
+        password: ''
+    });
     const [isLoading, setIsLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
 
@@ -27,44 +32,23 @@ export default function Login() {
                 [name]: false
             }
         });
+        setData(prevData => {
+            return {
+                ...prevData,
+                [name]: e.target.value
+            }
+        });
         setErrMsg('');
     }
 
     const handleLogin = async e => {
         e.preventDefault();
-        const {phone, password} = e.target;
-        if (phone.value.length === 0 && password.value.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    phone: true,
-                    password: true
-                }
-            });
-            return false;
-        } else if (phone.value.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    phone: true
-                }
-            });
-            return false;
-        } else if (password.value.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    password: true
-                }
-            });
-            return false;
-        }
-
+        if (!handleValidation(
+            ['phone', 'password'],
+            data,
+            setIsValidate
+        )) return;
         setIsLoading(true);
-
-        const data = {
-            phone: phone.value,
-            password: password.value
-        }
 
         try {
             const res = await axios.post(LOGIN_URL, data, {
