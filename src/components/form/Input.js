@@ -40,12 +40,13 @@ export default function Input(props) {
                     </div>}
 
                     <input
-                        type="text"
+                        type={type || "text"}
                         id={id}
                         name={id}
                         autoComplete={autoComplete}
                         value={value}
                         onChange={onChange}
+                        ref={ref}
 
                         className={classNames(
                             'input w-full',
@@ -85,6 +86,7 @@ export default function Input(props) {
                         type={type || "text"}
                         id={id}
                         name={id}
+                        autoComplete={autoComplete}
                         onChange={onChange}
                         ref={ref}
 
