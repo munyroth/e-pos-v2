@@ -17,10 +17,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build project
         run: npm run build
@@ -60,8 +60,8 @@ jobs:
 #        uses: appleboy/ssh-action@master
 #        with:
 #          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.EC2_USERNAME }}
-#          password: ${{ secrets.EC2_PASSWORD }}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          password: ${{ secrets.SSH_PASSWORD }}
 #          script: |
 #            cd /home/roth/scholarspace-monorepo/apps/scholarspace_admin
 #            unzip -o scholarspace_admin.zip
