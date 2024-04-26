@@ -10,6 +10,9 @@ services:
         container_name: e-pos-container
         ports:
             - "8002:80"
+        volumes:
+            - ./build:/usr/share/nginx/html
+            - ./nginx:/etc/nginx/conf.d
         restart: unless-stopped
         networks:
             - e-pos
