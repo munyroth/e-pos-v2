@@ -44,7 +44,7 @@ export const AuthProvider = ({children}) => {
     const logout = async () => {
         const controller = new AbortController();
         try {
-            const res = await axiosPrivate.get('/logout', {
+            await axiosPrivate.get('/logout', {
                 signal: controller.signal
             });
             Cookies.remove('token');

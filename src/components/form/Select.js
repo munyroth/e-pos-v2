@@ -5,9 +5,9 @@ export default function Select(props) {
         title,
         id,
         onChange,
-        value,
+        // value,
         selectOptions,
-        isFocus,
+        // isFocus,
         isRequire,
         isValidate
     } = props
