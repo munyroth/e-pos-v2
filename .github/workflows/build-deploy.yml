@@ -1,0 +1,69 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - roth
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload artifact to enable deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: production
+          path: ./dist
+
+#  deploy:
+#    name: Deploy
+#    needs: build
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/roth'
+#
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: production
+#          path: ./dist
+#
+#      - name: Zip scholarspace_admin
+#        run: zip -r scholarspace_admin.zip build
+#
+#      - name: Copy scholarspace_admin to EC2
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          password: ${{ secrets.EC2_PASSWORD }}
+#          source: ./scholarspace_admin.zip
+#          target: /home/roth/scholarspace-monorepo/apps/scholarspace_admin
+#
+#      - name: Deploy to server
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          password: ${{ secrets.EC2_PASSWORD }}
+#          script: |
+#            cd /home/roth/scholarspace-monorepo/apps/scholarspace_admin
+#            unzip -o scholarspace_admin.zip
+#            rm scholarspace_admin.zip
+#            docker compose up -d --build
