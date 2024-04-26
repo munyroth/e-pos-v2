@@ -10,8 +10,6 @@ export default function Stores() {
     const axiosPrivate = useAxiosPrivate();
 
     const [shop, setShop] = useState([]);
-    const [meta, setMeta] = useState({});
-    const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -23,11 +21,12 @@ export default function Stores() {
                 const res = await axiosPrivate.get('/business', {
                     signal: controller.signal
                 });
-                isMounted && setShop(res.data.data);
-                setMeta(res.data.meta);
-                setIsLoading(false);
+                if (isMounted) {
+                    setShop(res.data.data);
+                    setIsLoading(false);
+                }
             } catch (err) {
-
+                // Handle error
             }
         }
 
@@ -36,8 +35,8 @@ export default function Stores() {
         return () => {
             isMounted = false;
             controller.abort();
-        }
-    }, []);
+        };
+    }, [axiosPrivate]);
 
     return (
         <BaseForm>
@@ -45,23 +44,19 @@ export default function Stores() {
                 {isLoading
                     ? null
                     : shop.map(item => (
-                            <li
-                                onClick={
-                                    () => {
-                                        Cookies.set('shopId', item.id);
-                                        navigate('/admin/dashboard')
-                                    }
-                                }
-                                className="cursor-pointer text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 w-full p-2 rounded-lg dark:text-white">
-                                {item.name}
-                            </li>
-                        )
-                    )
+                        <li
+                            key={item.id}
+                            onClick={() => {
+                                Cookies.set('shopId', item.id);
+                                navigate('/admin/dashboard');
+                            }}
+                            className="cursor-pointer text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 w-full p-2 rounded-lg dark:text-white">
+                            {item.name}
+                        </li>
+                    ))
                 }
             </ul>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading && <Loading/>}
         </BaseForm>
-    )
+    );
 }

@@ -1,58 +1,47 @@
 import {useEffect, useState} from 'react';
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import Cookies from "js-cookie";
 
 export default function Items() {
     const axiosPrivate = useAxiosPrivate();
 
     const [bills, setBills] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isEmpty, setIsEmpty] = useState(false);
-
     const [bill, setBill] = useState(null);
 
-    const getBillDetail = (billId) => {
-        const controller = new AbortController();
-        const getItems = async  () => {
-            const res = await axiosPrivate.get('/order/'+billId, {
-                signal: controller.signal
-            });
-            console.log(res.data.data);
+    const getBillDetail = async (billId) => {
+        try {
+            const res = await axiosPrivate.get('/order/' + billId);
             setBill(res.data.data);
+        } catch (error) {
+            console.log("Failed to fetch bill details:", error);
         }
-
-        getItems()
-            .then(() => console.log("1"))
-            .catch(() => console.log("0"))
-            .finally(() => {
-
-            });
     }
 
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        setIsLoading(true);
-        const getItems = async  () => {
-            const res = await axiosPrivate.get('/order/', {
-                signal: controller.signal
-            });
-            isMounted && setBills(res.data.data);
-            res.data.data.length === 0 && setIsEmpty(true);
-        }
 
-        getItems()
-            .then(() => setIsLoading(false))
-            .catch(() => console.log("fail"))
-            .finally(() => {
+        const getItems = async () => {
+            try {
+                const res = await axiosPrivate.get('/order/', {
+                    signal: controller.signal
+                });
+                if (isMounted) {
+                    setBills(res.data.data);
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.log("Failed to fetch bills:", error);
+            }
+        };
 
-            });
+        getItems();
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, []);
+    }, [axiosPrivate]);
 
     return (
         <div className="relative flex flex-col h-full">
@@ -74,7 +63,8 @@ export default function Items() {
                 </div>
             </div>
             <div className="flex-1 flex space-x-4">
-                <div className="w-3/6 flex flex-col border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+                <div
+                    className="w-3/6 flex flex-col border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">
                         <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                             វិក្កយប័ត្រទាំងអស់
@@ -83,7 +73,7 @@ export default function Items() {
                     <div className="flex-1">
                         <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
                             {isLoading
-                            ? <li
+                                ? <li
                                     className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-100"
 
                                     onClick={() => getBillDetail(bill.id)}
@@ -102,7 +92,7 @@ export default function Items() {
                                         <span className="">កំពុងផ្ទុក...</span>
                                     </div>
                                 </li>
-                            : bills.map(bill => (
+                                : bills.map(bill => (
                                     <li
                                         className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
 
@@ -129,16 +119,17 @@ export default function Items() {
                         </ul>
                     </div>
                 </div>
-                <div className="w-3/6 border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+                <div
+                    className="w-3/6 border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">
                         <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                             លម្អិតវិក្កយបត្រ
                         </h5>
                         {(bill !== null)
-                        ? <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
+                            ? <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                                 អ្នកចេញវិក្កយបត្រ: {bill.user?.name}
                             </h5>
-                        : <div></div>}
+                            : <div></div>}
                     </div>
                     <div className="flex-1">
                         <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
@@ -149,7 +140,7 @@ export default function Items() {
                                                 <img
                                                     className="w-20 h-20"
                                                     src={item.img_url}
-                                                    alt={item.name_kh} />
+                                                    alt={item.name_kh}/>
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-gray-900 truncate dark:text-white">
@@ -177,7 +168,6 @@ export default function Items() {
                     </div>
                 </div>
             </div>
-
         </div>
-    )
+    );
 }

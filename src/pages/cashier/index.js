@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useRef, useState} from "react";
+import {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
 
@@ -127,19 +127,19 @@ export default function Cashier() {
         }
     }
 
-    // eslint-disable-next-line no-unused-vars
-    const sumPrice = (data) => {
-        return (data.length === 0 ? 0 : data[0].totalPrice + sumPrice(data.slice(1)))
-    }
-    // eslint-disable-next-line no-unused-vars
-    const sumTax = (data, n) => {
+    const sumPrice = useCallback((data) => {
+        return (data.length === 0 ? 0 : data[0].totalPrice + sumPrice(data.slice(1)));
+    }, []);
+
+    const sumTax = useCallback((data, n) => {
         if (n === 0) return 0;
         else if (n === 1) return data[n - 1].tax;
         else return ((sumTax(data, n - 1) * (n - 1) + data[n - 1].tax) / n);
-    }
-    const sumTotalPriceTax = () => {
+    }, []);
+
+    const sumTotalPriceTax = useCallback(() => {
         return totalPrice + (totalPrice * (totalTax/100));
-    }
+    }, [totalPrice, totalTax]);
 
     const date = new Date();
     const dateString = date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
@@ -149,7 +149,7 @@ export default function Cashier() {
         setTotalPrice(sumPrice(itemsProcessing));
         setTotalTax(sumTax(itemsProcessing, itemsProcessing.length));
         setTotalPriceTax(sumTotalPriceTax());
-    }, [itemsProcessing]);
+    }, [data, itemsProcessing, sumPrice, sumTax, sumTotalPriceTax]);
 
     return (
         <>

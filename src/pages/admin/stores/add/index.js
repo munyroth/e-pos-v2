@@ -5,7 +5,6 @@ import BaseForm from "../../../../components/form";
 import Cookies from "js-cookie";
 
 export default function AddStore() {
-
     const navigate = useNavigate();
     const location = useLocation();
     const axiosPrivate = useAxiosPrivate();
@@ -14,31 +13,27 @@ export default function AddStore() {
     const errRef = useRef();
 
     const [isLoading, setIsLoading] = useState(false);
-
     const [data, setData] = useState({
         image: null,
         name: "",
         type: "Retails (Sales and Services)"
     });
     const [errMsg, setErrMsg] = useState('');
-
     const [isImage, setIsImage] = useState(false);
     const [imageURL, setImageURL] = useState("");
 
     const handleChange = e => {
         const {name, value, type, files} = e.target;
-        setData(prevFormData => {
-            return {
-                ...prevFormData,
-                [name]: type === "file" ? files[0] : value
-            }
-        });
+        setData(prevFormData => ({
+            ...prevFormData,
+            [name]: type === "file" ? files[0] : value
+        }));
 
-        if (files && files[0]) {
+        if (type === "file" && files && files[0]) {
             setImageURL(URL.createObjectURL(e.target.files[0]));
             setIsImage(true);
         }
-    }
+    };
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -49,12 +44,8 @@ export default function AddStore() {
         formData.append("name", data.name);
         formData.append("type", data.type);
 
-        const controller = new AbortController();
-
         try {
-            const res = await axiosPrivate.post('/business', formData, {
-                signal: controller.signal
-            });
+            const res = await axiosPrivate.post('/business', formData);
             if (res.data.status === 201) {
                 Cookies.set('shopId', res.data.data.id);
                 navigate(location.state?.path || "/admin/dashboard", {replace: true});
@@ -62,108 +53,73 @@ export default function AddStore() {
                 setErrMsg(res.data.message);
             } else {
                 setErrMsg('មានបញ្ហាក្នុងការបញ្ចូល សូមព្យាយាមម្តងទៀត');
-                setIsLoading(false)
             }
         } catch (err) {
             setErrMsg('មានបញ្ហាក្នុងការបញ្ចូល សូមព្យាយាមម្តងទៀត');
             errRef.current.focus();
+        } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         nameRef.current.focus();
-    }, [])
+    }, []);
 
     useEffect(() => {
         setErrMsg('');
-    }, [data])
+    }, [data]);
+
+    const renderImageUpload = () => {
+        if (isImage) {
+            return <img src={imageURL} alt="img" className="h-full rounded-lg"/>;
+        } else {
+            return (
+                <div
+                    className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                    <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or
+                        drag and drop</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">JPG or PNG (MAX. 800x400px)</p>
+                </div>
+            );
+        }
+    };
 
     return (
         <BaseForm>
             <form className="p-6 space-y-6 md:space-y-6 sm:p-8" onSubmit={handleSubmit}>
-                <h1 className="text-center">
-                    បន្ថែមហាង
-                </h1>
+                <h1 className="text-center">បន្ថែមហាង</h1>
                 <div>
-                    <label className="dark:text-white">
-                        រូបភាព
-                    </label>
+                    <label className="dark:text-white">រូបភាព</label>
                     <div className="mt-2 flex items-center justify-center w-full">
                         <div className="w-full h-64">
-                            <label htmlFor="image"
-                                   className="flex items-center justify-center w-full h-full">
-                                {isImage ? (
-                                    <img src={imageURL} alt="image" className="h-full rounded-lg"/>
-                                ) : (
-                                    <div
-
-                                        className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                        <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400"
-                                             fill="none"
-                                             stroke="currentColor" viewBox="0 0 24 24"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  strokeWidth="2"
-                                                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                        </svg>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
-                                            className="font-semibold">Click to upload</span> or
-                                            drag and drop</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                                            JPG or PNG (MAX. 800x400px)
-                                        </p>
-                                    </div>
-                                )}
-                                <input
-                                    type="file"
-                                    id="image"
-                                    name="image"
-                                    className="hidden" accept=".png, .jpg, .jpeg"
-                                    onChange={handleChange}
-                                />
+                            <label htmlFor="image" className="flex items-center justify-center w-full h-full">
+                                {renderImageUpload()}
+                                <input type="file" id="image" name="image" className="hidden" accept=".png, .jpg, .jpeg"
+                                       onChange={handleChange}/>
                             </label>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <label htmlFor="name" className="dark:text-white">
-                        ឈ្មោះហាង
-                    </label>
+                    <label htmlFor="name" className="dark:text-white">ឈ្មោះហាង</label>
                     <div className="mt-2">
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            autoComplete="false"
-                            value={data.name}
-                            ref={nameRef}
-                            onChange={handleChange}
-                            required
-
-                            className="input w-full"
-                        />
+                        <input id="name" name="name" type="text" autoComplete="false" value={data.name} ref={nameRef}
+                               onChange={handleChange} required className="input w-full"/>
                     </div>
                 </div>
-
-                <p
-                    ref={errRef}
-                    className={errMsg ? "text-sm font-medium leading-6 text-red-900" : "hidden"}
-                    aria-live="assertive"
-                >
-                    {errMsg}
-                </p>
-
+                <p ref={errRef} className={errMsg ? "text-sm font-medium leading-6 text-red-900" : "hidden"}
+                   aria-live="assertive">{errMsg}</p>
                 <div>
-                    {isLoading
-                        ? <button
-                            disabled
-                            type="button"
-                            className="button-loading w-full"
-                        >
+                    {isLoading ? (
+                        <button disabled type="button" className="button-loading w-full">
                             <svg aria-hidden="true" role="status"
-                                 className="inline w-4 h-4 mr-3 text-white animate-spin"
-                                 viewBox="0 0 100 101"
+                                 className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101"
                                  fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -174,15 +130,11 @@ export default function AddStore() {
                             </svg>
                             កំពុងផ្ទុក...
                         </button>
-                        : <button
-                            type="submit"
-                            className="button w-full"
-                        >
-                            បន្ថែមហាង
-                        </button>
-                    }
+                    ) : (
+                        <button type="submit" className="button w-full">បន្ថែមហាង</button>
+                    )}
                 </div>
             </form>
         </BaseForm>
-    )
+    );
 }

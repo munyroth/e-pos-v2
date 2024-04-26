@@ -6,7 +6,7 @@ const Logout = () => {
 
     useEffect(() => {
         logout(auth.token);
-    }, []);
+    }, [auth.token, logout]);
 
     return (<></>);
 };

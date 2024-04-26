@@ -210,7 +210,7 @@ export default function Register() {
 
     useEffect(() => {
         if (!isSendOTP) nameRef.current.focus();
-    }, [])
+    }, [isSendOTP]);
 
     useEffect(() => {
         if (isSendOTP && firstCodeRef.current) {

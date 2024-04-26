@@ -27,7 +27,7 @@ export default function Profile() {
             isMounted = false;
             controller.abort();
         }
-    }, []);
+    }, [axiosPrivate]);
 
     return (
         <div className="p-4">

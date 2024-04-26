@@ -156,7 +156,7 @@ export default function Items() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete]);
+    }, [openModalAddItem, openModalDelete, meta.page, url]);
 
     return (
         <>

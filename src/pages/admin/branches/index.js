@@ -108,7 +108,7 @@ export default function Products() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete]);
+    }, [openModalAddItem, openModalDelete, meta.page, url]);
 
     return (
         <>
