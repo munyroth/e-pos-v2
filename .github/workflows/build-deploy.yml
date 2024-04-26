@@ -47,14 +47,14 @@ jobs:
       - name: Zip build
         run: zip -r build.zip build
 
-      - name: Copy build to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          source: ./build.zip
-          target: /home/roth/e-pos
+#      - name: Copy build to EC2
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          password: ${{ secrets.EC2_PASSWORD }}
+#          source: ./build.zip
+#          target: /home/roth/e-pos
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -63,7 +63,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /home/roth/e-pos
-            unzip -o build.zip
-            rm build.zip
-            docker compose up -d --build
+            ls
+
+#            cd /home/roth/e-pos
+#            unzip -o build.zip
+#            rm build.zip
+#            docker compose up -d --build
