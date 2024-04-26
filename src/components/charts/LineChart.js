@@ -3,10 +3,6 @@ import Chart from "react-apexcharts";
 
 class LineChart extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const data = Object.entries(this.props.data).map(([date, value]) => ({ date, value: parseInt(value) }));
         let max = data.reduce((max, p) => p.value > max ? p.value : max, data[0]?.value);

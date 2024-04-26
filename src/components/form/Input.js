@@ -25,7 +25,7 @@ export default function Input(props) {
 
     useEffect(() => {
         isFocus && ref.current.focus();
-    }, []);
+    }, [isFocus]);
 
     return (
         (!isValidate)
