@@ -52,7 +52,7 @@ export default class Sidebar extends Component {
                             <li>
                                 <NavLink
                                     to="dashboard"
-                                    className={({isActive} ) => classNames(
+                                    className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
@@ -71,7 +71,7 @@ export default class Sidebar extends Component {
                             <li>
                                 <NavLink
                                     to="items"
-                                    className={({isActive} ) => classNames(
+                                    className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
@@ -91,7 +91,7 @@ export default class Sidebar extends Component {
                             <li>
                                 <NavLink
                                     to="bills"
-                                    className={({isActive} ) => classNames(
+                                    className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
@@ -116,7 +116,7 @@ export default class Sidebar extends Component {
                             <li>
                                 <NavLink
                                     to="members"
-                                    className={({isActive} ) => classNames(
+                                    className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
@@ -138,7 +138,7 @@ export default class Sidebar extends Component {
                             <li>
                                 <NavLink
                                     to="branches"
-                                    className={({isActive} ) => classNames(
+                                    className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                     )}
@@ -158,6 +158,27 @@ export default class Sidebar extends Component {
                                     <span className="ml-3">សាខា</span>
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink
+                                    to="cashier"
+                                    className={({isActive}) => classNames(
+                                        isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                    )}
+                                >
+                                    <svg
+                                        aria-hidden="true"
+                                        className="w-6 h-6"
+                                        fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path fillRule="evenodd"
+                                              d="m12.08,5H2C2,2.243,4.243,0,7,0h8.413c-1.768,1.061-3.027,2.876-3.334,5Zm1.92,5v11c0,1.657-1.343,3-3,3H3c-1.657,0-3-1.343-3-3v-11c0-1.657,1.343-3,3-3h8c1.657,0,3,1.343,3,3Zm-8,10h0c0-.552-.448-1-1-1h-1c-.552,0-1,.448-1,1h0c0,.552.448,1,1,1h1c.552,0,1-.448,1-1Zm0-4h0c0-.552-.448-1-1-1h-1c-.552,0-1,.448-1,1h0c0,.552.448,1,1,1h1c.552,0,1-.448,1-1Zm5,4h0c0-.552-.448-1-1-1h-1c-.552,0-1,.448-1,1h0c0,.552.448,1,1,1h1c.552,0,1-.448,1-1Zm0-4h0c0-.552-.448-1-1-1h-1c-.552,0-1,.448-1,1h0c0,.552.448,1,1,1h1c.552,0,1-.448,1-1Zm0-4v-1c0-.552-.448-1-1-1h-6c-.552,0-1,.448-1,1v1c0,.552.448,1,1,1h6c.552,0,1-.448,1-1ZM19,1c-2.757,0-5,2.243-5,5v.024c1.209.912,2,2.348,2,3.976v6.5l.01.003c.002.365.193.717.542.892l1,.5c.326.162.713.136,1.012-.069l1.767-1.209,2.17,1.25c.154.089.326.134.499.134s.346-.045.5-.134c.31-.179.5-.509.5-.866V6c0-2.757-2.243-5-5-5Z"
+                                              clipRule="evenodd"/>
+                                    </svg>
+
+                                    <span className="ml-3">គិតលុយ</span>
+                                </NavLink>
+                            </li>
                         </ul>
                     </div>
                 </aside>
@@ -166,7 +187,7 @@ export default class Sidebar extends Component {
                     <div className="absolute top-0 pt-20 px-4 pb-4 h-full w-full">
                         <Outlet/>
                     </div>
-                    <Navbar />
+                    <Navbar/>
                 </div>
             </>
         )

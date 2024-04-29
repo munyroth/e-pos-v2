@@ -19,7 +19,11 @@ export default function Products() {
 
     const [members, setMembers] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [meta, setMeta] = useState({});
+    const [meta, setMeta] = useState({
+        'page': 1,
+        'size': 10,
+        'total': 0
+    });
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
@@ -159,7 +163,7 @@ export default function Products() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete, meta.page, url]);
+    }, [openModalAddItem, openModalDelete, url]);
 
     return (
         <>
@@ -193,8 +197,7 @@ export default function Products() {
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead
-                        className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                    <thead className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         {/*<th scope="col" className="p-4 rounded-l-lg">*/}
                         {/*    <div className="flex items-center">*/}
@@ -203,16 +206,16 @@ export default function Products() {
                         {/*        <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>*/}
                         {/*    </div>*/}
                         {/*</th>*/}
-                        <th scope="col" className="px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-1/4 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="w-1/4 px-6 py-3">
                             លេខទូរស័ព្ទ
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="w-1/4 px-6 py-3">
                             តួនាទី
                         </th>
-                        <th scope="col" className="px-6 py-3 rounded-r-lg">
+                        <th scope="col" className="w-1/4 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
                         </th>
                     </tr>

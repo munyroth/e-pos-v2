@@ -26,33 +26,33 @@ const RoutePath = () => {
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
-                    <Route element={<Authentication />}>
-                        <Route exact path="stores" element={<Stores />} />
-                        <Route exact path="stores/add" element={<AddStore />} />
-                        <Route path="/admin/" element={<Admin />}>
-                            <Route exact path="profile" element={<Profile />} />
-                            <Route exact path="cashier" element={<Cashier />} />
-                            <Route exact path="dashboard" element={<Dashboard />} />
-                            {/*<Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]} />}>*/}
-                            {/*    <Route exact path="dashboard" element={<Dashboard />} />*/}
+                    <Route element={<Authentication/>}>
+                        <Route exact path="stores" element={<Stores/>}/>
+                        <Route exact path="stores/add" element={<AddStore/>}/>
+                        <Route path="/admin/" element={<Admin/>}>
+                            <Route exact path="profile" element={<Profile/>}/>
+                            <Route exact path="cashier" element={<Cashier/>}/>
+                            <Route exact path="dashboard" element={<Dashboard/>}/>
+                            {/*<Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>*/}
+                            {/*    <Route exact path="dashboard" element={<Dashboard/>}/>*/}
                             {/*</Route>*/}
-                            <Route exact path="items" element={<Items />} />
-                            <Route exact path="bills" element={<Bills />} />
-                            <Route exact path="members" element={<Members />} />
-                            <Route exact path="branches" element={<Branches />} />
+                            <Route exact path="items" element={<Items/>}/>
+                            <Route exact path="bills" element={<Bills/>}/>
+                            <Route exact path="members" element={<Members/>}/>
+                            <Route exact path="branches" element={<Branches/>}/>
                         </Route>
 
-                        <Route element={<Home />}>
-                            <Route exact path="cashier" element={<Cashier />} />
-                            <Route exact path="profile" element={<Profile />} />
-                            <Route exact path="signout" element={<Logout />} />
+                        <Route element={<Home/>}>
+                            <Route exact path="cashier" element={<Cashier/>}/>
+                            <Route exact path="profile" element={<Profile/>}/>
+                            <Route exact path="signout" element={<Logout/>}/>
                         </Route>
                     </Route>
 
-                    <Route exact path="login" element={<Login />} />
-                    <Route exact path="register" element={<Register />} />
-                    <Route exact path="/" element={<CheckAuth />} />
-                    <Route path="*" element={<Page404 />} />
+                    <Route exact path="login" element={<Login/>}/>
+                    <Route exact path="register" element={<Register/>}/>
+                    <Route exact path="/" element={<CheckAuth/>}/>
+                    <Route path="*" element={<Page404/>}/>
                 </Routes>
             </AuthProvider>
         </BrowserRouter>

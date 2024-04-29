@@ -1,17 +1,36 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import searchData from "../../../requestApi/searchData";
+import Loading from "../../../components/loading";
+import Pagination from "../../../components/pagination";
+import {DocumentTextIcon} from "@heroicons/react/24/outline";
+import BaseDialog from "../../../components/dialog";
+import getData from "../../../requestApi/getData";
 
 export default function Items() {
+    let url = '/order';
+
     const axiosPrivate = useAxiosPrivate();
 
     const [bills, setBills] = useState([]);
+    const [billDetail, setBillDetail] = useState(null);
+    const [meta, setMeta] = useState({
+        'page': 1,
+        'size': 10,
+        'total': 0
+    });
+    const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [bill, setBill] = useState(null);
+    const [isEmpty, setIsEmpty] = useState(false);
+
+    const [openModalBillDetail, setOpenModalBillDetail] = useState(false);
+    const cancelModalBillDetail = useRef(null);
 
     const getBillDetail = async (billId) => {
         try {
             const res = await axiosPrivate.get('/order/' + billId);
-            setBill(res.data.data);
+            setBillDetail(res.data.data);
+            setOpenModalBillDetail(true)
         } catch (error) {
             console.log("Failed to fetch bill details:", error);
         }
@@ -21,21 +40,18 @@ export default function Items() {
         let isMounted = true;
         const controller = new AbortController();
 
-        const getItems = async () => {
-            try {
-                const res = await axiosPrivate.get('/order/', {
-                    signal: controller.signal
-                });
-                if (isMounted) {
-                    setBills(res.data.data);
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.log("Failed to fetch bills:", error);
-            }
-        };
-
-        getItems();
+        // Fetch data
+        if (!openModalBillDetail) {
+            getData(
+                controller,
+                isMounted,
+                url,
+                meta.page,
+                setBills,
+                setMeta,
+                setIsLoading
+            ).then(r => r).catch(e => e);
+        }
 
         return () => {
             isMounted = false;
@@ -44,7 +60,7 @@ export default function Items() {
     }, [axiosPrivate]);
 
     return (
-        <div className="relative flex flex-col h-full">
+        <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <h1 className="">វិក្កយប័ត្រ</h1>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
@@ -57,117 +73,150 @@ export default function Items() {
                                   clipRule="evenodd"></path>
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
-                           className="input w-80 pl-10"
-                           placeholder="ស្វែងរក"/>
+                    <input
+                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setBills, setMeta)}
+                        type="text"
+                        id="table-search-users"
+                        className="input w-80 pl-10"
+                        placeholder="ស្វែងរក"/>
                 </div>
             </div>
-            <div className="flex-1 flex space-x-4">
-                <div
-                    className="w-3/6 flex flex-col border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-4">
-                        <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
-                            វិក្កយប័ត្រទាំងអស់
-                        </h5>
-                    </div>
-                    <div className="flex-1">
-                        <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
-                            {isLoading
-                                ? <li
-                                    className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-100"
-
+            <div className="dark:bg-gray-800 dark:border-gray-700">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead
+                        className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" className="px-6 py-3 rounded-l-lg">
+                            លេខវិក្កយបត្រ
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            តម្លៃទំនិញសរុប
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            ការបញ្ចុះតម្លៃ
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            តម្លៃសរុបចុងក្រោយ
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            ប្រាក់ទទួល
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            ប្រាក់អាប់
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            អ្នកលក់
+                        </th>
+                        <th scope="col" className="px-6 py-3 rounded-r-lg">
+                            ហាង
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {isLoading
+                        ? null
+                        : isEmpty
+                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                                <th scope="row"
+                                    className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div className="w-10 h-10"></div>
+                                    <div className="pl-3" role="status">
+                                        <span className="">មិនមានវិក្កយបត្រទេ</span>
+                                    </div>
+                                </th>
+                            </tr>
+                            : bills.map(bill => (
+                                <tr className="hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600"
                                     onClick={() => getBillDetail(bill.id)}
                                 >
-                                    <div className="pl-3" role="status">
-                                        <svg aria-hidden="true"
-                                             className="inline w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-main"
-                                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                                fill="currentColor"/>
-                                            <path
-                                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                                fill="currentFill"/>
-                                        </svg>
-                                        <span className="">កំពុងផ្ទុក...</span>
-                                    </div>
-                                </li>
-                                : bills.map(bill => (
-                                    <li
-                                        className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
+                                    <th scope="row"
+                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                        {bill.invoice_no}
+                                    </th>
+                                    <td className="px-6 py-4">
+                                        $ {bill.subtotal}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        $ {bill.discount}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        $ {bill.total}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        $ {bill.received_usd.toFixed(2)}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        $ {bill.return_usd.toFixed(2)}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {bill.user.name}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {bill.shop.name}
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </div>
+            {isLoading && (
+                <Loading/>
+            )}
+            <Pagination
+                content={content}
+                meta={meta}
+                setMeta={setMeta}
+                setItems={setBills}
+                setLoader={setIsLoading}
+                url={url}/>
 
-                                        onClick={() => getBillDetail(bill.id)}
-                                    >
-                                        <div className="w-full flex items-center">
-                                            <div className="text-base flex-1 min-w-0">
-                                                <p className="font-medium text-gray-900 truncate dark:text-white">
-                                                    លេខវិក្កយបត្រ #{bill.invoice_no}
-                                                </p>
-                                                <p className="text-gray-500 truncate dark:text-gray-400">
-                                                    អ្នកលក់: {bill.user.name}
-                                                </p>
-                                            </div>
-                                            <div
-                                                className="text-end text-base font-semibold text-gray-900 truncate dark:text-white">
-                                                <p className="text-2xl">
-                                                    ${bill.total}
-                                                </p>
-                                            </div>
+            <BaseDialog
+                icon={<div
+                    className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <DocumentTextIcon className="h-6 w-6 text-green-600"
+                                  aria-hidden="true"/>
+                </div>}
+                title="លម្អិតវិក្កយបត្រ"
+                openModal={openModalBillDetail}
+                setOpenModal={setOpenModalBillDetail}
+                cancelModalDeleteRef={cancelModalBillDetail}
+            >
+                <div className="flex-1">
+                    <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
+                        {(billDetail !== null) ? billDetail.order_details?.map(item => (
+                                <li className="p-3 border border-gray-200 rounded-lg flow-root dark:bg-gray-800 dark:border-gray-700">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex-shrink-0">
+                                            <img
+                                                className="w-20 h-20"
+                                                src={item.img_url}
+                                                alt={item.name_kh}/>
                                         </div>
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
-                </div>
-                <div
-                    className="w-3/6 border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-4">
-                        <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
-                            លម្អិតវិក្កយបត្រ
-                        </h5>
-                        {(bill !== null)
-                            ? <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
-                                អ្នកចេញវិក្កយបត្រ: {bill.user?.name}
-                            </h5>
-                            : <div></div>}
-                    </div>
-                    <div className="flex-1">
-                        <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
-                            {(bill !== null) ? bill.order_details?.map(item => (
-                                    <li className="p-3 border border-gray-200 rounded-lg flow-root dark:bg-gray-800 dark:border-gray-700">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="flex-shrink-0">
-                                                <img
-                                                    className="w-20 h-20"
-                                                    src={item.img_url}
-                                                    alt={item.name_kh}/>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-gray-900 truncate dark:text-white">
-                                                    {item.name_kh}
-                                                </p>
-                                                <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                    {item.barcode}
-                                                </p>
-                                                <div className="flex justify-between items-end">
-                                                    <div className="flex">
-                                                        <div className="relative rounded-md text-main">
-                                                            តម្លៃ {item.price}៛
-                                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-gray-900 truncate dark:text-white">
+                                                {item.name_kh}
+                                            </p>
+                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                {item.barcode}
+                                            </p>
+                                            <div className="flex justify-between items-end">
+                                                <div className="flex">
+                                                    <div className="relative rounded-md text-main">
+                                                        តម្លៃ {item.price}៛
                                                     </div>
-                                                    <div className="text-gray-900 truncate dark:text-white">
-                                                        បរិមាណ {item.qty}
-                                                    </div>
+                                                </div>
+                                                <div className="text-gray-900 truncate dark:text-white">
+                                                    បរិមាណ {item.qty}
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
-                                )
-                            ) : <div></div>}
-                        </ul>
-                    </div>
+                                    </div>
+                                </li>
+                            )
+                        ) : <div></div>}
+                    </ul>
                 </div>
-            </div>
-        </div>
+            </BaseDialog>
+        </>
     );
 }

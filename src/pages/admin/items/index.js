@@ -19,7 +19,11 @@ export default function Items() {
 
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [meta, setMeta] = useState({});
+    const [meta, setMeta] = useState({
+        'page': 1,
+        'size': 10,
+        'total': 0
+    });
     const [content, setContent] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
@@ -156,7 +160,7 @@ export default function Items() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete, meta.page, url]);
+    }, [openModalAddItem, openModalDelete, url]);
 
     return (
         <>
@@ -188,17 +192,23 @@ export default function Items() {
                         placeholder="ស្វែងរក"/>
                 </div>
             </div>
-            <div className="relative overflow-x-auto rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
-                <table className="w-full text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+            {/*<div className="relative overflow-x-auto rounded-t-lg dark:bg-gray-800 dark:border-gray-700">*/}
+            {/*    <table className="w-full text-left text-gray-500 dark:text-gray-400">*/}
+            {/*        <thead className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">*/}
+            <div className="dark:bg-gray-800 dark:border-gray-700">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="w-3/6 px-6 py-3">
+                        <th scope="col" className="w-3/6 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
                         </th>
                         <th scope="col" className="w-1/6 px-6 py-3">
                             តម្លៃ
                         </th>
                         <th scope="col" className="w-1/6 px-6 py-3">
+                            ប្រភេទ
+                        </th>
+                        <th scope="col" className="w-1/6 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
                         </th>
                     </tr>
@@ -231,6 +241,11 @@ export default function Items() {
                                     <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <div className="pl-3">
                                             <div className="text-base font-semibold text-main">${item.price}</div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                        <div className="pl-3">
+                                            <div className="font-semibold">{item.category ? item.category.name : "មិនមានប្រភេទ"}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
