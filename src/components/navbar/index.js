@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Cookies from "js-cookie";
 import {CheckIcon} from "@heroicons/react/20/solid";
+import useAuth from "../../hooks/useAuth";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -11,6 +12,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
     const axiosPrivate = useAxiosPrivate();
+    const {auth, logout} = useAuth();
 
     const [user, setUser] = useState(null);
     const [shops, setShops] = useState([{id: 1, name: null}]);
@@ -192,12 +194,20 @@ export default function Navbar() {
                                         </Menu.Item>}
                                     <Menu.Item>
                                         {({active}) => (
-                                            <Link
-                                                to="/signout"
-                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-700')}
+                                            <button
+                                                onClick={async () => {
+                                                    const controller = new AbortController();
+                                                    try {
+                                                        await axiosPrivate.get('/logout', {signal: controller.signal});
+                                                        logout(auth.token);
+                                                    } catch (err) {
+                                                        console.error("Error during logout:", err);
+                                                    }
+                                                }}
+                                                className={classNames(active ? 'bg-gray-100' : '', 'w-full text-start block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-700')}
                                             >
                                                 ចាកចេញ
-                                            </Link>
+                                            </button>
                                         )}
                                     </Menu.Item>
                                 </Menu.Items>

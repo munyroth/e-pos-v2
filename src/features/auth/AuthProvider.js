@@ -1,17 +1,15 @@
 import React, {useState} from "react";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Cookies from "js-cookie";
 import AuthContext from "../../contexts/AuthContext";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import PERMISSIONS from "./permissions/Permissions";
 
 const COOKIE_TOKEN = 'token';
-const COOKIE_BRANCH_INDEX = 'branchIndex';
+const SHOP_ID = 'shopId';
 
 export const AuthProvider = ({children}) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const axiosPrivate = useAxiosPrivate();
 
     const [auth, setAuth] = useState({
         token: '',
@@ -64,23 +62,15 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
         setAuth({token, permissions});
-        Cookies.set(COOKIE_BRANCH_INDEX, 0, {expires: 15});
         const defaultPath = role === 'admin' ? '/stores' : '/cashier';
         navigate(location.state?.path || defaultPath, {replace: true});
     };
 
-    const logout = async () => {
-        const controller = new AbortController();
-        try {
-            await axiosPrivate.get('/logout', {signal: controller.signal});
-            Cookies.remove(COOKIE_TOKEN);
-            Cookies.remove(COOKIE_BRANCH_INDEX);
-            setAuth({token: '', permissions: []});
-            navigate(location.state?.path || '/login', {replace: true});
-        } catch (err) {
-            // Handle error, maybe display a message to the user
-            console.error("Error during logout:", err);
-        }
+    const logout = () => {
+        Cookies.remove(COOKIE_TOKEN);
+        Cookies.remove(SHOP_ID);
+        setAuth({token: '', permissions: []});
+        navigate(location.state?.path || '/login', {replace: true});
     };
 
     return (

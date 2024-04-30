@@ -10,7 +10,6 @@ import Home from "../pages/home";
 import Cashier from "../pages/cashier";
 import Profile from "../pages/profile";
 import Login from "../pages/Login";
-import Logout from "../pages/Logout";
 import Page404 from "../pages/Page404";
 import Authentication from "../features/auth/authentication/Authentication";
 import Authorization from "../features/auth/authorization/Authorization";
@@ -56,7 +55,6 @@ const RoutePath = () => {
                         <Route element={<Home/>}>
                             <Route exact path="cashier" element={<Cashier/>}/>
                             <Route exact path="profile" element={<Profile/>}/>
-                            <Route exact path="signout" element={<Logout/>}/>
                         </Route>
                     </Route>
 
