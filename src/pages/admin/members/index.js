@@ -13,19 +13,16 @@ import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
+import useGetData from "../../../hooks/useGetData";
 
 export default function Products() {
     let url = '/employee';
+    const [page, setPage] = useState(1);
+    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetData(url, page);
 
-    const [members, setMembers] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [meta, setMeta] = useState({
-        'page': 1,
-        'size': 10,
-        'total': 0
-    });
+
     const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -109,19 +106,6 @@ export default function Products() {
         let isMounted = true;
         const controller = new AbortController();
 
-        // Get members
-        if (!openModalAddItem && !openModalDelete) {
-            getData(
-                controller,
-                isMounted,
-                url,
-                meta.page,
-                setMembers,
-                setMeta,
-                setIsLoading
-            ).then(r => r).catch(e => e)
-        }
-
         // Get roles
         if (openModalAddItem) {
             getData(
@@ -197,7 +181,8 @@ export default function Products() {
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                    <thead
+                        className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         {/*<th scope="col" className="p-4 rounded-l-lg">*/}
                         {/*    <div className="flex items-center">*/}

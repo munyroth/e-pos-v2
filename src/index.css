@@ -36,6 +36,9 @@
     .select {
         @apply block py-2 text-base text-gray-900 leading-6 rounded-lg border border-gray-300 bg-gray-50 focus:border-main focus:ring-main dark:bg-gray-700 dark:border-gray-600 dark:text-white;
     }
+    .select-error {
+        @apply block py-2 text-base bg-red-50 leading-6 rounded-lg border border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 dark:bg-gray-700 dark:border-red-500 dark:text-red-500;
+    }
     .select-input {
         @apply block py-2 pl-3 pr-8 text-base rounded-lg border-0 bg-transparent text-gray-500 focus:ring-2 focus:ring-inset focus:ring-main sm:text-sm dark:text-gray-200;
     }

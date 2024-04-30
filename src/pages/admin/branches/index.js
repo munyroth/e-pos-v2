@@ -6,23 +6,17 @@ import handleChange from "../../../features/handleChange";
 import handleValidation from "../../../features/validation/validation";
 import postData from "../../../requestApi/postData";
 import deleteData from "../../../requestApi/deleteData";
-import getData from "../../../requestApi/getData";
 import Input from "../../../components/form/Input";
 import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
+import useGetData from "../../../hooks/useGetData";
 
 export default function Products() {
     let url = '/shop';
-
-    const [shop, setShop] = useState([]);
-    const [meta, setMeta] = useState({
-        'page': 1,
-        'size': 10,
-        'total': 0
-    });
+    const [page, setPage] = useState(1);
+    const [shop, meta, isLoading, setShop, setMeta, setIsLoading] = useGetData(url, page);
     const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -78,22 +72,6 @@ export default function Products() {
     }, [meta]);
 
     useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
-
-        // Fetch data
-        if (!openModalAddItem && !openModalDelete) {
-            getData(
-                controller,
-                isMounted,
-                url,
-                meta.page,
-                setShop,
-                setMeta,
-                setIsLoading
-            ).then(r => r).catch(e => e);
-        }
-
         // Reset form data when modal is closed
         if (!openModalAddItem) {
             // wait for the modal to close
@@ -107,12 +85,7 @@ export default function Products() {
                 setUpdateId(0);
             }, 200);
         }
-
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
-    }, [openModalAddItem, openModalDelete, url]);
+    }, [openModalAddItem]);
 
     return (
         <>
@@ -146,7 +119,8 @@ export default function Products() {
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                    <thead
+                        className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="w-1/4 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ

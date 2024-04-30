@@ -5,7 +5,7 @@ export default function Select(props) {
         title,
         id,
         onChange,
-        // value,
+        value,
         selectOptions,
         // isFocus,
         isRequire,
@@ -26,8 +26,11 @@ export default function Select(props) {
                         name={id}
                         className="select w-full"
                     >
+                        <option value="" selected={true} disabled={true}>ជ្រើសរើស{title}</option>
                         {selectOptions.map(item => (
-                            <option key={item.id} value={item.id}>{item.name}</option>
+                            <option key={item.id} value={item.id} selected={
+                                 value === item.id ? 'selected' : null
+                            }>{item.name}</option>
                         ))}
                     </select>
                 </div>
@@ -42,10 +45,13 @@ export default function Select(props) {
                         onChange={onChange}
                         id={id}
                         name={id}
-                        className="select w-full"
+                        className="select-error w-full"
                     >
-                        {selectOptions.map(category => (
-                            <option key={category.id} value={category.id}>{category.name}</option>
+                        <option value="" selected={true} disabled={true}>ជ្រើសរើស{title}</option>
+                        {selectOptions.map(item => (
+                            <option key={item.id} value={item.id} selected={
+                                value === item.id ? 'selected' : null
+                            }>{item.name}</option>
                         ))}
                     </select>
                 </div>

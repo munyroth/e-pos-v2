@@ -13,19 +13,15 @@ import getData from "../../../requestApi/getData";
 import handleChange from "../../../features/handleChange";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
+import useGetData from "../../../hooks/useGetData";
 
 export default function Items() {
     let url = '/product';
+    const [page, setPage] = useState(1);
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);
 
-    const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [meta, setMeta] = useState({
-        'page': 1,
-        'size': 10,
-        'total': 0
-    });
     const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -110,18 +106,6 @@ export default function Items() {
         let isMounted = true;
         const controller = new AbortController();
 
-        if (!openModalAddItem && !openModalDelete) {
-            getData(
-                controller,
-                isMounted,
-                url,
-                meta.page,
-                setProducts,
-                setMeta,
-                setIsLoading
-            ).then(r => r).catch(e => e);
-        }
-
         if (openModalAddItem) {
             getData(
                 controller,
@@ -197,7 +181,8 @@ export default function Items() {
             {/*        <thead className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">*/}
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                    <thead
+                        className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="w-3/6 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
@@ -245,7 +230,8 @@ export default function Items() {
                                     </td>
                                     <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <div className="pl-3">
-                                            <div className="font-semibold">{item.category ? item.category.name : "មិនមានប្រភេទ"}</div>
+                                            <div
+                                                className="font-semibold">{item.category ? item.category.name : "មិនមានប្រភេទ"}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">

@@ -156,7 +156,7 @@ export default function Dashboard() {
                                     កំពូលផលិតផល
                                 </h3>
                                 <Link
-                                    to="top-items"
+                                    to=""
                                     className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                                     មើលទាំងអស់
                                 </Link>
@@ -203,7 +203,7 @@ export default function Dashboard() {
                                     កំពូលហាងលក់ច្រើនបំផុត
                                 </h3>
                                 <Link
-                                    to="top-customer"
+                                    to=""
                                     className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                                     មើលទាំងអស់
                                 </Link>

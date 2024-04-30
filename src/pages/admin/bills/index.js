@@ -1,26 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import searchData from "../../../requestApi/searchData";
 import Loading from "../../../components/loading";
 import Pagination from "../../../components/pagination";
 import {DocumentTextIcon} from "@heroicons/react/24/outline";
 import BaseDialog from "../../../components/dialog";
-import getData from "../../../requestApi/getData";
+import useGetData from "../../../hooks/useGetData";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function Items() {
-    let url = '/order';
-
     const axiosPrivate = useAxiosPrivate();
 
-    const [bills, setBills] = useState([]);
+    let url = '/order';
+    const [page, setPage] = useState(1);
+    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetData(url, page);
+
     const [billDetail, setBillDetail] = useState(null);
-    const [meta, setMeta] = useState({
-        'page': 1,
-        'size': 10,
-        'total': 0
-    });
     const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalBillDetail, setOpenModalBillDetail] = useState(false);
@@ -37,32 +32,13 @@ export default function Items() {
     }
 
     useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
-
-        // Fetch data
-        if (!openModalBillDetail) {
-            getData(
-                controller,
-                isMounted,
-                url,
-                meta.page,
-                setBills,
-                setMeta,
-                setIsLoading
-            ).then(r => r).catch(e => e);
-        }
-
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
-    }, [axiosPrivate]);
+        meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    }, [meta]);
 
     return (
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
-                <h1 className="">វិក្កយប័ត្រ</h1>
+                <h1 className="">វិក្កយបត្រ</h1>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -131,22 +107,22 @@ export default function Items() {
                                 >
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {bill.invoice_no}
+                                        {bill.shop.name}-{bill.invoice_no}
                                     </th>
-                                    <td className="px-6 py-4">
-                                        $ {bill.subtotal}
+                                    <td className="px-6 py-4 text-main">
+                                        ${bill.subtotal.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        $ {bill.discount}
+                                    <td className="px-6 py-4 text-red-500">
+                                        ${bill.discount.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        $ {bill.total}
+                                    <td className="px-6 py-4 text-main">
+                                        ${bill.total.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        $ {bill.received_usd.toFixed(2)}
+                                    <td className="px-6 py-4 text-main font-semibold">
+                                        ${bill.received_usd.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        $ {bill.return_usd.toFixed(2)}
+                                    <td className="px-6 py-4 text-red-500 font-semibold">
+                                        ${bill.return_usd.toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4">
                                         {bill.user.name}
@@ -174,7 +150,7 @@ export default function Items() {
                 icon={<div
                     className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
                     <DocumentTextIcon className="h-6 w-6 text-green-600"
-                                  aria-hidden="true"/>
+                                      aria-hidden="true"/>
                 </div>}
                 title="លម្អិតវិក្កយបត្រ"
                 openModal={openModalBillDetail}
