@@ -1,8 +1,6 @@
 import axios from 'axios';
-const BASE_URL = 'https://kh-pos.furniturestores.me/api/admin';
-// const BASE_URL = 'http://localhost:8000/api/admin';
-const LOGIN_URL = 'https://kh-pos.furniturestores.me/api';
-// const LOGIN_URL = 'http://localhost:8000/api';
+const BASE_URL = process.env.REACT_APP_API_URL;
+const LOGIN_URL = process.env.REACT_APP_LOGIN_URL;
 
 export default axios.create({
     baseURL: LOGIN_URL
