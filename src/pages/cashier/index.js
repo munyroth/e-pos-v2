@@ -3,91 +3,16 @@ import {Dialog, Transition} from "@headlessui/react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import searchData from "../../requestApi/searchData";
+import useGetData from "../../hooks/useGetData";
 
 export default function Cashier() {
+    let url = '/product';
+    const [page, setPage] = useState(1);
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);
     const axiosPrivate = useAxiosPrivate();
 
-    const [isLoading, setIsLoading] = useState(false);
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);
-
-    const data = [
-        {
-            id: 1,
-            barcode: 1,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 2,
-            barcode: 2,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 3,
-            barcode: 3,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 4,
-            barcode: 4,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 5,
-            barcode: 5,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 6,
-            barcode: 6,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 7,
-            barcode: 7,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }, {
-            id: 8,
-            barcode: 8,
-            name_kh: 'a',
-            price: 100,
-            discount: 10,
-            tax: 10,
-            quantity: 2,
-            addedBy: 'roth'
-        }
-    ];
-
-    const [items, setItems] = useState([]);
 
     const [itemsProcessing, setItemsProcessing] = useState([]);
 
@@ -122,14 +47,13 @@ export default function Cashier() {
     const dateString = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
 
     useEffect(() => {
-        setItems(data);
         setTotalPrice(sumPrice(itemsProcessing));
         setTotalTax(sumTax(itemsProcessing, itemsProcessing.length));
         setTotalPriceTax(sumTotalPriceTax());
     }, [itemsProcessing, sumPrice, sumTax, sumTotalPriceTax]);
 
     const addToCard = (productId) => {
-        const product = items.find(items => {
+        const product = products.find(items => {
             return items.id === parseInt(productId);
         });
         if (product) {
@@ -145,7 +69,7 @@ export default function Cashier() {
 
             if (!isExist) setItemsProcessing([...itemsProcessing, {
                 barcode: product.barcode,
-                name: product.name,
+                name_kh: product.name_kh,
                 price: product.price,
                 discount: product.discount,
                 tax: product.tax,
@@ -206,7 +130,7 @@ export default function Cashier() {
                                             <span className="">កំពុងផ្ទុក...</span>
                                         </div>
                                     </li>
-                                    : items.map(product => (
+                                    : products.map(product => (
                                         <li
                                             className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
 
@@ -262,8 +186,6 @@ export default function Cashier() {
                                     : itemsProcessing.map(product => (
                                         <li
                                             className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
-
-                                            onClick={() => addToCard(product.id)}
                                         >
                                             <div className="w-full flex items-center">
                                                 <div className="text-base flex-1 min-w-0">
@@ -290,7 +212,7 @@ export default function Cashier() {
             </div>
             <Transition.Root show={isModalPayment} as={Fragment}>
                 <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setIsModalPayment}>
-                <Transition.Child
+                    <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
                         enterFrom="opacity-0"
