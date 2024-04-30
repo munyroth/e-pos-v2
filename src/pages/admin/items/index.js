@@ -17,7 +17,7 @@ import useGetData from "../../../hooks/useGetData";
 
 export default function Items() {
     let url = '/product';
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
     const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);
 
     const [categories, setCategories] = useState([]);

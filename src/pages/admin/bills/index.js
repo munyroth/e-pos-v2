@@ -11,7 +11,7 @@ export default function Items() {
     const axiosPrivate = useAxiosPrivate();
 
     let url = '/order';
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
     const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetData(url, page);
 
     const [billDetail, setBillDetail] = useState(null);

@@ -14,7 +14,7 @@ import useGetData from "../../../hooks/useGetData";
 
 export default function Products() {
     let url = '/shop';
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
     const [shop, meta, isLoading, setShop, setMeta, setIsLoading] = useGetData(url, page);
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);

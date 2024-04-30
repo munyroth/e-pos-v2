@@ -17,7 +17,7 @@ import useGetData from "../../../hooks/useGetData";
 
 export default function Products() {
     let url = '/employee';
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
     const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetData(url, page);
 
     const [roles, setRoles] = useState([]);

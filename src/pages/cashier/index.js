@@ -1,15 +1,12 @@
 import {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import searchData from "../../requestApi/searchData";
 import useGetData from "../../hooks/useGetData";
 
 export default function Cashier() {
     let url = '/product';
-    const [page, setPage] = useState(1);
-    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);
-    const axiosPrivate = useAxiosPrivate();
+    const [page] = useState(1);
+    const [products, meta, isLoading] = useGetData(url, page);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);
@@ -43,8 +40,11 @@ export default function Cashier() {
         return totalPrice + (totalPrice * (totalTax / 100));
     }, [totalPrice, totalTax]);
 
-    const date = new Date();
-    const dateString = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
+    // const date = new Date();
+    // const dateString = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
+
+    console.log(meta);
+    console.log(totalPriceTax);
 
     useEffect(() => {
         setTotalPrice(sumPrice(itemsProcessing));
