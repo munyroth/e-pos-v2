@@ -7,7 +7,6 @@ import PERMISSIONS from "./permissions/Permissions";
 
 const COOKIE_TOKEN = 'token';
 const COOKIE_BRANCH_INDEX = 'branchIndex';
-const COOKIE_PERMISSION = 'permission';
 
 export const AuthProvider = ({children}) => {
     const navigate = useNavigate();
@@ -15,8 +14,8 @@ export const AuthProvider = ({children}) => {
     const axiosPrivate = useAxiosPrivate();
 
     const [auth, setAuth] = useState({
-        token: Cookies.get(COOKIE_TOKEN) || '',
-        permissions: Cookies.get(COOKIE_PERMISSION) ? JSON.parse(Cookies.get(COOKIE_PERMISSION)) : []
+        token: '',
+        permissions: []
     });
 
     const setUser = (token, role) => {
@@ -66,7 +65,6 @@ export const AuthProvider = ({children}) => {
         ];
         setAuth({token, permissions});
         Cookies.set(COOKIE_BRANCH_INDEX, 0, {expires: 15});
-        Cookies.set(COOKIE_PERMISSION, JSON.stringify(permissions));
         const defaultPath = role === 'admin' ? '/stores' : '/cashier';
         navigate(location.state?.path || defaultPath, {replace: true});
     };
@@ -77,7 +75,6 @@ export const AuthProvider = ({children}) => {
             await axiosPrivate.get('/logout', {signal: controller.signal});
             Cookies.remove(COOKIE_TOKEN);
             Cookies.remove(COOKIE_BRANCH_INDEX);
-            Cookies.remove(COOKIE_PERMISSION);
             setAuth({token: '', permissions: []});
             navigate(location.state?.path || '/login', {replace: true});
         } catch (err) {

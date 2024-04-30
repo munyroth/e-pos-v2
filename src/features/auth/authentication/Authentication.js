@@ -24,20 +24,21 @@ const Authentication = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            isMounted && setUser(token, res.data.data.role.name_en)
+            isMounted && setUser(token, res.data.data.role);
         } catch (err) {
             navigate('/login', {state: {from: location}, replace: true});
         }
     }
 
     if (auth?.token) {
-        return (<Outlet />)
+        return (<Outlet/>)
     } else if (token) {
-            getUser();
-            return () => {
-                isMounted = false;
-                controller.abort();
-            }
+        getUser().then();
+        return () => {
+            isMounted = false;
+            controller.abort();
+        }
+
     } else {
         navigate('/login', {state: {from: location}, replace: true});
     }
