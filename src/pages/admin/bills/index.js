@@ -38,7 +38,9 @@ export default function Items() {
     return (
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
-                <h1 className="">វិក្កយបត្រ</h1>
+                <div className="flex items-center">
+                    <h1 className="">វិក្កយបត្រ</h1>
+                </div>
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -50,11 +52,11 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setBills, setMeta)}
+                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setBills, setMeta)}
                         type="text"
-                        id="table-search-users"
+                        id="table-search"
                         className="input w-80 pl-10"
-                        placeholder="ស្វែងរក"/>
+                        placeholder="ស្វែងរកលេខវិក្កយបត្រ"/>
                 </div>
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">

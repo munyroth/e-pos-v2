@@ -14,6 +14,7 @@ import handleChange from "../../../features/handleChange";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
 import useGetData from "../../../hooks/useGetData";
+import Filter from "../../../components/form/Filter";
 
 export default function Items() {
     let url = '/product';
@@ -22,6 +23,7 @@ export default function Items() {
 
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
+    const [params, setParams] = useState({})
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -106,15 +108,13 @@ export default function Items() {
         let isMounted = true;
         const controller = new AbortController();
 
-        if (openModalAddItem) {
-            getData(
-                controller,
-                isMounted,
-                '/category?is_all=true',
-                0,
-                setCategories
-            ).then(r => r).catch(e => e);
-        }
+        getData(
+            controller,
+            isMounted,
+            '/category?is_all=true',
+            0,
+            setCategories
+        ).then(r => r).catch(e => e);
 
         // Reset form data when modal is closed
         if (!openModalAddItem) {
@@ -149,15 +149,29 @@ export default function Items() {
     return (
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
-                <h1 className="">ទំនិញ</h1>
-                <button
-                    onClick={() => {
-                        setOpenModalAddItem(true);
-                    }}
-                    type="button"
-                    className="button">
-                    បន្ថែមទំនិញ
-                </button>
+                <div className="flex items-center">
+                    <h1 className="me-8">ទំនិញ</h1>
+                    <button
+                        onClick={() => {
+                            setOpenModalAddItem(true);
+                        }}
+                        type="button"
+                        className="button me-8">
+                        បន្ថែមទំនិញ
+                    </button>
+                    <Filter
+                        id="filter-category"
+                        onChange={(e) => {
+                            const {value} = e.target;
+                            const p = value !== "all" ? {category_id: parseInt(value)} : {}
+                            setParams(p)
+                            searchData(content, url, setContent, setIsLoading, setProducts, setMeta, p).then(r => r).catch(e => e);
+                        }}
+                        selectOptions={categories}
+                        isHasNon={true}
+                    />
+                </div>
+
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -169,11 +183,11 @@ export default function Items() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setProducts, setMeta)}
+                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setProducts, setMeta, params)}
                         type="text"
-                        id="table-search-users"
+                        id="table-search"
                         className="input w-80 pl-10"
-                        placeholder="ស្វែងរក"/>
+                        placeholder="ស្វែងរកឈ្មោះ ឬបាកូដទំនិញ"/>
                 </div>
             </div>
             {/*<div className="relative overflow-x-auto rounded-t-lg dark:bg-gray-800 dark:border-gray-700">*/}

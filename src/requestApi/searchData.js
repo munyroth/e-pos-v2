@@ -1,21 +1,24 @@
 import {axiosPrivate} from "../api/axios";
 
 const searchData = async (
-    e,
+    content,
     url,
     setContent,
     setIsLoading,
     setData,
     setMeta,
+    params
 ) => {
-    setContent(e.target.value);
+    console.log(params);
+    setContent(content);
     setIsLoading(true);
     const controller = new AbortController();
     const res = await axiosPrivate.get(url, {
         signal: controller.signal,
         params: {
-            content: e.target.value,
-            page: 1
+            content: content,
+            page: 1,
+            ...params
         }
     });
     setData(res.data.data);

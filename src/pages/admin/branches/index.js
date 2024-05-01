@@ -90,15 +90,18 @@ export default function Products() {
     return (
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
-                <h1 className="">សាខា</h1>
-                <button
-                    onClick={() => {
-                        setOpenModalAddItem(true);
-                    }}
-                    type="button"
-                    className="button">
-                    បន្ថែមសាខា
-                </button>
+                <div className="flex items-center">
+                    <h1 className="me-8">សាខា</h1>
+                    <button
+                        onClick={() => {
+                            setOpenModalAddItem(true);
+                        }}
+                        type="button"
+                        className="button">
+                        បន្ថែមសាខា
+                    </button>
+                </div>
+
                 <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -110,9 +113,9 @@ export default function Products() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e, url, setContent, setIsLoading, setShop, setMeta)}
+                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setShop, setMeta)}
                         type="text"
-                        id="table-search-users"
+                        id="table-search"
                         className="input w-80 pl-10"
                         placeholder="ស្វែងរក"/>
                 </div>

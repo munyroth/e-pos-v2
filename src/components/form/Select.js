@@ -15,11 +15,11 @@ export default function Select(props) {
     return (
         (!isValidate)
             ? <div>
-                <label htmlFor={id}
-                       className="font-medium leading-6 text-gray-900 dark:text-white">
+                {title && <label htmlFor={id}
+                                 className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
                     {title} {isRequire && <span className="text-red-600">*</span>}
-                </label>
-                <div className="mt-2">
+                </label>}
+                <div>
                     <select
                         onChange={onChange}
                         id={id}
@@ -29,18 +29,18 @@ export default function Select(props) {
                         <option value="" selected={true} disabled={true}>ជ្រើសរើស{title}</option>
                         {selectOptions.map(item => (
                             <option key={item.id} value={item.id} selected={
-                                 value === item.id ? 'selected' : null
+                                value === item.id ? 'selected' : null
                             }>{item.name}</option>
                         ))}
                     </select>
                 </div>
             </div>
             : <div>
-                <label htmlFor={id}
-                       className="font-medium leading-6 text-gray-900 dark:text-white">
+                {title && <label htmlFor={id}
+                                 className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
                     {title} {isRequire && <span className="text-red-600">*</span>}
-                </label>
-                <div className="mt-2">
+                </label>}
+                <div>
                     <select
                         onChange={onChange}
                         id={id}
