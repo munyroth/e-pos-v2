@@ -70,7 +70,7 @@ export default class Sidebar extends Component {
                             </li>
                             <li>
                                 <NavLink
-                                    to="items"
+                                    to="products"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                         'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'

@@ -16,7 +16,7 @@ import Select from "../../../components/form/Select";
 import useGetData from "../../../hooks/useGetData";
 import Filter from "../../../components/form/Filter";
 
-export default function Items() {
+export default function Products() {
     let url = '/product';
     const [page] = useState(1);
     const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);

@@ -7,7 +7,7 @@ import BaseDialog from "../../../components/dialog";
 import useGetData from "../../../hooks/useGetData";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-export default function Items() {
+export default function Bills() {
     const axiosPrivate = useAxiosPrivate();
 
     let url = '/order';

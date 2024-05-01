@@ -12,7 +12,7 @@ import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
 import useGetData from "../../../hooks/useGetData";
 
-export default function Products() {
+export default function Branches() {
     let url = '/shop';
     const [page] = useState(1);
     const [shop, meta, isLoading, setShop, setMeta, setIsLoading] = useGetData(url, page);

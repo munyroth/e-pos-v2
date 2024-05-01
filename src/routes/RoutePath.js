@@ -1,7 +1,7 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Admin from "../pages/admin";
 import Dashboard from "../pages/admin/dashboard";
-import Items from "../pages/admin/items";
+import Products from "../pages/admin/products";
 import Bills from "../pages/admin/bills";
 import Members from "../pages/admin/members";
 import Branches from "../pages/admin/branches";
@@ -39,7 +39,7 @@ const RoutePath = () => {
                                 <Route exact path="dashboard" element={<Dashboard/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_ITEMS]}/>}>
-                                <Route exact path="items" element={<Items/>}/>
+                                <Route exact path="products" element={<Products/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BILLS]}/>}>
                                 <Route exact path="bills" element={<Bills/>}/>

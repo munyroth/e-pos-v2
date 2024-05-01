@@ -110,28 +110,31 @@ export default function Navbar() {
                                                     }
                                                     value={shop.id}
                                                 >
-                                                    {({selected, active}) => (
-                                                        <>
-                                                            <div className="flex items-center">
+                                                    {({selected, active}) => {
+                                                        selected && Cookies.set('shopId', shop.id)
+                                                        return (
+                                                            <>
+                                                                <div className="flex items-center">
                                                                 <span
                                                                     className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}
                                                                 >
                                                                 {shop.name}
                                                               </span>
-                                                            </div>
+                                                                </div>
 
-                                                            {selected ? (
-                                                                <span
-                                                                    className={classNames(
-                                                                        active ? 'text-main' : 'text-main',
-                                                                        'absolute inset-y-0 right-0 flex items-center px-2'
-                                                                    )}
-                                                                >
+                                                                {selected ? (
+                                                                    <span
+                                                                        className={classNames(
+                                                                            active ? 'text-main' : 'text-main',
+                                                                            'absolute inset-y-0 right-0 flex items-center px-2'
+                                                                        )}
+                                                                    >
                                                                     <CheckIcon className="h-5 w-5" aria-hidden="true"/>
                                                                 </span>
-                                                            ) : null}
-                                                        </>
-                                                    )}
+                                                                ) : null}
+                                                            </>
+                                                        )
+                                                    }}
                                                 </Listbox.Option>
                                             ))}
                                         </Listbox.Options>
