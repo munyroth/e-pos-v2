@@ -4,7 +4,7 @@ import Loading from "../../../components/loading";
 import Pagination from "../../../components/pagination";
 import {DocumentTextIcon} from "@heroicons/react/24/outline";
 import BaseDialog from "../../../components/dialog";
-import useGetData from "../../../hooks/useGetData";
+import useGetDataList from "../../../hooks/useGetDataList";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function Bills() {
@@ -12,7 +12,7 @@ export default function Bills() {
 
     let url = '/order';
     const [page] = useState(1);
-    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetData(url, page);
+    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url, page);
 
     const [billDetail, setBillDetail] = useState(null);
     const [content, setContent] = useState('');
@@ -21,9 +21,9 @@ export default function Bills() {
     const [openModalBillDetail, setOpenModalBillDetail] = useState(false);
     const cancelModalBillDetail = useRef(null);
 
-    const getBillDetail = async (billId) => {
+    const getBillDetail = async (id) => {
         try {
-            const res = await axiosPrivate.get('/order/' + billId);
+            const res = await axiosPrivate.get(url + '/' + id);
             setBillDetail(res.data.data);
             setOpenModalBillDetail(true)
         } catch (error) {

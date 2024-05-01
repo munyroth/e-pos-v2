@@ -13,13 +13,13 @@ import getData from "../../../requestApi/getData";
 import handleChange from "../../../features/handleChange";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
-import useGetData from "../../../hooks/useGetData";
+import useGetDataList from "../../../hooks/useGetDataList";
 import Filter from "../../../components/form/Filter";
 
 export default function Products() {
     let url = '/product';
     const [page] = useState(1);
-    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetData(url, page);
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, page);
 
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');

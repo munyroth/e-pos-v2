@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-const useGetData = (url, page) => {
+const useGetDataList = (url, page) => {
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState([]);
     const [meta, setMeta] = useState({
@@ -45,4 +45,4 @@ const useGetData = (url, page) => {
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };
 
-export default useGetData;
+export default useGetDataList;

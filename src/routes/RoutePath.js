@@ -19,6 +19,7 @@ import React from "react";
 import CheckAuth from "../pages/CheckAuth";
 import Register from "../pages/Register";
 import Stores from "../pages/admin/stores";
+import BranchDetail from "../pages/admin/branches/branchDetail";
 
 const RoutePath = () => {
     return (
@@ -48,7 +49,16 @@ const RoutePath = () => {
                                 <Route exact path="members" element={<Members/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BRANCHES]}/>}>
-                                <Route exact path="branches" element={<Branches/>}/>
+                                <Route path="branches">
+                                    <Route
+                                        index
+                                        element={<Branches/>}
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={<BranchDetail/>}
+                                    />
+                                </Route>
                             </Route>
                         </Route>
 

@@ -13,12 +13,12 @@ import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
-import useGetData from "../../../hooks/useGetData";
+import useGetDataList from "../../../hooks/useGetDataList";
 
 export default function Products() {
     let url = '/employee';
     const [page] = useState(1);
-    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetData(url, page);
+    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, page);
 
     const [roles, setRoles] = useState([]);
 

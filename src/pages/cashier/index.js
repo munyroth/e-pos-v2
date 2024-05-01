@@ -1,12 +1,12 @@
 import {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
-import useGetData from "../../hooks/useGetData";
+import useGetDataList from "../../hooks/useGetDataList";
 
 export default function Cashier() {
     let url = '/product';
     const [page] = useState(1);
-    const [products, meta, isLoading] = useGetData(url, page);
+    const [products, meta, isLoading] = useGetDataList(url, page);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);

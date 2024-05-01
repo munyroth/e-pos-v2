@@ -10,12 +10,16 @@ import Input from "../../../components/form/Input";
 import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
-import useGetData from "../../../hooks/useGetData";
+import useGetDataList from "../../../hooks/useGetDataList";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export default function Branches() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     let url = '/shop';
     const [page] = useState(1);
-    const [shop, meta, isLoading, setShop, setMeta, setIsLoading] = useGetData(url, page);
+    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, page);
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -113,7 +117,7 @@ export default function Branches() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setShop, setMeta)}
+                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setShops, setMeta)}
                         type="text"
                         id="table-search"
                         className="input w-80 pl-10"
@@ -152,25 +156,29 @@ export default function Branches() {
                                     </div>
                                 </th>
                             </tr>
-                            : shop.map(item => (
-                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                            : shops.map(shop => (
+                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
+                                    onClick={() => {
+                                        navigate(location.state?.path || ""+shop.id);
+                                    }}
+                                >
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {item.name}
+                                        {shop.name}
                                     </th>
                                     <td className="px-6 py-4">
-                                        {item.orders_count}
+                                        {shop.orders_count}
                                     </td>
                                     <td className="px-6 py-4">
-                                        ${parseFloat(item?.orders_sum_total ?? 0).toFixed(2)}
+                                        ${parseFloat(shop?.orders_sum_total ?? 0).toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => {
-                                                setUpdateId(item.id);
+                                                setUpdateId(shop.id);
                                                 setOpenModalAddItem(true);
                                                 setData({
-                                                    name: item.name
+                                                    name: shop.name
                                                 });
                                             }}
                                             className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
@@ -179,7 +187,7 @@ export default function Branches() {
                                         <button
                                             className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
                                             onClick={() => {
-                                                setDeleteId(item.id);
+                                                setDeleteId(shop.id);
                                                 setOpenModalDelete(true);
                                             }}
                                         >
@@ -198,7 +206,7 @@ export default function Branches() {
                 content={content}
                 meta={meta}
                 setMeta={setMeta}
-                setItems={setShop}
+                setItems={setShops}
                 setLoader={setIsLoading}
                 url={url}/>
 
