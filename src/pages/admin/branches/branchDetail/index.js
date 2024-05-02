@@ -8,7 +8,7 @@ export default function BranchDetail() {
     const {id} = useParams();
 
     let url = '/shop/'+id;
-    const [branch, isLoading, setBranch, setIsLoading] = useGetDataObject(url);
+    const [branch] = useGetDataObject(url);
 
     return (
         <div className="dark:text-white">
