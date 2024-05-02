@@ -9,7 +9,6 @@ const searchData = async (
     setMeta,
     params
 ) => {
-    console.log(params);
     setContent(content);
     setIsLoading(true);
     const controller = new AbortController();

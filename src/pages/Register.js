@@ -196,12 +196,10 @@ export default function Register() {
                 if (res.data.message === 'Invalid OTP') {
                     setInvalidOTP(true);
                 }
-                console.log(res.data.message);
             } else {
                 console.log(res.data.message);
             }
         } catch (err) {
-            console.log(err);
             setErrMsg('មានបញ្ហាក្នុងការចូល សូមព្យាយាមម្តងទៀត');
         } finally {
             setIsLoading(false);

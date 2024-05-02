@@ -5,8 +5,7 @@ import useGetDataList from "../../hooks/useGetDataList";
 
 export default function Cashier() {
     let url = '/product';
-    const [page] = useState(1);
-    const [products, meta, isLoading] = useGetDataList(url, page);
+    const [products, meta, isLoading] = useGetDataList(url);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);

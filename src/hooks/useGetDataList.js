@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-const useGetDataList = (url, page) => {
+const useGetDataList = (url, openModalAdd, openModalDelete) => {
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState([]);
     const [meta, setMeta] = useState({
@@ -20,7 +20,7 @@ const useGetDataList = (url, page) => {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal,
                     params: {
-                        page: page || 1
+                        page: meta.page,
                     }
                 });
                 if (isMounted) {
@@ -34,13 +34,15 @@ const useGetDataList = (url, page) => {
             }
         };
 
-        fetchData().then(r => r);
+        if (!openModalAdd && !openModalDelete) {
+            fetchData().then(r => r);
+        }
 
         return () => {
             isMounted = false;
             controller.abort();
         };
-    }, [url, page, axiosPrivate]);
+    }, [url, meta.page, axiosPrivate, openModalAdd, openModalDelete]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };

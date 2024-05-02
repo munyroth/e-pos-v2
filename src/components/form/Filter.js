@@ -12,23 +12,19 @@ export default function Filter(props) {
 
     return (
         <div>
-            {title && <label htmlFor={id}
-                             className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
-                {title}
-            </label>}
             <div>
                 <select
                     onChange={onChange}
                     id={id}
                     name={id}
-                    className="select-filter w-32"
+                    className="select-filter w-52"
                 >
-                    <option value="all" selected={true}>ទាំងអស់</option>
-                    {isHasNon && <option value="0">មិនមាន</option>}
+                    <option value="all" selected={true}>{title}៖ ទាំងអស់</option>
+                    {isHasNon && <option value="0">{title}៖ មិនមាន</option>}
                     {selectOptions.map(item => (
                         <option key={item.id} value={item.id} selected={
                             value === item.id ? 'selected' : null
-                        }>{item.name}</option>
+                        }>{title}៖ {item.name}</option>
                     ))}
                 </select>
             </div>

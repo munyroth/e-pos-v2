@@ -20,7 +20,7 @@ export const AuthProvider = ({children}) => {
         const permissions = role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
-            PERMISSIONS.CAN_VIEW_ITEMS,
+            PERMISSIONS.CAN_VIEW_PRODUCTS,
             PERMISSIONS.CAN_VIEW_BILLS,
             PERMISSIONS.CAN_VIEW_MEMBERS,
             PERMISSIONS.CAN_VIEW_BRANCHES,
@@ -37,7 +37,7 @@ export const AuthProvider = ({children}) => {
         const permissions = [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
-            PERMISSIONS.CAN_VIEW_ITEMS,
+            PERMISSIONS.CAN_VIEW_PRODUCTS,
             PERMISSIONS.CAN_VIEW_BILLS,
             PERMISSIONS.CAN_VIEW_MEMBERS,
             PERMISSIONS.CAN_VIEW_BRANCHES,
@@ -52,7 +52,7 @@ export const AuthProvider = ({children}) => {
         const permissions = role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
-            PERMISSIONS.CAN_VIEW_ITEMS,
+            PERMISSIONS.CAN_VIEW_PRODUCTS,
             PERMISSIONS.CAN_VIEW_BILLS,
             PERMISSIONS.CAN_VIEW_MEMBERS,
             PERMISSIONS.CAN_VIEW_BRANCHES,

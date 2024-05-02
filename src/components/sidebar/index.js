@@ -69,12 +69,10 @@ export default class Sidebar extends Component {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink
-                                    to="products"
-                                    className={({isActive}) => classNames(
-                                        isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
-                                    )}
+                                <button
+                                    type="button"
+                                    onClick={() => this.setState({isShowECommerce: !this.state.isShowECommerce})}
+                                    className="flex items-center w-full p-2 pe-4 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                 >
                                     <svg
                                         aria-hidden="true"
@@ -85,8 +83,52 @@ export default class Sidebar extends Component {
                                             d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
                                             clipRule="evenodd"></path>
                                     </svg>
-                                    <span className="ml-3">ទំនិញ</span>
-                                </NavLink>
+                                    <span
+                                        className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ទំនិញ</span>
+                                    {this.state.isShowECommerce
+                                        ? <svg
+                                            aria-hidden="true"
+                                            className="w-3 h-3"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 10 6">
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round" strokeLinejoin="round"
+                                                strokeWidth="2" d="m1 4 4-4 4 4"/>
+                                        </svg>
+                                        : <svg
+                                            aria-hidden="true"
+                                            className="w-3 h-3"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                                  strokeWidth="2" d="m1 1 4 4 4-4"/>
+                                        </svg>}
+                                </button>
+                                {this.state.isShowECommerce && (
+                                    <ul className="py-2 space-y-2">
+                                        <li>
+                                            <NavLink
+                                                to="products"
+                                                className={({isActive}) => classNames(
+                                                    isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                                )}
+                                            ><span className="ml-9">ទំនិញ</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink
+                                                to="categories"
+                                                className={({isActive}) => classNames(
+                                                    isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                                )}
+                                            ><span className="ml-9">ប្រភេទ</span>
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                )}
                             </li>
                             <li>
                                 <NavLink

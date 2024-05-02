@@ -8,7 +8,8 @@ export default function BranchDetail() {
     const {id} = useParams();
 
     let url = '/shop/'+id;
-    const [branch] = useGetDataObject(url);
+    // eslint-disable-next-line
+    const [branch, isLoading, setBranch, setIsLoading] = useGetDataObject(url);
 
     return (
         <div className="dark:text-white">

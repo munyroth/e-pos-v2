@@ -17,9 +17,6 @@ import useGetDataList from "../../../hooks/useGetDataList";
 
 export default function Products() {
     let url = '/employee';
-    const [page] = useState(1);
-    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, page);
-
     const [roles, setRoles] = useState([]);
 
     const [content, setContent] = useState('');
@@ -51,6 +48,8 @@ export default function Products() {
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -194,16 +193,16 @@ export default function Products() {
                         {/*        <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>*/}
                         {/*    </div>*/}
                         {/*</th>*/}
-                        <th scope="col" className="w-1/4 px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-4/12 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
                         </th>
-                        <th scope="col" className="w-1/4 px-6 py-3">
+                        <th scope="col" className="w-4/12 px-6 py-3">
                             លេខទូរស័ព្ទ
                         </th>
-                        <th scope="col" className="w-1/4 px-6 py-3">
+                        <th scope="col" className="w-2/12 px-6 py-3">
                             តួនាទី
                         </th>
-                        <th scope="col" className="w-1/4 px-6 py-3 rounded-r-lg">
+                        <th scope="col" className="text-center w-2/12 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
                         </th>
                     </tr>
@@ -253,34 +252,36 @@ export default function Products() {
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <button
-                                            onClick={() => {
-                                                setUpdateId(member.id);
-                                                setOpenModalAddItem(true);
-                                                setData({
-                                                    name: member.name,
-                                                    role: member.role,
-                                                    phone: member.phone,
-                                                    password: "",
-                                                    image: null
-                                                });
-                                                if (member.img_url) {
-                                                    setImageURL(member.img_url);
-                                                    setIsImage(true);
-                                                }
-                                            }}
-                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            កែប្រែ
-                                        </button>
-                                        <button
-                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                            onClick={() => {
-                                                setDeleteId(member.id);
-                                                setOpenModalDelete(true);
-                                            }}
-                                        >
-                                            លុប
-                                        </button>
+                                        <div className="flex justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setUpdateId(member.id);
+                                                    setOpenModalAddItem(true);
+                                                    setData({
+                                                        name: member.name,
+                                                        role: member.role,
+                                                        phone: member.phone,
+                                                        password: "",
+                                                        image: null
+                                                    });
+                                                    if (member.img_url) {
+                                                        setImageURL(member.img_url);
+                                                        setIsImage(true);
+                                                    }
+                                                }}
+                                                className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                កែប្រែ
+                                            </button>
+                                            <button
+                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                                onClick={() => {
+                                                    setDeleteId(member.id);
+                                                    setOpenModalDelete(true);
+                                                }}
+                                            >
+                                                លុប
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

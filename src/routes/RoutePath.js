@@ -20,6 +20,7 @@ import CheckAuth from "../pages/CheckAuth";
 import Register from "../pages/Register";
 import Stores from "../pages/admin/stores";
 import BranchDetail from "../pages/admin/branches/branchDetail";
+import Categories from "../pages/admin/categories";
 
 const RoutePath = () => {
     return (
@@ -39,8 +40,11 @@ const RoutePath = () => {
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
                                 <Route exact path="dashboard" element={<Dashboard/>}/>
                             </Route>
-                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_ITEMS]}/>}>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_PRODUCTS]}/>}>
                                 <Route exact path="products" element={<Products/>}/>
+                            </Route>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_PRODUCTS]}/>}>
+                                <Route exact path="categories" element={<Categories/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BILLS]}/>}>
                                 <Route exact path="bills" element={<Bills/>}/>

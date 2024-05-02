@@ -11,8 +11,7 @@ export default function Bills() {
     const axiosPrivate = useAxiosPrivate();
 
     let url = '/order';
-    const [page] = useState(1);
-    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url, page);
+    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url);
 
     const [billDetail, setBillDetail] = useState(null);
     const [content, setContent] = useState('');

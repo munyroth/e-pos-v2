@@ -200,7 +200,7 @@ export default function Dashboard() {
                             className="w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 sm:pb-2 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="">
-                                    កំពូលហាងលក់ច្រើនបំផុត
+                                    កំពូលសាខាលក់ច្រើនបំផុត
                                 </h3>
                                 <Link
                                     to=""

@@ -18,9 +18,6 @@ import Filter from "../../../components/form/Filter";
 
 export default function Products() {
     let url = '/product';
-    const [page] = useState(1);
-    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, page);
-
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
     const [params, setParams] = useState({})
@@ -52,6 +49,8 @@ export default function Products() {
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -160,6 +159,7 @@ export default function Products() {
                         បន្ថែមទំនិញ
                     </button>
                     <Filter
+                        title="ប្រភេទ"
                         id="filter-category"
                         onChange={(e) => {
                             const {value} = e.target;
@@ -198,16 +198,16 @@ export default function Products() {
                     <thead
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="w-3/6 px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-6/12 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
                         </th>
-                        <th scope="col" className="w-1/6 px-6 py-3">
+                        <th scope="col" className="w-2/12 px-6 py-3">
                             តម្លៃ
                         </th>
-                        <th scope="col" className="w-1/6 px-6 py-3">
+                        <th scope="col" className="w-2/12 px-6 py-3">
                             ប្រភេទ
                         </th>
-                        <th scope="col" className="w-1/6 px-6 py-3 rounded-r-lg">
+                        <th scope="col" className="text-center w-2/12 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
                         </th>
                     </tr>
@@ -245,38 +245,40 @@ export default function Products() {
                                     <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                         <div className="pl-3">
                                             <div
-                                                className="font-semibold">{item.category ? item.category.name : "មិនមានប្រភេទ"}</div>
+                                                className="font-semibold">{item.category ? item.category.name : "មិនមាន"}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <button
-                                            onClick={() => {
-                                                setUpdateId(item.id);
-                                                setOpenModalAddItem(true);
-                                                setData({
-                                                    category: item.category_id,
-                                                    barcode: item.barcode,
-                                                    name: item.name_kh,
-                                                    price: item.price,
-                                                    image: null
-                                                });
-                                                if (item.img_url) {
-                                                    setImageURL(item.img_url);
-                                                    setIsImage(true);
-                                                }
-                                            }}
-                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                            កែប្រែ
-                                        </button>
-                                        <button
-                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                            onClick={() => {
-                                                setDeleteId(item.id);
-                                                setOpenModalDelete(true);
-                                            }}
-                                        >
-                                            លុប
-                                        </button>
+                                        <div className="flex justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setUpdateId(item.id);
+                                                    setOpenModalAddItem(true);
+                                                    setData({
+                                                        category: item.category_id,
+                                                        barcode: item.barcode,
+                                                        name: item.name_kh,
+                                                        price: item.price,
+                                                        image: null
+                                                    });
+                                                    if (item.img_url) {
+                                                        setImageURL(item.img_url);
+                                                        setIsImage(true);
+                                                    }
+                                                }}
+                                                className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                កែប្រែ
+                                            </button>
+                                            <button
+                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                                onClick={() => {
+                                                    setDeleteId(item.id);
+                                                    setOpenModalDelete(true);
+                                                }}
+                                            >
+                                                លុប
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

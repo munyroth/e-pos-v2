@@ -11,13 +11,10 @@ import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
 import useGetDataList from "../../../hooks/useGetDataList";
-import {useLocation, useNavigate} from "react-router-dom";
 
-export default function Branches() {
-    const navigate = useNavigate();
-    const location = useLocation();
+export default function Categories() {
+    let url = '/category';
 
-    let url = '/shop';
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -38,7 +35,7 @@ export default function Branches() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
+    const [categories, meta, isLoading, setCategories, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -55,7 +52,7 @@ export default function Branches() {
             data,
             setIsValidate
         )) return;
-        await postData(url, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសាខា');
+        await postData(url, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលប្រភេទដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលប្រភេទ');
     }
 
     const handleUpdate = async id => {
@@ -64,11 +61,11 @@ export default function Branches() {
             data,
             setIsValidate
         )) return;
-        await postData(`${url}/${id}?_method=PUT`, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែសាខា');
+        await postData(`${url}/${id}?_method=PUT`, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែប្រភេទដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែប្រភេទ');
     }
 
     const handleDelete = async id => {
-        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបសាខា')
+        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបប្រភេទដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបប្រភេទ')
     }
 
     useEffect(() => {
@@ -95,14 +92,14 @@ export default function Branches() {
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                    <h1 className="me-8">សាខា</h1>
+                    <h1 className="me-8">ប្រភេទ</h1>
                     <button
                         onClick={() => {
                             setOpenModalAddItem(true);
                         }}
                         type="button"
                         className="button">
-                        បន្ថែមសាខា
+                        បន្ថែមប្រភេទ
                     </button>
                 </div>
 
@@ -117,7 +114,7 @@ export default function Branches() {
                         </svg>
                     </div>
                     <input
-                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setShops, setMeta)}
+                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setCategories, setMeta)}
                         type="text"
                         id="table-search"
                         className="input w-80 pl-10"
@@ -129,14 +126,8 @@ export default function Branches() {
                     <thead
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="w-4/12 px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-10/12 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
-                        </th>
-                        <th scope="col" className="w-4/12 px-6 py-3">
-                            ចំណូលសរុប
-                        </th>
-                        <th scope="col" className="w-2/12 px-6 py-3">
-                            ចំនួនលក់សរុប
                         </th>
                         <th scope="col" className="text-center w-2/12 px-6 py-3 rounded-r-lg">
                             សកម្មភាព
@@ -152,11 +143,11 @@ export default function Branches() {
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                     <div className="w-10 h-10"></div>
                                     <div className="pl-3" role="status">
-                                        <span className="">មិនមានសាខា</span>
+                                        <span className="">មិនមានប្រភេទ</span>
                                     </div>
                                 </th>
                             </tr>
-                            : shops.map(shop => (
+                            : categories.map(shop => (
                                 <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
                                 >
                                     <th scope="row"
@@ -164,20 +155,7 @@ export default function Branches() {
                                         {shop.name}
                                     </th>
                                     <td className="px-6 py-4">
-                                        ${parseFloat(shop?.orders_sum_total ?? 0).toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {shop.orders_count}
-                                    </td>
-                                    <td className="px-6 py-4">
                                         <div className="flex justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    navigate(location.state?.path || "" + shop.id);
-                                                }}
-                                                className="font-medium text-green-600 dark:text-green-500 hover:underline">
-                                                មើល
-                                            </button>
                                             <button
                                                 onClick={() => {
                                                     setUpdateId(shop.id);
@@ -186,7 +164,7 @@ export default function Branches() {
                                                         name: shop.name
                                                     });
                                                 }}
-                                                className="pl-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 កែប្រែ
                                             </button>
                                             <button
@@ -212,12 +190,12 @@ export default function Branches() {
                 content={content}
                 meta={meta}
                 setMeta={setMeta}
-                setItems={setShops}
+                setItems={setCategories}
                 setLoader={setIsLoading}
                 url={url}/>
 
             <FormDialog
-                title="សាខា"
+                title="ប្រភេទ"
                 openModal={openModalAddItem}
                 setOpenModal={setOpenModalAddItem}
                 cancelModalRef={cancelModalAddItemRef}
@@ -237,7 +215,7 @@ export default function Branches() {
                 />
             </FormDialog>
             <DeleteDialog
-                title="សាខា"
+                title="ប្រភេទ"
                 openModalDelete={openModalDelete}
                 setOpenModalDelete={setOpenModalDelete}
                 cancelModalDeleteRef={cancelModalDeleteRef}
