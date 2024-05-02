@@ -4,7 +4,7 @@ import {axiosPrivate} from "../../api/axios";
 export default function Pagination(
     {content, meta, setMeta, setItems, setLoader, url}
 ) {
-    let totalPages = Math.ceil(meta.total / meta.size) || 1;
+    let totalPages = Math.ceil(meta.total / meta.size) || 0;
 
     const searchProduct = async (content, page) => {
         setLoader(true)
@@ -42,7 +42,7 @@ export default function Pagination(
 
     const renderPageNumbers = () => {
         const pages = [];
-        const maxPagesToShow = 9;
+        const maxPagesToShow = totalPages < 9 ? totalPages : 9;
         const sidePagesToShow = totalPages <= 1 ? 1 : 2;
 
         let startPage = Math.max(1, meta.page - Math.floor(maxPagesToShow / 2));
@@ -100,7 +100,7 @@ export default function Pagination(
             );
         }
 
-        if (totalPages + sidePagesToShow >= maxPagesToShow) {
+        if (totalPages + sidePagesToShow >= maxPagesToShow && totalPages > 2) {
             for (let i = totalPages - sidePagesToShow + 1; i <= totalPages; i++) {
                 pages.push(
                     <button
@@ -168,7 +168,7 @@ export default function Pagination(
                             <span className="sr-only">Previous</span>
                             <ChevronLeftIcon className="h-5 w-5" aria-hidden="true"/>
                         </button>
-                        {renderPageNumbers()}
+                        {totalPages > 0 && renderPageNumbers()}
                         <button
                             onClick={handleNextPage}
                             disabled={meta.page === totalPages}
