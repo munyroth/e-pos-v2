@@ -39,7 +39,7 @@ export default function Stores() {
             isMounted = false;
             controller.abort();
         };
-    }, [axiosPrivate]);
+    }, [axiosPrivate, auth.role]);
 
     return (
         <BaseForm>

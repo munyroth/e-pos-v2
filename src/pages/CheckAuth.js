@@ -12,7 +12,9 @@ const CheckAuth = () => {
     return (
         (auth.token || token)
             ? shop
-                ? <Navigate to='/admin/dashboard' state={{from: location}} replace/>
+                ? auth.role === 'admin'
+                    ? <Navigate to='/admin/dashboard' state={{from: location}} replace/>
+                    : <Navigate to='/cashier' state={{from: location}} replace/>
                 : <Navigate to='/stores' state={{from: location}} replace/>
             : <Navigate to='/login' state={{from: location}} replace/>
     )
