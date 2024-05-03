@@ -54,7 +54,7 @@ export default class Sidebar extends Component {
                                     to="dashboard"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                     )}
                                 >
                                     <svg
@@ -72,7 +72,7 @@ export default class Sidebar extends Component {
                                 <button
                                     type="button"
                                     onClick={() => this.setState({isShowECommerce: !this.state.isShowECommerce})}
-                                    className="flex items-center w-full p-2 pe-4 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                    className="flex items-center w-full p-2 transition duration-75 rounded-lg group text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     <svg
                                         aria-hidden="true"
@@ -112,7 +112,7 @@ export default class Sidebar extends Component {
                                                 to="products"
                                                 className={({isActive}) => classNames(
                                                     isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                                 )}
                                             ><span className="ml-9">ទំនិញ</span>
                                             </NavLink>
@@ -122,7 +122,7 @@ export default class Sidebar extends Component {
                                                 to="categories"
                                                 className={({isActive}) => classNames(
                                                     isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                                 )}
                                             ><span className="ml-9">ប្រភេទទំនិញ</span>
                                             </NavLink>
@@ -135,7 +135,7 @@ export default class Sidebar extends Component {
                                     to="bills"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                     )}
                                 >
                                     <svg
@@ -160,7 +160,7 @@ export default class Sidebar extends Component {
                                     to="members"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                     )}
                                 >
                                     <svg
@@ -182,7 +182,7 @@ export default class Sidebar extends Component {
                                     to="branches"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                     )}
                                 >
                                     <svg
@@ -205,7 +205,7 @@ export default class Sidebar extends Component {
                                     to="cashier"
                                     className={({isActive}) => classNames(
                                         isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
+                                        'flex items-center w-full p-2 transition duration-75 rounded-lg group'
                                     )}
                                 >
                                     <svg

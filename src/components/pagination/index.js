@@ -162,7 +162,7 @@ export default function Pagination(
                             className={
                                 meta.page === 1
                                     ? "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0"
-                                    : "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
+                                    : "relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
                             }
                         >
                             <span className="sr-only">Previous</span>
@@ -175,7 +175,7 @@ export default function Pagination(
                             className={
                                 meta.page === totalPages
                                     ? "relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0"
-                                    : "relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
+                                    : "relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
                             }
                         >
                             <span className="sr-only">Next</span>
