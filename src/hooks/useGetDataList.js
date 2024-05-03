@@ -45,7 +45,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
             isMounted = false;
             controller.abort();
         };
-    }, [url, meta.page, axiosPrivate, openModalAdd, openModalDelete]);
+    }, [url, meta.page, auth.role, axiosPrivate, openModalAdd, openModalDelete]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };
