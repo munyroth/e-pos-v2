@@ -16,8 +16,9 @@ const Authentication = () => {
     const controller = new AbortController();
 
     const getUser = async () => {
+        let url = auth.role === 'admin' ? '/admin/user' : '/user';
         try {
-            const res = await axios.get('/admin/user', {
+            const res = await axios.get(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
@@ -38,7 +39,6 @@ const Authentication = () => {
             isMounted = false;
             controller.abort();
         }
-
     } else {
         navigate('/login', {state: {from: location}, replace: true});
     }

@@ -13,6 +13,7 @@ export const AuthProvider = ({children}) => {
 
     const [auth, setAuth] = useState({
         token: '',
+        role: '',
         permissions: []
     });
 
@@ -29,7 +30,7 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
-        setAuth({token, permissions});
+        setAuth({token, role, permissions});
     };
 
     const register = (token) => {
@@ -43,7 +44,7 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_BRANCHES,
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
-        setAuth({token, permissions});
+        setAuth({token, role: 'admin', permissions});
         navigate(location.state?.path || '/stores/add', {replace: true});
     };
 
@@ -61,7 +62,7 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
-        setAuth({token, permissions});
+        setAuth({token, role, permissions});
         const defaultPath = role === 'admin' ? '/stores' : '/cashier';
         navigate(location.state?.path || defaultPath, {replace: true});
     };
@@ -69,7 +70,7 @@ export const AuthProvider = ({children}) => {
     const logout = () => {
         Cookies.remove(COOKIE_TOKEN);
         Cookies.remove(SHOP_ID);
-        setAuth({token: '', permissions: []});
+        setAuth({token: '', role: '', permissions: []});
         navigate(location.state?.path || '/login', {replace: true});
     };
 

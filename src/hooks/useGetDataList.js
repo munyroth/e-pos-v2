@@ -1,7 +1,9 @@
 import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useAuth from "./useAuth";
 
 const useGetDataList = (url, openModalAdd, openModalDelete) => {
+    const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState([]);
     const [meta, setMeta] = useState({
@@ -16,8 +18,9 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
         let isMounted = true;
 
         const fetchData = async () => {
+            let u = auth.role === 'admin' ? '/admin' + url : url;
             try {
-                const res = await axiosPrivate.get("/admin"+url, {
+                const res = await axiosPrivate.get(u, {
                     signal: controller.signal,
                     params: {
                         page: meta.page,
