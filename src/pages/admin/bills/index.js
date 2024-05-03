@@ -26,7 +26,7 @@ export default function Bills() {
             setBillDetail(res.data.data);
             setOpenModalBillDetail(true)
         } catch (error) {
-            console.log("Failed to fetch bill details:", error);
+            console.error("Failed to fetch bill details:", error);
         }
     }
 

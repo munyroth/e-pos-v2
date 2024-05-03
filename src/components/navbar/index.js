@@ -26,7 +26,6 @@ export default function Navbar() {
     })
 
     useEffect(() => {
-        console.log("shops", shops)
         let shopId = Cookies.get('shopId');
         if (shopId && !isLoadingShops) {
             setSelected(shops.find(shop => shop.id === parseInt(shopId)))

@@ -84,7 +84,7 @@ export default class Sidebar extends Component {
                                             clipRule="evenodd"></path>
                                     </svg>
                                     <span
-                                        className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ទំនិញ</span>
+                                        className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">គ្រប់គ្រងទំនិញ</span>
                                     {this.state.isShowECommerce
                                         ? <svg
                                             aria-hidden="true"
@@ -124,7 +124,7 @@ export default class Sidebar extends Component {
                                                     isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
                                                     'flex items-center w-full p-2 transition duration-75 rounded-lg group dark:text-whites'
                                                 )}
-                                            ><span className="ml-9">ប្រភេទ</span>
+                                            ><span className="ml-9">ប្រភេទទំនិញ</span>
                                             </NavLink>
                                         </li>
                                     </ul>

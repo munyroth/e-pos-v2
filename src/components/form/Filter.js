@@ -7,11 +7,13 @@ export default function Filter(props) {
         onChange,
         value,
         selectOptions,
-        isHasNon
+        isHasAll = true,
+        isHasNon,
+        className
     } = props
 
     return (
-        <div>
+        <div className={className}>
             <div>
                 <select
                     onChange={onChange}
@@ -19,7 +21,7 @@ export default function Filter(props) {
                     name={id}
                     className="select-filter w-52"
                 >
-                    <option value="all" selected={true}>{title}៖ ទាំងអស់</option>
+                    {isHasAll && <option value="all" selected={true}>{title}៖ ទាំងអស់</option>}
                     {isHasNon && <option value="0">{title}៖ មិនមាន</option>}
                     {selectOptions.map(item => (
                         <option key={item.id} value={item.id} selected={
