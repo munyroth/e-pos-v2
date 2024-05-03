@@ -7,7 +7,7 @@ import Filter from "../../../components/form/Filter";
 
 
 export default function Dashboard() {
-    let url = '/report/sale';
+    let url = '/admin/report/sale';
     const axiosPrivate = useAxiosPrivate();
 
     const [report, setReport] = useState([]);

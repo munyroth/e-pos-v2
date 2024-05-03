@@ -18,7 +18,7 @@ export default function Stores() {
 
         const getShop = async () => {
             try {
-                const res = await axiosPrivate.get('/business', {
+                const res = await axiosPrivate.get('/admin/business', {
                     signal: controller.signal
                 });
                 if (isMounted) {

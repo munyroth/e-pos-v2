@@ -12,7 +12,7 @@ const deleteData = async (
     const controller = new AbortController();
 
     try {
-        const res = await axiosPrivate.delete(url, {
+        const res = await axiosPrivate.delete("/admin"+url, {
             signal: controller.signal
         });
         if (res.data.status === 200) {

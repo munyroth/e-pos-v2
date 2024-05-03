@@ -32,7 +32,7 @@ export default function FormDialog(props) {
             title={updateId ? `កែប្រែ${title}` : `បន្ថែម${title}`}
             openModal={openModal}
             setOpenModal={setOpenModal}
-            cancelModalDeleteRef={cancelModal}
+            cancelModalRef={cancelModal}
             button={
                 <button
                     disabled={isLoading ? true : ""}

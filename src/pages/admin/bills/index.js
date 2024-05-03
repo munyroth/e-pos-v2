@@ -156,7 +156,7 @@ export default function Bills() {
                 title="លម្អិតវិក្កយបត្រ"
                 openModal={openModalBillDetail}
                 setOpenModal={setOpenModalBillDetail}
-                cancelModalDeleteRef={cancelModalBillDetail}
+                cancelModalRef={cancelModalBillDetail}
             >
                 <div className="flex-1">
                     <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">

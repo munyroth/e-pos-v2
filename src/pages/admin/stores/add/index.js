@@ -45,7 +45,7 @@ export default function AddStore() {
         formData.append("type", data.type);
 
         try {
-            const res = await axiosPrivate.post('/business', formData);
+            const res = await axiosPrivate.post('/admin/business', formData);
             if (res.data.status === 201) {
                 Cookies.set('shopId', res.data.data.id);
                 navigate(location.state?.path || "/admin/dashboard", {replace: true});

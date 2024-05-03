@@ -12,7 +12,7 @@ const useGetDataObject = (url) => {
 
         const fetchData = async () => {
             try {
-                const res = await axiosPrivate.get(url, {
+                const res = await axiosPrivate.get("/admin"+url, {
                     signal: controller.signal
                 });
                 if (isMounted) {

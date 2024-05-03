@@ -7,13 +7,13 @@ export default function BaseDialog(props) {
         title,
         openModal,
         setOpenModal,
-        cancelModalDeleteRef,
+        cancelModalRef,
         button
     } = props;
 
     return (
         <Transition.Root show={openModal} as={Fragment}>
-            <Dialog as="div" className="relative z-10" initialFocus={cancelModalDeleteRef}
+            <Dialog as="div" className="relative z-10" initialFocus={cancelModalRef}
                     onClose={setOpenModal}>
                 <Transition.Child
                     as={Fragment}
@@ -61,7 +61,7 @@ export default function BaseDialog(props) {
                                         type="button"
                                         className="rounded-md bg-white px-4 py-2 mr-4 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-gray-300 dark:ring-gray-700"
                                         onClick={() => setOpenModal(false)}
-                                        ref={cancelModalDeleteRef}
+                                        ref={cancelModalRef}
                                     >
                                         បោះបង់
                                     </button>

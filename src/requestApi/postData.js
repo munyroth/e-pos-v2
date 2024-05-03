@@ -14,7 +14,7 @@ const postData = async (
     setIsLoading(true);
     const controller = new AbortController();
     try {
-        const response = await axiosPrivate.post(url, data, {
+        const response = await axiosPrivate.post("/admin"+url, data, {
             signal: controller.signal
         });
 

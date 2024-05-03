@@ -9,7 +9,7 @@ const getData = async (
     setMeta,
     setIsLoading
 ) => {
-    const res = await axiosPrivate.get(url, {
+    const res = await axiosPrivate.get("/admin"+url, {
         signal: controller.signal,
         params: {
             page: page || 1

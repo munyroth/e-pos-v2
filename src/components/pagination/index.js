@@ -9,7 +9,7 @@ export default function Pagination(
     const searchProduct = async (content, page) => {
         setLoader(true)
         try {
-            const res = await axiosPrivate.get(url, {
+            const res = await axiosPrivate.get("/admin"+url, {
                 params: {
                     content,
                     page

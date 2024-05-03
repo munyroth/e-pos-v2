@@ -16,7 +16,7 @@ export default function DeleteDialog(
         <BaseDialog
             openModal={openModalDelete}
             setOpenModal={setOpenModalDelete}
-            cancelModalDeleteRef={cancelModalDeleteRef}
+            cancelModalRef={cancelModalDeleteRef}
             icon={
                 <div
                     className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-200">
@@ -49,10 +49,10 @@ export default function DeleteDialog(
                 ) : ('លុប')}
                 </button>
             }>
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-200">
                 តើអ្នកពិតជាចង់លុប{title}នេះ?
             </p>
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-200">
                 {title}នឹងលុបចេញ និងមិនអាចត្រឡប់វិញបានទេ!
             </p>
         </BaseDialog>
