@@ -11,12 +11,13 @@ const Authentication = () => {
     const navigate = useNavigate();
 
     let token = Cookies.get('token');
+    let role = Cookies.get('role');
 
     let isMounted = true;
     const controller = new AbortController();
 
     const getUser = async () => {
-        let url = auth.role === 'admin' ? '/admin/user' : '/user';
+        let url = role === 'admin' ? '/admin/user' : '/user';
         try {
             const res = await axios.get(url, {
                 headers: {

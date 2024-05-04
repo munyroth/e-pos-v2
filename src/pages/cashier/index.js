@@ -1,9 +1,16 @@
-import {Fragment, useCallback, useEffect, useRef, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
 import useGetDataList from "../../hooks/useGetDataList";
 import BaseDialog from "../../components/dialog";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Cookies from "js-cookie";
+import Input from "../../components/form/Input";
+import handleChange from "../../features/handleChange";
+import handleValidation from "../../features/validation/validation";
 
 export default function Cashier() {
+    const axiosPrivate = useAxiosPrivate();
+
     let url = '/product';
     // eslint-disable-next-line
     const [products, meta, isLoading] = useGetDataList(url);
@@ -15,16 +22,117 @@ export default function Cashier() {
 
     const clearSearchRef = useRef(null);
 
+    const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
     const [subtotal, setSubtotal] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [total, setTotal] = useState(0);
+    const [returnUsd, setReturnUsd] = useState(0);
+    const [payment, setPayment] = useState({
+        receive: '',
+    });
+
+    const [isValidate, setIsValidate] = useState({
+        receive: false,
+        return: false
+    });
+
+    const addToCart = (productId, isBarcode) => {
+        const product = products.find(items => {
+            if (isBarcode) return items.barcode === productId;
+            else return items.id === productId;
+        });
+        if (product) {
+            let isExist = false;
+            setItemsProcessing(itemsProcessing.map(item => {
+                if (item.product_id === product.id) {
+                    isExist = true;
+                    return {...item, qty: ++item.qty, totalPrice: item.price * item.qty};
+                } else {
+                    return item;
+                }
+            }));
+
+            if (!isExist) setItemsProcessing([...itemsProcessing, {
+                product_id: product.id,
+                barcode: product.barcode,
+                name_kh: product.name_kh,
+                img_url: product.img_url,
+                price: product.price,
+                discount: 0,
+                discount_type: 'value',
+                qty: 1,
+                totalPrice: product.price
+            }]);
+        }
+    }
+
+    const removeFromCart = (id) => {
+        setItemsProcessing(itemsProcessing.filter(item => item.id !== id));
+    }
 
     const handleSearchItem = e => {
         if (e.key === 'Enter') {
             const value = e.target.value;
-            addToCard(value, true);
+            addToCart(value, true);
             clearSearchRef.current.value = '';
         }
+    }
+
+    const handleCheckout = async () => {
+        if (!handleValidation(
+            ['receive'],
+            payment,
+            setIsValidate
+        )) return;
+        if (returnUsd < 0) {
+            setIsValidate(prevState => ({
+                ...prevState,
+                return: true
+            }));
+        } else {
+            setIsValidate(prevState => ({
+                ...prevState,
+                return: false
+            }));
+            try {
+                setIsLoadingCheckout(true);
+                const data = {
+                    carts: itemsProcessing,
+                    received_usd: payment.receive,
+                    received_khr: 0
+                }
+                const res = await axiosPrivate.post('order/pre-checkout', data);
+
+                console.log(res.data)
+                if (res.data.data.return_usd === returnUsd) {
+                    await handleOrder()
+                } else console.log('fail')
+            } catch (error) {
+                console.error("Failed to checkout:", error);
+            }
+        }
+    }
+
+    const handleOrder = async () => {
+        let shopId = Cookies.get('shopId');
+
+        try {
+            const data = {
+                shop_id: shopId,
+                received_usd: payment.receive,
+                received_khr: 0,
+                payment_type: 'cash',
+                order_details: itemsProcessing
+            }
+            const res = await axiosPrivate.post('order', data);
+
+            console.log(res.data)
+            setIsModalPayment(false);
+        } catch (error) {
+            console.error("Failed to order:", error);
+        }
+
+        setIsLoadingCheckout(false);
     }
 
     const sumPrice = useCallback((data) => {
@@ -46,43 +154,27 @@ export default function Cashier() {
     // const dateString = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
 
     useEffect(() => {
+        // Reset form data when modal is closed
+        if (!isModalPayment) {
+            // wait for the modal to close
+            setTimeout(() => {
+                setPayment({
+                    receive: '',
+                });
+                setIsValidate({
+                    receive: false,
+                    return: false
+                });
+                setReturnUsd(0);
+            }, 200);
+        }
+    }, [isModalPayment]);
+
+    useEffect(() => {
         setSubtotal(sumPrice(itemsProcessing));
         setDiscount(sumDiscount(itemsProcessing));
         setTotal(sumTotalPrice());
     }, [itemsProcessing, sumPrice, sumDiscount, sumTotalPrice]);
-
-    const addToCard = (productId, isBarcode) => {
-        const product = products.find(items => {
-            if (isBarcode) return items.barcode === productId;
-            else return items.id === productId;
-        });
-        if (product) {
-            let isExist = false;
-            setItemsProcessing(itemsProcessing.map(item => {
-                if (item.id === product.id) {
-                    isExist = true;
-                    return {...item, quantity: ++item.quantity, totalPrice: item.price * item.quantity};
-                } else {
-                    return item;
-                }
-            }));
-
-            if (!isExist) setItemsProcessing([...itemsProcessing, {
-                id: product.id,
-                barcode: product.barcode,
-                name_kh: product.name_kh,
-                img_url: product.img_url,
-                price: product.price,
-                discount: 0,
-                quantity: 1,
-                totalPrice: product.price
-            }]);
-        }
-    }
-
-    const removeItem = (id) => {
-        setItemsProcessing(itemsProcessing.filter(item => item.id !== id));
-    }
 
     return (
         <>
@@ -139,7 +231,7 @@ export default function Cashier() {
                                         <li
                                             className="p-3 border border-gray-200 rounded-lg flow-root hover:bg-gray-700"
 
-                                            onClick={() => addToCard(product.id)}
+                                            onClick={() => addToCart(product.id)}
                                         >
                                             <div className="w-full flex items-center">
                                                 <div className="text-base flex-1 min-w-0">
@@ -197,12 +289,12 @@ export default function Cashier() {
                                                         <p className="mt-1 text-sm text-gray-500">{product.barcode}</p>
                                                     </div>
                                                     <div className="flex flex-1 items-end justify-between text-sm">
-                                                        <p className="text-gray-500">Qty {product.quantity}</p>
+                                                        <p className="text-gray-500">Qty {product.qty}</p>
 
                                                         <div className="flex">
                                                             <button
                                                                 type="button"
-                                                                onClick={() => removeItem(product.id)}
+                                                                onClick={() => removeFromCart(product.id)}
                                                                 className="font-medium text-red-500 hover:text-red-600"
                                                             >
                                                                 ដកចេញ
@@ -232,7 +324,8 @@ export default function Cashier() {
                             </div>
                             <div className="mt-6">
                                 <button
-                                    className="button w-full"
+                                    disabled={itemsProcessing.length === 0}
+                                    className={itemsProcessing.length === 0 ? "button-disabled w-full" : "button w-full"}
                                     onClick={() => setIsModalPayment(true)}
                                 >
                                     ទូទាត់
@@ -249,14 +342,49 @@ export default function Cashier() {
                 setOpenModal={setIsModalPayment}
                 cancelModalRef={cancelButtonRef}
                 button={<button
+                    disabled={isLoadingCheckout ? true : ""}
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
-                    onClick={() => setIsModalPayment(false)}
+                    onClick={() => handleCheckout()}
                 >
-                    យល់ព្រម
+                    {isLoadingCheckout ? (
+                        <>
+                            <svg aria-hidden="true" role="status"
+                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
+                                 viewBox="0 0 100 101"
+                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="#E5E7EB"/>
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentColor"/>
+                            </svg>
+                            កំពុងទូទាត់...
+                        </>
+                    ) : ("យល់ព្រម")}
                 </button>}>
-                <p className="text-center text-sm text-gray-500 dark:text-gray-200">
-                    ទឹកប្រាក់ត្រូវបង់គឺ ${total}
+                <p className="text-center text-lg text-gray-500 dark:text-gray-200">
+                    ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total}</span>
+                </p>
+                <Input
+                    title="ទឹកប្រាក់ទទួល"
+                    id="receive"
+                    onChange={e => {
+                        handleChange(
+                            e,
+                            setPayment,
+                            setIsValidate
+                        )
+                        setReturnUsd(e.target.value - total);
+                    }}
+                    value={payment.receive}
+                    isValidate={isValidate.receive}
+                    isRequire={true}
+                />
+                {isValidate.return && <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
+                <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
+                    ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd}</span>
                 </p>
             </BaseDialog>
         </>

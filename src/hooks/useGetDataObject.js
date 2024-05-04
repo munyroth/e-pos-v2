@@ -1,7 +1,9 @@
 import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useAuth from "./useAuth";
 
 const useGetDataObject = (url) => {
+    const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -12,7 +14,8 @@ const useGetDataObject = (url) => {
 
         const fetchData = async () => {
             try {
-                const res = await axiosPrivate.get("/admin"+url, {
+                let u = auth.role === 'admin' ? '/admin' + url : url;
+                const res = await axiosPrivate.get(u, {
                     signal: controller.signal
                 });
                 if (isMounted) {
@@ -31,7 +34,7 @@ const useGetDataObject = (url) => {
             isMounted = false;
             controller.abort();
         };
-    }, [url, axiosPrivate]);
+    }, [url, axiosPrivate, auth.role]);
 
     return [data, isLoading, setData, setIsLoading];
 };

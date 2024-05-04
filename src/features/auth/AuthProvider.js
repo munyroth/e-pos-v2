@@ -5,6 +5,7 @@ import AuthContext from "../../contexts/AuthContext";
 import PERMISSIONS from "./permissions/Permissions";
 
 const COOKIE_TOKEN = 'token';
+const COOKIE_ROLE = 'role';
 const SHOP_ID = 'shopId';
 
 export const AuthProvider = ({children}) => {
@@ -35,6 +36,7 @@ export const AuthProvider = ({children}) => {
 
     const register = (token) => {
         Cookies.set(COOKIE_TOKEN, token);
+        Cookies.set(COOKIE_ROLE, 'admin');
         const permissions = [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
@@ -50,6 +52,7 @@ export const AuthProvider = ({children}) => {
 
     const login = (token, role) => {
         Cookies.set(COOKIE_TOKEN, token);
+        Cookies.set(COOKIE_ROLE, role);
         const permissions = role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
@@ -63,13 +66,14 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
         setAuth({token, role, permissions});
-        const defaultPath = role === 'admin' ? '/stores' : '/cashier';
+        const defaultPath = '/stores';
         navigate(location.state?.path || defaultPath, {replace: true});
     };
 
     const logout = () => {
         Cookies.remove(COOKIE_TOKEN);
         Cookies.remove(SHOP_ID);
+        Cookies.remove(COOKIE_ROLE);
         setAuth({token: '', role: '', permissions: []});
         navigate(location.state?.path || '/login', {replace: true});
     };

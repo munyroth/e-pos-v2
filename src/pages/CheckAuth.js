@@ -7,12 +7,13 @@ const CheckAuth = () => {
     const location = useLocation();
 
     let token = Cookies.get('token');
+    let role = Cookies.get('role');
     let shop = Cookies.get('shopId');
 
     return (
         (auth.token || token)
             ? shop
-                ? auth.role === 'admin'
+                ? role === 'admin'
                     ? <Navigate to='/admin/dashboard' state={{from: location}} replace/>
                     : <Navigate to='/cashier' state={{from: location}} replace/>
                 : <Navigate to='/stores' state={{from: location}} replace/>
