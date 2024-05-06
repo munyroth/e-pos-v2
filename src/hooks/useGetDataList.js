@@ -23,7 +23,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
                 const res = await axiosPrivate.get(u, {
                     signal: controller.signal,
                     params: {
-                        page: meta.page,
+                        page: 1,
                     }
                 });
                 if (isMounted) {
@@ -45,7 +45,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
             isMounted = false;
             controller.abort();
         };
-    }, [url, meta.page, auth.role, axiosPrivate, openModalAdd, openModalDelete]);
+    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };
