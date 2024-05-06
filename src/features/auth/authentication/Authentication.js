@@ -6,11 +6,12 @@ import useAuth from "../../../hooks/useAuth";
 import axios from "../../../api/axios";
 
 const Authentication = () => {
-    const {auth, setUser} = useAuth();
+    const {auth, setUser, login} = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
 
     let token = Cookies.get('token');
+    let refreshToken = Cookies.get('refresh_token');
     let role = Cookies.get('role');
 
     let isMounted = true;
@@ -26,7 +27,24 @@ const Authentication = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            isMounted && setUser(token, res.data.data.role);
+            if (res.data.status === 200) isMounted && setUser(token, res.data.data.role);
+            else if (res.data.status === 401) {
+                const r = await axios.post('/refresh-token', {
+                    refresh_token: refreshToken
+                }, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (r.data.status === 200) {
+                    isMounted && login(r.data.data.token, r.data.data.refresh_token, r.data.data.user.role);
+                } else {
+                    navigate('/login', {state: {from: location}, replace: true});
+                }
+            } else {
+                navigate('/login', {state: {from: location}, replace: true});
+            }
         } catch (err) {
             navigate('/login', {state: {from: location}, replace: true});
         }

@@ -57,7 +57,7 @@ export default function Login() {
                     'Content-Type': 'application/json'
                 }
             });
-            if (res.data.status === 200) login(res.data.data.token, res.data.data.user.role);
+            if (res.data.status === 200) login(res.data.data.token, res.data.data.refresh_token, res.data.data.user.role);
             else if (res.data.status === 401) {
                 setErrMsg('លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ');
             } else if (res.data.status === 422) {
