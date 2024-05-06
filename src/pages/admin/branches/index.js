@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
-import searchData from "../../../requestApi/searchData";
 import handleChange from "../../../features/handleChange";
 import handleValidation from "../../../features/validation/validation";
 import postData from "../../../requestApi/postData";
@@ -12,8 +11,11 @@ import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import {useLocation, useNavigate} from "react-router-dom";
+import Search from "../../../components/form/Search";
+import Cookies from "js-cookie";
 
 export default function Branches() {
+    let shopId = Cookies.get('shopId');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -27,11 +29,16 @@ export default function Branches() {
     const [isLoadingAdd, setIsLoadingAdd] = useState(false);
     const [data, setData] = useState({
         name: "",
+        employee_ids: []
     });
 
     const [isValidate, setIsValidate] = useState({
         name: false,
     });
+
+    // eslint-disable-next-line
+    const [contentSearchMember, setContentSearchMember] = useState('');
+    const [members, metaMembers, isLoadMembers, setMembers, setMetaMembers, setIsLoadMembers] = useGetDataList('/employee');
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
@@ -55,7 +62,12 @@ export default function Branches() {
             data,
             setIsValidate
         )) return;
-        await postData(url, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសាខា');
+        let d = {
+            business_id: shopId,
+            name: data.name,
+            employee_ids: data.employee_ids
+        }
+        await postData(url, d, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសាខា');
     }
 
     const handleUpdate = async id => {
@@ -64,7 +76,12 @@ export default function Branches() {
             data,
             setIsValidate
         )) return;
-        await postData(`${url}/${id}?_method=PUT`, data, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែសាខា');
+        let d = {
+            business_id: shopId,
+            name: data.name,
+            employee_ids: data.employee_ids
+        }
+        await postData(`${url}/${id}?_method=PUT`, d, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានកែប្រែសាខាដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលកែប្រែសាខា');
     }
 
     const handleDelete = async id => {
@@ -82,11 +99,13 @@ export default function Branches() {
             setTimeout(() => {
                 setData({
                     name: "",
+                    employee_ids: []
                 });
                 setIsValidate({
                     name: false,
                 });
                 setUpdateId(0);
+                setContentSearchMember('');
             }, 200);
         }
     }, [openModalAddItem]);
@@ -106,23 +125,15 @@ export default function Branches() {
                     </button>
                 </div>
 
-                <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                  clipRule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <input
-                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setShops, setMeta)}
-                        type="text"
-                        id="table-search"
-                        className="input w-80 pl-10"
-                        placeholder="ស្វែងរកឈ្មោះ"/>
-                </div>
+                <Search
+                    id="table-search"
+                    placeholder="ស្វែងរកឈ្មោះសាខា"
+                    url={url}
+                    setContent={setContent}
+                    setIsLoading={setIsLoading}
+                    setData={setShops}
+                    setMeta={setMeta}
+                />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -183,7 +194,8 @@ export default function Branches() {
                                                     setUpdateId(shop.id);
                                                     setOpenModalAddItem(true);
                                                     setData({
-                                                        name: shop.name
+                                                        name: shop.name,
+                                                        employee_ids: shop.employees.map(employee => employee.id)
                                                     });
                                                 }}
                                                 className="pl-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">
@@ -227,7 +239,7 @@ export default function Branches() {
                 handleAdd={handleSubmit}
             >
                 <Input
-                    title="ឈ្មោះ"
+                    title="ឈ្មោះសាខា"
                     type="text"
                     id="name"
                     onChange={handleChangeAdd}
@@ -235,6 +247,63 @@ export default function Branches() {
                     isValidate={isValidate.name}
                     isRequire={true}
                 />
+
+                <div>
+                    <div className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
+                        សមាជិក
+                    </div>
+                    <div className="bg-white rounded-lg shadow w-full dark:bg-gray-700">
+                        <Search
+                            id="search-member"
+                            placeholder="ស្វែងរកឈ្មោះ"
+                            url="/employee"
+                            setContent={setContentSearchMember}
+                            setIsLoading={setIsLoadMembers}
+                            setData={setMembers}
+                            setMeta={setMetaMembers}
+                            className="w-full p-3"
+                        />
+                        <ul className=" px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownSearchButton">
+                            {isLoadMembers
+                                ? <Loading/>
+                                : metaMembers?.total === 0
+                                    ? <li className="p-2">មិនមានសមាជិក</li>
+                                    : members.map(member => (
+                                        <li key={member.id}>
+                                            <label htmlFor={`checkbox-item-${member.id}`}
+                                                   className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                <input
+                                                    id={`checkbox-item-${member.id}`}
+                                                    type="checkbox"
+                                                    value={member.id}
+                                                    checked={data.employee_ids.includes(member.id)}
+                                                    onChange={e => {
+                                                        if (e.target.checked) {
+                                                            setData({
+                                                                ...data,
+                                                                employee_ids: [...data.employee_ids, member.id]
+                                                            });
+                                                        } else {
+                                                            setData({
+                                                                ...data,
+                                                                employee_ids: data.employee_ids.filter(id => id !== member.id)
+                                                            });
+                                                        }
+                                                    }}
+                                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                                />
+                                                <div
+                                                    className="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                                                    {member.name}
+                                                </div>
+                                            </label>
+                                        </li>
+                                    ))
+                            }
+                        </ul>
+                    </div>
+                </div>
             </FormDialog>
             <DeleteDialog
                 title="សាខា"
