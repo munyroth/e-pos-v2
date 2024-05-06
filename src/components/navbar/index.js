@@ -16,11 +16,10 @@ export default function Navbar() {
     const axiosPrivate = useAxiosPrivate();
     const {auth, logout} = useAuth();
 
-    // eslint-disable-next-line
-    const [user, isLoadingUser, setUser, setIsLoadingUser] = useGetDataObject('/user')
+    const [user] = useGetDataObject('/user')
     let url = auth.role === 'admin' ? '/business' : '/shop';
     // eslint-disable-next-line
-    const [shops, meta, isLoadingShops, setShops, setMeta, setIsLoadingShops] = useGetDataList(url)
+    const [shops, meta, isLoadingShops] = useGetDataList(url)
     const [selected, setSelected] = useState({
         id: 0,
         name: ""
