@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import searchData from "../../../requestApi/searchData";
 import Loading from "../../../components/loading";
 import Pagination from "../../../components/pagination";
 import {DocumentTextIcon} from "@heroicons/react/24/outline";
 import BaseDialog from "../../../components/dialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Search from "../../../components/form/Search";
 
 export default function Bills() {
     const axiosPrivate = useAxiosPrivate();
@@ -38,25 +38,18 @@ export default function Bills() {
         <>
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                    <h1 className="">វិក្កយបត្រ</h1>
+                    <h1 className="">ការកម្មង់</h1>
                 </div>
-                <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                  clipRule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <input
-                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setBills, setMeta)}
-                        type="text"
-                        id="table-search"
-                        className="input w-80 pl-10"
-                        placeholder="ស្វែងរកលេខវិក្កយបត្រ"/>
-                </div>
+
+                <Search
+                    id="search-bill"
+                    placeholder="ស្វែងរកលេខការកម្មង់"
+                    url={url}
+                    setContent={setContent}
+                    setIsLoading={setIsLoading}
+                    setData={setBills}
+                    setMeta={setMeta}
+                />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -64,7 +57,7 @@ export default function Bills() {
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="px-6 py-3 rounded-l-lg">
-                            លេខវិក្កយបត្រ
+                            លេខការកម្មង់
                         </th>
                         <th scope="col" className="px-6 py-3">
                             តម្លៃទំនិញសរុប
@@ -98,7 +91,7 @@ export default function Bills() {
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                     <div className="w-10 h-10"></div>
                                     <div className="pl-3" role="status">
-                                        <span className="">មិនមានវិក្កយបត្រទេ</span>
+                                        <span className="">មិនមានការកម្មង់ទេ</span>
                                     </div>
                                 </th>
                             </tr>
@@ -108,7 +101,7 @@ export default function Bills() {
                                 >
                                     <th scope="row"
                                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {bill.shop.name}-{bill.invoice_no}
+                                        {bill.shop.name} : {bill.order_no}
                                     </th>
                                     <td className="px-6 py-4 text-main">
                                         ${bill.subtotal.toFixed(2)}
@@ -153,7 +146,7 @@ export default function Bills() {
                     <DocumentTextIcon className="h-6 w-6 text-green-600"
                                       aria-hidden="true"/>
                 </div>}
-                title="លម្អិតវិក្កយបត្រ"
+                title="លម្អិតការកម្មង់"
                 openModal={openModalBillDetail}
                 setOpenModal={setOpenModalBillDetail}
                 cancelModalRef={cancelModalBillDetail}

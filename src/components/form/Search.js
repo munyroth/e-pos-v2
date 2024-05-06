@@ -10,6 +10,7 @@ export default function Search(props) {
         setIsLoading,
         setData,
         setMeta,
+        params,
         className = "w-80"
     } = props
 
@@ -26,7 +27,7 @@ export default function Search(props) {
                     </svg>
                 </div>
                 <input
-                    onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setData, setMeta)}
+                    onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setData, setMeta, params)}
                     type="text"
                     id={id}
                     className="input w-full pl-10"

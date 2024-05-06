@@ -19,7 +19,7 @@ export default class Sidebar extends Component {
         const nav = [
             {
                 link: "bills",
-                name: "វិក្កយបត្រ",
+                name: "ការកម្មង់",
                 icon: <svg
                     aria-hidden="true"
                     className="w-6 h-6"

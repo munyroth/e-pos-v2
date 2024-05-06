@@ -126,7 +126,7 @@ export default function Branches() {
                 </div>
 
                 <Search
-                    id="table-search"
+                    id="search-branch"
                     placeholder="ស្វែងរកឈ្មោះសាខា"
                     url={url}
                     setContent={setContent}

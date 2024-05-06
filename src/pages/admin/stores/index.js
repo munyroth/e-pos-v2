@@ -33,7 +33,7 @@ export default function Stores() {
             }
         }
 
-        getShop();
+        getShop().then();
 
         return () => {
             isMounted = false;

@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
-import searchData from "../../../requestApi/searchData";
 import handleChange from "../../../features/handleChange";
 import handleValidation from "../../../features/validation/validation";
 import postData from "../../../requestApi/postData";
@@ -14,6 +13,7 @@ import {Toaster} from "react-hot-toast";
 import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
 import useGetDataList from "../../../hooks/useGetDataList";
+import Search from "../../../components/form/Search";
 
 export default function Products() {
     let url = '/employee';
@@ -163,23 +163,15 @@ export default function Products() {
                     </button>
                 </div>
 
-                <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                  clipRule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <input
-                        onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setMembers, setMeta)}
-                        type="text"
-                        id="table-search"
-                        className="input w-80 pl-10"
-                        placeholder="ស្វែងរកឈ្មោះ ឬលេខទូរស័ព្ទ"/>
-                </div>
+                <Search
+                    id="search-member"
+                    placeholder="ស្វែងរកឈ្មោះ ឬលេខទូរសព្ទសមាជិក"
+                    url={url}
+                    setContent={setContent}
+                    setIsLoading={setIsLoading}
+                    setData={setMembers}
+                    setMeta={setMeta}
+                />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
