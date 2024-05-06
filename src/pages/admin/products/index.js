@@ -169,6 +169,7 @@ export default function Products() {
                         }}
                         selectOptions={categories}
                         isHasNon={true}
+                        className="w-52"
                     />
                 </div>
 

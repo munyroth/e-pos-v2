@@ -9,7 +9,7 @@ export default function Filter(props) {
         selectOptions,
         isHasAll = true,
         isHasNon,
-        className
+        className = 'w-32'
     } = props
 
     return (
@@ -19,7 +19,7 @@ export default function Filter(props) {
                     onChange={onChange}
                     id={id}
                     name={id}
-                    className="select-filter w-52"
+                    className="select-filter w-full"
                 >
                     {isHasAll && <option value="all" selected={true}>{title}៖ ទាំងអស់</option>}
                     {isHasNon && <option value="0">{title}៖ មិនមាន</option>}
