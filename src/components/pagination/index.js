@@ -124,8 +124,8 @@ export default function Pagination(
     };
 
     return (
-        <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
-            <div className="flex flex-1 sm:hidden">
+        <div className="flex items-center justify-between border-t border-gray-200 py-4">
+            <div className="flex flex-1 lg:hidden">
                 {meta.page === 1
                     ? <></>
                     : <button
@@ -146,7 +146,7 @@ export default function Pagination(
                     </button>
                 }
             </div>
-            <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-between">
                 <div>
                     <p className="text-sm text-gray-700 dark:text-white">
                         ទំព័រទី

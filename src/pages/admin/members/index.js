@@ -158,7 +158,7 @@ export default function Products() {
                             setOpenModalAddItem(true);
                         }}
                         type="button"
-                        className="button">
+                        className="button me-8">
                         បន្ថែមសមាជិក
                     </button>
                 </div>

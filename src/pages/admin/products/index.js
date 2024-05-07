@@ -170,7 +170,7 @@ export default function Products() {
                         }}
                         selectOptions={categories}
                         isHasNon={true}
-                        className="w-52"
+                        className="w-52 me-8"
                     />
                 </div>
 

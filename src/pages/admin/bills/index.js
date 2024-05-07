@@ -175,7 +175,7 @@ export default function Bills() {
                                             <div className="flex justify-between items-end">
                                                 <div className="flex">
                                                     <div className="relative rounded-md text-main">
-                                                        តម្លៃ {item.price}៛
+                                                        តម្លៃ ${item.price}
                                                     </div>
                                                 </div>
                                                 <div className="text-gray-900 truncate dark:text-white">

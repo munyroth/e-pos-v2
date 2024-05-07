@@ -7,6 +7,7 @@ import Input from "../../components/form/Input";
 import handleChange from "../../features/handleChange";
 import handleValidation from "../../features/validation/validation";
 import Loading from "../../components/loading";
+import toast, {Toaster} from "react-hot-toast";
 
 export default function Cashier() {
     const axiosPrivate = useAxiosPrivate();
@@ -128,6 +129,8 @@ export default function Cashier() {
 
             console.log(res.data)
             setIsModalPayment(false);
+            toast.success( 'បានទូទាត់ជោគជ័យ');
+            setItemsProcessing([]);
         } catch (error) {
             console.error("Failed to order:", error);
         }
@@ -192,7 +195,7 @@ export default function Cashier() {
                                 <div className="h-full w-full absolute pt-12">
                                     {isLoading
                                         ? <Loading/>
-                                        : <div className="h-full grid grid-cols-3 gap-4 overflow-scroll px-4 pb-4">
+                                        : <div className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4">
                                             {products.map(product => (
                                                 <div
                                                     className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -254,7 +257,7 @@ export default function Cashier() {
                                                             <p className="text-sm text-gray-500">{product.barcode}</p>
                                                         </div>
                                                         <div className="flex flex-1 items-end justify-between text-sm">
-                                                            <p className="text-gray-500">Qty {product.qty}</p>
+                                                            <p className="text-gray-500">បរិមាណ: {product.qty}</p>
 
                                                             <div className="flex">
                                                                 <button
@@ -379,6 +382,7 @@ export default function Cashier() {
                     ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd}</span>
                 </p>
             </BaseDialog>
+            <Toaster/>
         </>
     )
 }

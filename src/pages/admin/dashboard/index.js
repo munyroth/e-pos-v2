@@ -98,7 +98,11 @@ export default function Dashboard() {
                         id="year"
                         onChange={(e) => {
                             const {value} = e.target;
-                            value !== "all" ? setActiveYear(value) : setActiveYear(null);
+                            if (value !== "all")  setActiveYear(value)
+                            else {
+                                setActiveYear(null);
+                                setActiveMonth(1);
+                            }
                         }}
                         selectOptions={years}
                     />

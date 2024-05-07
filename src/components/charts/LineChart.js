@@ -179,8 +179,35 @@ class LineChart extends Component {
                                 breakpoint: 1200,
                                 options: {
                                     chart: {
-                                        width: "850",
+                                        width: "800",
                                         height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 1100,
+                                options: {
+                                    chart: {
+                                        width: "700",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 1000,
+                                options: {
+                                    chart: {
+                                        width: "600",
+                                        height: "250"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 900,
+                                options: {
+                                    chart: {
+                                        width: "550",
+                                        height: "200"
                                     },
                                 }
                             },

@@ -119,7 +119,7 @@ export default function Branches() {
                             setOpenModalAddItem(true);
                         }}
                         type="button"
-                        className="button">
+                        className="button me-8">
                         បន្ថែមសាខា
                     </button>
                 </div>

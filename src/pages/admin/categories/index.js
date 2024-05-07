@@ -98,7 +98,7 @@ export default function Categories() {
                             setOpenModalAddItem(true);
                         }}
                         type="button"
-                        className="button">
+                        className="button me-8">
                         បន្ថែមប្រភេទ
                     </button>
                 </div>
