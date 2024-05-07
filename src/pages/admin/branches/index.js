@@ -251,7 +251,7 @@ export default function Branches() {
                     <div className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
                         សមាជិក
                     </div>
-                    <div className="bg-white rounded-lg shadow w-full dark:bg-gray-700">
+                    <div className="border border-gray-300 rounded-lg w-full dark:bg-gray-700 dark:border-gray-600">
                         <Search
                             id="search-member"
                             placeholder="ស្វែងរកឈ្មោះ"

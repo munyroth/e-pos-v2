@@ -6,8 +6,10 @@ import BaseDialog from "../../../components/dialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Search from "../../../components/form/Search";
+import useAuth from "../../../hooks/useAuth";
 
 export default function Bills() {
+    const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
 
     let url = '/order';
@@ -22,7 +24,8 @@ export default function Bills() {
 
     const getBillDetail = async (id) => {
         try {
-            const res = await axiosPrivate.get(url + '/' + id);
+            let u = auth?.user?.role === 'admin' ? 'admin' + url : url;
+            const res = await axiosPrivate.get(u + '/' + id);
             setBillDetail(res.data.data);
             setOpenModalBillDetail(true)
         } catch (error) {
@@ -159,7 +162,7 @@ export default function Bills() {
                                         <div className="flex-shrink-0">
                                             <img
                                                 className="w-20 h-20"
-                                                src={item.img_url}
+                                                src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                                 alt={item.name_kh}/>
                                         </div>
                                         <div className="flex-1 min-w-0">
