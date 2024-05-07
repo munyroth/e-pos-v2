@@ -1,12 +1,11 @@
 import React, {useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import Cookies from "js-cookie";
 import AuthContext from "../../contexts/AuthContext";
 import PERMISSIONS from "./permissions/Permissions";
 
-const COOKIE_TOKEN = 'token';
-const COOKIE_REFRESH_TOKEN = 'refresh_token';
-const COOKIE_ROLE = 'role';
+const TOKEN = 'token';
+const REFRESH_TOKEN = 'refresh_token';
+const ROLE = 'role';
 const SHOP_ID = 'shopId';
 
 export const AuthProvider = ({children}) => {
@@ -35,9 +34,10 @@ export const AuthProvider = ({children}) => {
         setAuth({token, role, permissions});
     };
 
-    const register = (token) => {
-        Cookies.set(COOKIE_TOKEN, token);
-        Cookies.set(COOKIE_ROLE, 'admin');
+    const register = (token, refresh_token) => {
+        localStorage.setItem(TOKEN, token);
+        localStorage.setItem(REFRESH_TOKEN, refresh_token);
+        localStorage.setItem(ROLE, 'admin');
         const permissions = [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
@@ -52,10 +52,10 @@ export const AuthProvider = ({children}) => {
     };
 
     const login = (token, refresh_token, role) => {
-        Cookies.set(COOKIE_TOKEN, token);
-        Cookies.set(COOKIE_REFRESH_TOKEN, refresh_token);
-        Cookies.set(COOKIE_ROLE, role);
-        let storeId = Cookies.get(SHOP_ID);
+        localStorage.setItem(TOKEN, token);
+        localStorage.setItem(REFRESH_TOKEN, refresh_token);
+        localStorage.setItem(ROLE, role);
+        let storeId = localStorage.getItem(SHOP_ID);
         const permissions = role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
@@ -74,10 +74,10 @@ export const AuthProvider = ({children}) => {
     };
 
     const logout = () => {
-        Cookies.remove(COOKIE_TOKEN);
-        Cookies.remove(COOKIE_REFRESH_TOKEN);
-        Cookies.remove(SHOP_ID);
-        Cookies.remove(COOKIE_ROLE);
+        localStorage.removeItem(TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        localStorage.removeItem(ROLE);
+        localStorage.removeItem(SHOP_ID);
         setAuth({token: '', role: '', permissions: []});
         navigate(location.state?.path || '/login', {replace: true});
     };

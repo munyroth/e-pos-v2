@@ -2,7 +2,6 @@ import {Fragment, useEffect, useState} from 'react'
 import {Disclosure, Listbox, Menu, Transition} from '@headlessui/react'
 import {Link} from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import Cookies from "js-cookie";
 import {CheckIcon} from "@heroicons/react/20/solid";
 import useAuth from "../../hooks/useAuth";
 import useGetDataObject from "../../hooks/useGetDataObject";
@@ -26,7 +25,7 @@ export default function Navbar() {
     })
 
     useEffect(() => {
-        let shopId = Cookies.get('shopId');
+        let shopId = localStorage.getItem('shopId');
         if (shopId && !isLoadingShops) {
             setSelected(shops.find(shop => shop.id === parseInt(shopId)))
         }
@@ -82,7 +81,7 @@ export default function Navbar() {
                                                         value={shop.id}
                                                     >
                                                         {({selected, active}) => {
-                                                            selected && Cookies.set('shopId', shop.id)
+                                                            selected && localStorage.setItem('shopId', shop.id)
                                                             return (
                                                                 <>
                                                                     <div className="flex items-center">

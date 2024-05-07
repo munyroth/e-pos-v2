@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loading from "../../../components/loading";
 import {useNavigate} from "react-router-dom";
-import Cookies from "js-cookie";
 import useAuth from "../../../hooks/useAuth";
 
 export default function Stores() {
@@ -50,7 +49,7 @@ export default function Stores() {
                         <li
                             key={item.id}
                             onClick={() => {
-                                Cookies.set('shopId', item.id);
+                                localStorage.setItem('shopId', item.id);
                                 auth.role === 'admin'
                                     ? navigate('/admin/dashboard')
                                     : navigate('/cashier');

@@ -3,7 +3,6 @@ import {CreditCardIcon} from "@heroicons/react/24/outline";
 import useGetDataList from "../../hooks/useGetDataList";
 import BaseDialog from "../../components/dialog";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import Cookies from "js-cookie";
 import Input from "../../components/form/Input";
 import handleChange from "../../features/handleChange";
 import handleValidation from "../../features/validation/validation";
@@ -114,7 +113,7 @@ export default function Cashier() {
     }
 
     const handleOrder = async () => {
-        let shopId = Cookies.get('shopId');
+        let shopId = localStorage.getItem('shopId');
 
         try {
             const data = {

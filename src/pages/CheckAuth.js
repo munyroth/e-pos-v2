@@ -1,14 +1,13 @@
 import {Navigate, useLocation} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import Cookies from "js-cookie";
 
 const CheckAuth = () => {
     const {auth} = useAuth();
     const location = useLocation();
 
-    let token = Cookies.get('token');
-    let role = Cookies.get('role');
-    let shop = Cookies.get('shopId');
+    let token = localStorage.getItem('token');
+    let role = localStorage.getItem('role');
+    let shop = localStorage.getItem('shopId');
 
     return (
         (auth.token || token)

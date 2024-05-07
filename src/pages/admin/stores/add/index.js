@@ -2,7 +2,6 @@ import {useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import BaseForm from "../../../../components/form";
-import Cookies from "js-cookie";
 
 export default function AddStore() {
     const navigate = useNavigate();
@@ -47,7 +46,7 @@ export default function AddStore() {
         try {
             const res = await axiosPrivate.post('/admin/business', formData);
             if (res.data.status === 201) {
-                Cookies.set('shopId', res.data.data.id);
+                localStorage.setItem('shopId', res.data.data.id);
                 navigate(location.state?.path || "/admin/dashboard", {replace: true});
             } else if (res.data.status === 422) {
                 setErrMsg(res.data.message);

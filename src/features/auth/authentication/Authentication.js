@@ -1,6 +1,5 @@
 import React from "react";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import Cookies from "js-cookie";
 
 import useAuth from "../../../hooks/useAuth";
 import axios from "../../../api/axios";
@@ -10,9 +9,9 @@ const Authentication = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    let token = Cookies.get('token');
-    let refreshToken = Cookies.get('refresh_token');
-    let role = Cookies.get('role');
+    let token = localStorage.getItem('token');
+    let refreshToken = localStorage.getItem('refresh_token');
+    let role = localStorage.getItem('role');
 
     let isMounted = true;
     const controller = new AbortController();

@@ -191,7 +191,7 @@ export default function Register() {
                         'Content-Type': 'application/json'
                     }
                 });
-            if (res.data.status === 201) register(res.data.data.token);
+            if (res.data.status === 201) register(res.data.data.token, res.data.data.refresh_token);
             else if (res.data.status === 422) {
                 if (res.data.message === 'Invalid OTP') {
                     setInvalidOTP(true);

@@ -12,10 +12,9 @@ import FormDialog from "../../../components/dialog/FormDialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import {useLocation, useNavigate} from "react-router-dom";
 import Search from "../../../components/form/Search";
-import Cookies from "js-cookie";
 
 export default function Branches() {
-    let shopId = Cookies.get('shopId');
+    let shopId = localStorage.getItem('shopId');
     const navigate = useNavigate();
     const location = useLocation();
 
