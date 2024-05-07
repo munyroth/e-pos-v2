@@ -94,18 +94,6 @@ export default function AddStore() {
             <form className="p-6 space-y-6 md:space-y-6 sm:p-8" onSubmit={handleSubmit}>
                 <h1 className="text-center">បន្ថែមហាង</h1>
                 <div>
-                    <label className="dark:text-white">រូបភាព</label>
-                    <div className="mt-2 flex items-center justify-center w-full">
-                        <div className="w-full h-64">
-                            <label htmlFor="image" className="flex items-center justify-center w-full h-full">
-                                {renderImageUpload()}
-                                <input type="file" id="image" name="image" className="hidden" accept=".png, .jpg, .jpeg"
-                                       onChange={handleChange}/>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div>
                     <label htmlFor="name" className="dark:text-white">ឈ្មោះហាង</label>
                     <div className="mt-2">
                         <input id="name" name="name" type="text" autoComplete="false" value={data.name} ref={nameRef}

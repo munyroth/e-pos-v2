@@ -10,7 +10,20 @@ export default function Dashboard() {
     let url = '/admin/report/sale';
     const axiosPrivate = useAxiosPrivate();
 
-    const [report, setReport] = useState([]);
+    const [report, setReport] = useState({
+        total_sales: 0,
+        total_items_sales: 0,
+        total_sales_by_payment_type: {
+            cash: 0,
+            khqr: 0
+        },
+        gross_sales: {
+            total: 0,
+            daily: []
+        },
+        top_selling_products: [],
+        top_shops_performance: []
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState(null);
     const [years] = useState(
@@ -161,7 +174,7 @@ export default function Dashboard() {
                                 <h5 className="text-lg">ចំនួនលក់សរុប</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_sales}</p>
                         </div>
                     </div>
                     <div className="h-full">
@@ -171,7 +184,7 @@ export default function Dashboard() {
                                 <h5 className="text-lg">ចំនួនទំនិញលក់សរុប</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report?.total_items_sales}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_items_sales}</p>
                         </div>
                     </div>
                     <div className="h-full">
@@ -181,7 +194,7 @@ export default function Dashboard() {
                                 <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយក្រដាសប្រាក់</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales_by_payment_type?.cash}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type?.cash}</p>
                         </div>
                     </div>
                     <div className="h-full">
@@ -191,7 +204,7 @@ export default function Dashboard() {
                                 <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយអនឡាញ</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report?.total_sales_by_payment_type?.khqr}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type.khqr}</p>
                         </div>
                     </div>
                     <div className="col-span-4 flex items-start h-full">
@@ -199,7 +212,7 @@ export default function Dashboard() {
                             className="flex flex-col justify-between w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex-col items-center mb-4">
                                 <h2 className="text-main mb-4">
-                                    $ {report?.gross_sales?.total.toFixed(2)}
+                                    $ {report.gross_sales.total.toFixed(2)}
                                 </h2>
                                 <h3 className="">
                                     ចំនួនលក់
@@ -228,31 +241,35 @@ export default function Dashboard() {
                                     role="listitem"
                                     className="divide-y divide-gray-200 dark:divide-gray-700">
 
-                                    {report?.top_selling_products?.map(product => (
-                                        <li className="py-3 sm:py-4" key={product.product_id}>
-                                            <div className="flex items-center space-x-4 h-8">
-                                                <div className="flex-shrink-0">
-                                                    <img
-                                                        className="w-8 h-8 rounded-full"
-                                                        src={product.product_info.img_url}
-                                                        alt={product.product_info.name_kh}
-                                                    />
+                                    {report.top_selling_products.length === 0
+                                        ? <div>
+                                            <p className="text-center dark:text-white pb-3">មិនមានផលិតផល</p>
+                                        </div>
+                                        : report.top_selling_products.map(product => (
+                                            <li className="py-3 sm:py-4" key={product.product_id}>
+                                                <div className="flex items-center space-x-4 h-8">
+                                                    <div className="flex-shrink-0">
+                                                        <img
+                                                            className="w-8 h-8 rounded-full"
+                                                            src={product.product_info.img_url}
+                                                            alt={product.product_info.name_kh}
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                            {product.product_info.name_kh}
+                                                        </p>
+                                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                            $ {product.product_info.price}
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                        {product.total_quantity}
+                                                    </div>
                                                 </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                        {product.product_info.name_kh}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                        $ {product.product_info.price}
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                                    {product.total_quantity}
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
+                                            </li>
+                                        ))}
                                 </ul>
                             </div>
                         </div>
@@ -272,21 +289,25 @@ export default function Dashboard() {
                             </div>
                             <div className="flow-root">
                                 <ul role="listitem" className="divide-y divide-gray-200 dark:divide-gray-700">
-                                    {report?.top_shops_performance?.map(shop => (
-                                        <li className="py-3 sm:py-4">
-                                            <div className="flex items-center space-x-4 h-8">
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                        {shop.shop_name}
-                                                    </p>
+                                    {report.top_shops_performance.length === 0
+                                        ? <div>
+                                            <p className="text-center dark:text-white pb-3">មិនមានសាខា</p>
+                                        </div>
+                                        : report.top_shops_performance.map(shop => (
+                                            <li className="py-3 sm:py-4">
+                                                <div className="flex items-center space-x-4 h-8">
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                            {shop.shop_name}
+                                                        </p>
+                                                    </div>
+                                                    <div
+                                                        className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                        ${shop?.amount_earn?.toFixed(2)}
+                                                    </div>
                                                 </div>
-                                                <div
-                                                    className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                                    ${shop?.amount_earn?.toFixed(2)}
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
+                                            </li>
+                                        ))}
                                 </ul>
                             </div>
                         </div>
