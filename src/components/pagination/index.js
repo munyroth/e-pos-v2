@@ -4,7 +4,7 @@ import {axiosPrivate} from "../../api/axios";
 export default function Pagination(
     {content, meta, setMeta, setItems, setLoader, url}
 ) {
-    let totalPages = Math.ceil(meta.total / meta.size) || 0;
+    let totalPages = Math.ceil(meta.total / meta.size) || 1;
 
     const searchProduct = async (content, page) => {
         setLoader(true)
@@ -57,6 +57,7 @@ export default function Pagination(
                 <button
                     key={i}
                     onClick={() => handlePageChange(i)}
+                    disabled={i === meta.page}
                     className={i === meta.page
                         ? "relative z-10 inline-flex items-center bg-main px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         : "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
@@ -81,6 +82,7 @@ export default function Pagination(
                 <button
                     key={i}
                     onClick={() => handlePageChange(i)}
+                    disabled={i === meta.page}
                     className={i === meta.page
                         ? "relative z-10 inline-flex items-center bg-main px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         : "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
@@ -106,6 +108,7 @@ export default function Pagination(
                     <button
                         key={i}
                         onClick={() => handlePageChange(i)}
+                        disabled={i === meta.page}
                         className={i === meta.page
                             ? "relative z-10 inline-flex items-center bg-main px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             : "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
@@ -171,9 +174,9 @@ export default function Pagination(
                         {totalPages > 0 && renderPageNumbers()}
                         <button
                             onClick={handleNextPage}
-                            disabled={meta.page === totalPages || totalPages === 0}
+                            disabled={meta.page === totalPages}
                             className={
-                                (meta.page === totalPages || totalPages === 0)
+                                (meta.page === totalPages)
                                     ? "relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0"
                                     : "relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:hover:bg-gray-600"
                             }

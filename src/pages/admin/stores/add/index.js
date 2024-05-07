@@ -18,8 +18,6 @@ export default function AddStore() {
         type: "Retails (Sales and Services)"
     });
     const [errMsg, setErrMsg] = useState('');
-    const [isImage, setIsImage] = useState(false);
-    const [imageURL, setImageURL] = useState("");
 
     const handleChange = e => {
         const {name, value, type, files} = e.target;
@@ -27,11 +25,6 @@ export default function AddStore() {
             ...prevFormData,
             [name]: type === "file" ? files[0] : value
         }));
-
-        if (type === "file" && files && files[0]) {
-            setImageURL(URL.createObjectURL(e.target.files[0]));
-            setIsImage(true);
-        }
     };
 
     const handleSubmit = async e => {
@@ -68,26 +61,6 @@ export default function AddStore() {
     useEffect(() => {
         setErrMsg('');
     }, [data]);
-
-    const renderImageUpload = () => {
-        if (isImage) {
-            return <img src={imageURL} alt="img" className="h-full rounded-lg"/>;
-        } else {
-            return (
-                <div
-                    className="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
-                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or
-                        drag and drop</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">JPG or PNG (MAX. 800x400px)</p>
-                </div>
-            );
-        }
-    };
 
     return (
         <BaseForm>
