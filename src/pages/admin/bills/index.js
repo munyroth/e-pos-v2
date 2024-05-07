@@ -24,7 +24,7 @@ export default function Bills() {
 
     const getBillDetail = async (id) => {
         try {
-            let u = auth?.user?.role === 'admin' ? 'admin' + url : url;
+            let u = auth.role === 'admin' ? 'admin' + url : url;
             const res = await axiosPrivate.get(u + '/' + id);
             setBillDetail(res.data.data);
             setOpenModalBillDetail(true)
