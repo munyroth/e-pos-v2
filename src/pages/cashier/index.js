@@ -13,8 +13,8 @@ export default function Cashier() {
     const axiosPrivate = useAxiosPrivate();
 
     let url = '/product';
-    // eslint-disable-next-line
-    const [products, meta, isLoading] = useGetDataList(url);
+    const [products, meta, isLoading, setProducts] = useGetDataList(url);
+    const [isLoadMore, setIsLoadMore] = useState(false);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);
@@ -107,7 +107,7 @@ export default function Cashier() {
                 console.log(res.data)
                 if (res.data.data.return_usd === returnUsd) {
                     await handleOrder()
-                } else console.log('fail')
+                } else console.log('Failed to checkout: return usd is not correct')
             } catch (error) {
                 console.error("Failed to checkout:", error);
             }
@@ -129,7 +129,7 @@ export default function Cashier() {
 
             console.log(res.data)
             setIsModalPayment(false);
-            toast.success( 'បានទូទាត់ជោគជ័យ');
+            toast.success('បានទូទាត់ជោគជ័យ');
             setItemsProcessing([]);
         } catch (error) {
             console.error("Failed to order:", error);
@@ -179,6 +179,35 @@ export default function Cashier() {
         setTotal(sumTotalPrice());
     }, [itemsProcessing, sumPrice, sumDiscount, sumTotalPrice]);
 
+    useEffect(() => {
+        const productContainer = document.getElementById('product-list');
+
+        const handleScroll = async () => {
+            const {scrollTop, clientHeight, scrollHeight} = productContainer;
+            if (scrollTop + clientHeight > scrollHeight - 20 && meta.page < meta.total / meta.size && !isLoadMore) {
+                setIsLoadMore(true);
+                meta.page++;
+                try {
+                    const res = await axiosPrivate.get(url, {
+                        params: {
+                            page: meta.page
+                        }
+                    });
+                    setProducts(prevProducts => [...prevProducts, ...res.data.data]);
+                    setIsLoadMore(false);
+                } catch (error) {
+                    console.error("Failed to fetch more data:", error);
+                }
+            }
+        };
+
+        productContainer && productContainer.addEventListener('scroll', handleScroll);
+
+        return () => {
+            productContainer && productContainer.removeEventListener('scroll', handleScroll);
+        };
+    }, [meta]);
+
     return (
         <>
             <div className="relative flex flex-col h-full">
@@ -195,7 +224,9 @@ export default function Cashier() {
                                 <div className="h-full w-full absolute pt-12">
                                     {isLoading
                                         ? <Loading/>
-                                        : <div className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4">
+                                        : <div id="product-list"
+                                               className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4"
+                                        >
                                             {products.map(product => (
                                                 <div
                                                     className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -218,6 +249,11 @@ export default function Cashier() {
                                                     </div>
                                                 </div>
                                             ))}
+                                            {isLoadMore && <div
+                                                className="w-full h-12 flex items-center justify-center sm:col-span-1 lg:col-span-2 xl:col-span-3"
+                                            >
+                                                <Loading/>
+                                            </div>}
                                         </div>
                                     }
                                 </div>
