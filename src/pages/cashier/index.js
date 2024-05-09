@@ -206,7 +206,7 @@ export default function Cashier() {
         return () => {
             productContainer && productContainer.removeEventListener('scroll', handleScroll);
         };
-    }, [meta]);
+    }, [axiosPrivate, isLoadMore, meta, setProducts, url]);
 
     return (
         <>
