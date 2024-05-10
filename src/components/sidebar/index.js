@@ -210,7 +210,7 @@ export default function Sidebar() {
             </aside>
 
             <div className="relative h-screen sm:ml-64">
-                <div className="absolute top-0 pt-20 px-4 pb-4 h-full w-full">
+                <div className="absolute top-0 pt-20 px-4 h-full w-full">
                     <Outlet/>
                 </div>
                 <Navbar/>

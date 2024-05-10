@@ -11,6 +11,7 @@ import {Toaster} from "react-hot-toast";
 import FormDialog from "../../../components/dialog/FormDialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import Search from "../../../components/form/Search";
+import Empty from "../../../components/empty";
 
 export default function Categories() {
     let url = '/category';
@@ -89,23 +90,23 @@ export default function Categories() {
     }, [openModalAddItem]);
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                    <h1 className="me-8">ប្រភេទ</h1>
+                    <h1 className="me-8">ប្រភេទទំនិញ</h1>
                     <button
                         onClick={() => {
                             setOpenModalAddItem(true);
                         }}
                         type="button"
                         className="button me-8">
-                        បន្ថែមប្រភេទ
+                        បន្ថែមប្រភេទទំនិញ
                     </button>
                 </div>
 
                 <Search
                     id="search-category"
-                    placeholder="ស្វែងរកប្រភេទ"
+                    placeholder="ស្វែងរកប្រភេទទំនិញ"
                     url={url}
                     setContent={setContent}
                     setIsLoading={setIsLoading}
@@ -126,58 +127,51 @@ export default function Categories() {
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
-                        : isEmpty
-                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                        : categories.map(shop => (
+                            <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600"
+                            >
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="w-10 h-10"></div>
-                                    <div className="pl-3" role="status">
-                                        <span className="">មិនមានប្រភេទ</span>
-                                    </div>
+                                    {shop.name}
                                 </th>
+                                <td className="px-6 py-4">
+                                    <div className="flex justify-center">
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(shop.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    name: shop.name
+                                                });
+                                            }}
+                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(shop.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                            : categories.map(shop => (
-                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
-                                >
-                                    <th scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {shop.name}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    setUpdateId(shop.id);
-                                                    setOpenModalAddItem(true);
-                                                    setData({
-                                                        name: shop.name
-                                                    });
-                                                }}
-                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                កែប្រែ
-                                            </button>
-                                            <button
-                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                                onClick={() => {
-                                                    setDeleteId(shop.id);
-                                                    setOpenModalDelete(true);
-                                                }}
-                                            >
-                                                លុប
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                        ))}
                     </tbody>
                 </table>
             </div>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading
+                ? <Loading/>
+                : isEmpty
+                    ? <Empty title="ប្រភេទទំនិញ"/>
+                    : <div className="flex-1"></div>
+            }
             <Pagination
                 content={content}
                 meta={meta}
@@ -187,7 +181,7 @@ export default function Categories() {
                 url={url}/>
 
             <FormDialog
-                title="ប្រភេទ"
+                title="ប្រភេទទំនិញ"
                 openModal={openModalAddItem}
                 setOpenModal={setOpenModalAddItem}
                 cancelModalRef={cancelModalAddItemRef}
@@ -207,7 +201,7 @@ export default function Categories() {
                 />
             </FormDialog>
             <DeleteDialog
-                title="ប្រភេទ"
+                title="ប្រភេទទំនិញ"
                 openModalDelete={openModalDelete}
                 setOpenModalDelete={setOpenModalDelete}
                 cancelModalDeleteRef={cancelModalDeleteRef}
@@ -216,6 +210,6 @@ export default function Categories() {
                 deleteId={deleteId}
             />
             <Toaster/>
-        </>
+        </div>
     )
 }

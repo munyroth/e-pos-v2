@@ -1,5 +1,4 @@
 import LineChart from "../../../components/charts/LineChart";
-import {Link} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loading from "../../../components/loading";
@@ -64,6 +63,7 @@ export default function Dashboard() {
         const controller = new AbortController();
 
         const getReport = async () => {
+            setIsLoading(true);
             try {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal,
@@ -89,7 +89,7 @@ export default function Dashboard() {
     }
 
     return (
-        <>
+        <div className="relative h-full">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="me-8">ផ្ទាំងព័ត៌មាន</h1>
@@ -98,7 +98,7 @@ export default function Dashboard() {
                         id="year"
                         onChange={(e) => {
                             const {value} = e.target;
-                            if (value !== "all")  setActiveYear(value)
+                            if (value !== "all") setActiveYear(value)
                             else {
                                 setActiveYear(null);
                                 setActiveMonth(1);
@@ -168,7 +168,9 @@ export default function Dashboard() {
                     </div>}
             </div>
             {isLoading ? (
-                <Loading/>
+                <div className="absolute top-0 flex items-center justify-center h-full w-full">
+                    <Loading/>
+                </div>
             ) : (
                 <div className="grid grid-cols-4 gap-4">
                     <div className="h-full">
@@ -234,11 +236,11 @@ export default function Dashboard() {
                                 <h3 className="">
                                     កំពូលផលិតផល
                                 </h3>
-                                <Link
-                                    to=""
-                                    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                                    មើលទាំងអស់
-                                </Link>
+                                {/*<Link*/}
+                                {/*    to=""*/}
+                                {/*    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">*/}
+                                {/*    មើលទាំងអស់*/}
+                                {/*</Link>*/}
                             </div>
                             <div className="flow-root">
                                 <ul
@@ -285,11 +287,11 @@ export default function Dashboard() {
                                 <h3 className="">
                                     កំពូលសាខាលក់ច្រើនបំផុត
                                 </h3>
-                                <Link
-                                    to=""
-                                    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                                    មើលទាំងអស់
-                                </Link>
+                                {/*<Link*/}
+                                {/*    to=""*/}
+                                {/*    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">*/}
+                                {/*    មើលទាំងអស់*/}
+                                {/*</Link>*/}
                             </div>
                             <div className="flow-root">
                                 <ul role="listitem" className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -318,6 +320,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }

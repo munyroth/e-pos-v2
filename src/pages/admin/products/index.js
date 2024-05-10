@@ -16,6 +16,7 @@ import Select from "../../../components/form/Select";
 import useGetDataList from "../../../hooks/useGetDataList";
 import Filter from "../../../components/form/Filter";
 import Search from "../../../components/form/Search";
+import Empty from "../../../components/empty";
 
 export default function Products() {
     let url = '/product';
@@ -147,7 +148,7 @@ export default function Products() {
     }, [openModalAddItem, openModalDelete, url]);
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="me-8">ទំនិញ</h1>
@@ -210,79 +211,72 @@ export default function Products() {
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
-                        : isEmpty
-                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                        : products.map(item => (
+                            <tr className="hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="w-10 h-10"></div>
-                                    <div className="pl-3" role="status">
-                                        <span className="">មិនមានទំនិញ</span>
+                                    <img className="w-10 h-10"
+                                         src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                                         alt={item.name_kh}/>
+                                    <div className="pl-3">
+                                        <div className="text-base font-semibold">{item.name_kh}</div>
+                                        <div className="text-xs font-normal text-gray-500">{item.barcode}</div>
                                     </div>
                                 </th>
+                                <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div className="pl-3">
+                                        <div className="text-base font-semibold text-main">${item.price}</div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div className="pl-3">
+                                        <div
+                                            className="font-semibold">{item.category ? item.category.name : "មិនមាន"}</div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex justify-center">
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(item.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    category: item.category_id,
+                                                    barcode: item.barcode,
+                                                    name: item.name_kh,
+                                                    price: item.price,
+                                                    image: null
+                                                });
+                                                if (item.img_url) {
+                                                    setImageURL(item.img_url);
+                                                    setIsImage(true);
+                                                }
+                                            }}
+                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(item.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                            : products.map(item => (
-                                <tr className="hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600">
-                                    <th scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        <img className="w-10 h-10"
-                                             src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
-                                             alt={item.name_kh}/>
-                                        <div className="pl-3">
-                                            <div className="text-base font-semibold">{item.name_kh}</div>
-                                            <div className="text-xs font-normal text-gray-500">{item.barcode}</div>
-                                        </div>
-                                    </th>
-                                    <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        <div className="pl-3">
-                                            <div className="text-base font-semibold text-main">${item.price}</div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        <div className="pl-3">
-                                            <div
-                                                className="font-semibold">{item.category ? item.category.name : "មិនមាន"}</div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    setUpdateId(item.id);
-                                                    setOpenModalAddItem(true);
-                                                    setData({
-                                                        category: item.category_id,
-                                                        barcode: item.barcode,
-                                                        name: item.name_kh,
-                                                        price: item.price,
-                                                        image: null
-                                                    });
-                                                    if (item.img_url) {
-                                                        setImageURL(item.img_url);
-                                                        setIsImage(true);
-                                                    }
-                                                }}
-                                                className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                កែប្រែ
-                                            </button>
-                                            <button
-                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                                onClick={() => {
-                                                    setDeleteId(item.id);
-                                                    setOpenModalDelete(true);
-                                                }}
-                                            >
-                                                លុប
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                        ))}
                     </tbody>
                 </table>
             </div>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading
+                ? <Loading/>
+                : isEmpty
+                    ? <Empty title="ទំនិញ"/>
+                    : <div className="flex-1"></div>
+            }
             <Pagination
                 content={content}
                 meta={meta}
@@ -364,6 +358,6 @@ export default function Products() {
                 deleteId={deleteId}
             />
             <Toaster/>
-        </>
+        </div>
     )
 }

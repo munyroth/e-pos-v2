@@ -14,6 +14,7 @@ import InputImage from "../../../components/form/InputImage";
 import Select from "../../../components/form/Select";
 import useGetDataList from "../../../hooks/useGetDataList";
 import Search from "../../../components/form/Search";
+import Empty from "../../../components/empty";
 
 export default function Products() {
     let url = '/employee';
@@ -149,7 +150,7 @@ export default function Products() {
     }, [openModalAddItem, openModalDelete, url]);
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="me-8">សមាជិក</h1>
@@ -199,90 +200,83 @@ export default function Products() {
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
-                        : isEmpty
-                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                        : members.map(member => (
+                            <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                {/*<td className="w-4 p-4">*/}
+                                {/*    <div className="flex items-center">*/}
+                                {/*        <input id="checkbox-table-search-1" type="checkbox"*/}
+                                {/*               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>*/}
+                                {/*        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>*/}
+                                {/*    </div>*/}
+                                {/*</td>*/}
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="w-10 h-10"></div>
-                                    <div className="pl-3" role="status">
-                                        <span className="">មិនមានសមាជិក</span>
+                                    <img className="w-10 h-10"
+                                         src={
+                                             member.img_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
+                                         } alt={member.name}/>
+                                    <div className="pl-3">
+                                        <div className="text-base font-semibold">{member.name}</div>
                                     </div>
                                 </th>
+                                <td className="px-6 py-4">
+                                    {member.phone}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {member.role === "manager" ? (
+                                        "អ្នកគ្រប់គ្រង"
+                                    ) : member.role === "sale" ? (
+                                        "អ្នកលក់"
+                                    ) : (
+                                        "សមាជិក"
+                                    )}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex justify-center">
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(member.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    name: member.name,
+                                                    role: member.role,
+                                                    phone: member.phone,
+                                                    password: "",
+                                                    image: null
+                                                });
+                                                if (member.img_url) {
+                                                    setImageURL(member.img_url);
+                                                    setIsImage(true);
+                                                }
+                                            }}
+                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(member.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                            : members.map(member => (
-                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
-                                    {/*<td className="w-4 p-4">*/}
-                                    {/*    <div className="flex items-center">*/}
-                                    {/*        <input id="checkbox-table-search-1" type="checkbox"*/}
-                                    {/*               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>*/}
-                                    {/*        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>*/}
-                                    {/*    </div>*/}
-                                    {/*</td>*/}
-                                    <th scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        <img className="w-10 h-10"
-                                             src={
-                                                 member.img_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
-                                             } alt={member.name}/>
-                                        <div className="pl-3">
-                                            <div className="text-base font-semibold">{member.name}</div>
-                                        </div>
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        {member.phone}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {member.role === "manager" ? (
-                                            "អ្នកគ្រប់គ្រង"
-                                        ) : member.role === "sale" ? (
-                                            "អ្នកលក់"
-                                        ) : (
-                                            "សមាជិក"
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    setUpdateId(member.id);
-                                                    setOpenModalAddItem(true);
-                                                    setData({
-                                                        name: member.name,
-                                                        role: member.role,
-                                                        phone: member.phone,
-                                                        password: "",
-                                                        image: null
-                                                    });
-                                                    if (member.img_url) {
-                                                        setImageURL(member.img_url);
-                                                        setIsImage(true);
-                                                    }
-                                                }}
-                                                className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                កែប្រែ
-                                            </button>
-                                            <button
-                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                                onClick={() => {
-                                                    setDeleteId(member.id);
-                                                    setOpenModalDelete(true);
-                                                }}
-                                            >
-                                                លុប
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                        ))}
                     </tbody>
                 </table>
             </div>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading
+                ? <Loading/>
+                : isEmpty
+                    ? <Empty title="សមាជិក"/>
+                    : <div className="flex-1"></div>
+            }
             <Pagination
                 content={content}
                 meta={meta}
@@ -365,6 +359,6 @@ export default function Products() {
                 deleteId={deleteId}
             />
             <Toaster/>
-        </>
+        </div>
     )
 }

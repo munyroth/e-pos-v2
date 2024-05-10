@@ -7,6 +7,7 @@ import useGetDataList from "../../../hooks/useGetDataList";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Search from "../../../components/form/Search";
 import useAuth from "../../../hooks/useAuth";
+import Empty from "../../../components/empty";
 
 export default function Bills() {
     const {auth} = useAuth();
@@ -38,7 +39,7 @@ export default function Bills() {
     }, [meta]);
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="">ការកម្មង់</h1>
@@ -88,53 +89,46 @@ export default function Bills() {
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
-                        : isEmpty
-                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                        : bills.map(bill => (
+                            <tr className="h-14 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600"
+                                onClick={() => getBillDetail(bill.id)}
+                            >
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="w-10 h-10"></div>
-                                    <div className="pl-3" role="status">
-                                        <span className="">មិនមានការកម្មង់ទេ</span>
-                                    </div>
+                                    {bill.shop.name} : {bill.order_no}
                                 </th>
+                                <td className="px-6 py-4 text-main">
+                                    ${bill.subtotal.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 text-red-500">
+                                    ${bill.discount.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 text-main">
+                                    ${bill.total.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 text-main font-semibold">
+                                    ${bill.received_usd.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4 text-red-500 font-semibold">
+                                    ${bill.return_usd.toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {bill.user.name}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {bill.shop.name}
+                                </td>
                             </tr>
-                            : bills.map(bill => (
-                                <tr className="hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600"
-                                    onClick={() => getBillDetail(bill.id)}
-                                >
-                                    <th scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {bill.shop.name} : {bill.order_no}
-                                    </th>
-                                    <td className="px-6 py-4 text-main">
-                                        ${bill.subtotal.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-red-500">
-                                        ${bill.discount.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-main">
-                                        ${bill.total.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-main font-semibold">
-                                        ${bill.received_usd.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-red-500 font-semibold">
-                                        ${bill.return_usd.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {bill.user.name}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {bill.shop.name}
-                                    </td>
-                                </tr>
-                            ))}
+                        ))}
                     </tbody>
                 </table>
             </div>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading
+                ? <Loading/>
+                : isEmpty
+                    ? <Empty title="ការកម្មង់"/>
+                    : <div className="flex-1"></div>
+            }
             <Pagination
                 content={content}
                 meta={meta}
@@ -190,6 +184,6 @@ export default function Bills() {
                     </ul>
                 </div>
             </BaseDialog>
-        </>
+        </div>
     );
 }

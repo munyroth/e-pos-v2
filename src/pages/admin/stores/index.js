@@ -44,7 +44,7 @@ export default function Stores() {
         <BaseForm>
             <ul className="space-y-2 font-medium p-6 md:space-y-6 sm:p-8">
                 {isLoading
-                    ? null
+                    ? <Loading/>
                     : shop.map(item => (
                         <li
                             key={item.id}
@@ -60,7 +60,6 @@ export default function Stores() {
                     ))
                 }
             </ul>
-            {isLoading && <Loading/>}
         </BaseForm>
     );
 }

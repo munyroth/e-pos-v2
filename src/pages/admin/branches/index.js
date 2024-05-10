@@ -12,6 +12,7 @@ import FormDialog from "../../../components/dialog/FormDialog";
 import useGetDataList from "../../../hooks/useGetDataList";
 import {useLocation, useNavigate} from "react-router-dom";
 import Search from "../../../components/form/Search";
+import Empty from "../../../components/empty";
 
 export default function Branches() {
     let shopId = localStorage.getItem('shopId');
@@ -110,7 +111,7 @@ export default function Branches() {
     }, [openModalAddItem]);
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="me-8">សាខា</h1>
@@ -153,72 +154,65 @@ export default function Branches() {
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading
                         ? null
-                        : isEmpty
-                            ? <tr className="dark:bg-gray-800 dark:border-gray-700 ">
+                        : shops.map(shop => (
+                            <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600"
+                            >
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="w-10 h-10"></div>
-                                    <div className="pl-3" role="status">
-                                        <span className="">មិនមានសាខា</span>
-                                    </div>
+                                    {shop.name}
                                 </th>
+                                <td className="px-6 py-4">
+                                    ${parseFloat(shop?.orders_sum_total ?? 0).toFixed(2)}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {shop.orders_count}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex justify-center">
+                                        <button
+                                            onClick={() => {
+                                                navigate(location.state?.path || "" + shop.id);
+                                            }}
+                                            className="font-medium text-green-600 dark:text-green-500 hover:underline">
+                                            មើល
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setUpdateId(shop.id);
+                                                setOpenModalAddItem(true);
+                                                setData({
+                                                    name: shop.name,
+                                                    employee_ids: shop.employees.map(employee => employee.id)
+                                                });
+                                            }}
+                                            className="pl-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            កែប្រែ
+                                        </button>
+                                        <button
+                                            className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
+                                            onClick={() => {
+                                                setDeleteId(shop.id);
+                                                setOpenModalDelete(true);
+                                            }}
+                                        >
+                                            លុប
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                            : shops.map(shop => (
-                                <tr className="h-14 border-b hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
-                                >
-                                    <th scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                        {shop.name}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        ${parseFloat(shop?.orders_sum_total ?? 0).toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {shop.orders_count}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    navigate(location.state?.path || "" + shop.id);
-                                                }}
-                                                className="font-medium text-green-600 dark:text-green-500 hover:underline">
-                                                មើល
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setUpdateId(shop.id);
-                                                    setOpenModalAddItem(true);
-                                                    setData({
-                                                        name: shop.name,
-                                                        employee_ids: shop.employees.map(employee => employee.id)
-                                                    });
-                                                }}
-                                                className="pl-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                កែប្រែ
-                                            </button>
-                                            <button
-                                                className="pl-3 font-medium text-red-600 dark:text-red-500 hover:underline"
-                                                onClick={() => {
-                                                    setDeleteId(shop.id);
-                                                    setOpenModalDelete(true);
-                                                }}
-                                            >
-                                                លុប
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                        ))}
                     </tbody>
                 </table>
             </div>
-            {isLoading && (
-                <Loading/>
-            )}
+            {isLoading
+                ? <Loading/>
+                : isEmpty
+                    ? <Empty title="សាខា"/>
+                    : <div className="flex-1"></div>
+            }
             <Pagination
                 content={content}
                 meta={meta}
@@ -314,6 +308,6 @@ export default function Branches() {
                 deleteId={deleteId}
             />
             <Toaster/>
-        </>
+        </div>
     )
 }
