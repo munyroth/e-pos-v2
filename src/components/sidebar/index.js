@@ -63,7 +63,7 @@ export default function Sidebar() {
         ] : [
             {
                 link: "cashier",
-                name: "គិតលុយ",
+                name: "ការលក់",
                 icon: <svg
                     aria-hidden="true"
                     className="w-6 h-6"

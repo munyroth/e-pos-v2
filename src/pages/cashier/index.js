@@ -105,7 +105,10 @@ export default function Cashier() {
                 const res = await axiosPrivate.post('order/pre-checkout', data);
 
                 console.log(res.data)
-                if (res.data.data.return_usd === returnUsd) {
+                // Check if return usd is correct
+                // get float number 2 decimal
+                console.log(parseFloat(res.data.data.return_usd).toFixed(2), returnUsd.toFixed(2))
+                if (parseFloat(res.data.data.return_usd).toFixed(2) === returnUsd.toFixed(2)) {
                     await handleOrder()
                 } else console.log('Failed to checkout: return usd is not correct')
             } catch (error) {
@@ -211,7 +214,7 @@ export default function Cashier() {
     return (
         <>
             <div className="relative flex flex-col h-full">
-                <div className="h-full w-full absolute pt-14">
+                <div className="h-full w-full absolute pt-14 pb-4">
                     <div className="h-full flex space-x-4">
                         <div
                             className="h-full w-3/6 relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -336,7 +339,7 @@ export default function Cashier() {
                                             className={itemsProcessing.length === 0 ? "button-disabled w-full" : "button w-full"}
                                             onClick={() => setIsModalPayment(true)}
                                         >
-                                            ទូទាត់
+                                            រៀបចំការទូទាត់
                                         </button>
                                     </div>
                                 </div>
@@ -345,7 +348,7 @@ export default function Cashier() {
                     </div>
                 </div>
                 <div className="h-10 mb-4 flex items-center justify-between">
-                    <h1 className="">គិតលុយ</h1>
+                    <h1 className="">ការលក់</h1>
                     <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -393,7 +396,7 @@ export default function Cashier() {
                             </svg>
                             កំពុងទូទាត់...
                         </>
-                    ) : ("យល់ព្រម")}
+                    ) : ("ទូទាត់")}
                 </button>}>
                 <p className="text-center text-lg text-gray-500 dark:text-gray-200">
                     ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total}</span>
@@ -415,7 +418,7 @@ export default function Cashier() {
                 />
                 {isValidate.return && <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
                 <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
-                    ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd}</span>
+                    ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd.toFixed(2)}</span>
                 </p>
             </BaseDialog>
             <Toaster/>
