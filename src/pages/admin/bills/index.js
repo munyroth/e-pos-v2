@@ -8,6 +8,9 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Search from "../../../components/form/Search";
 import useAuth from "../../../hooks/useAuth";
 import Empty from "../../../components/empty";
+import searchData from "../../../requestApi/searchData";
+import Filter from "../../../components/form/Filter";
+import getData from "../../../requestApi/getData";
 
 export default function Bills() {
     const {auth} = useAuth();
@@ -15,13 +18,28 @@ export default function Bills() {
 
     let url = '/order';
     const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url);
+    const [branches, setBranches] = useState([]);
+    const [members, setMembers] = useState([]);
 
     const [billDetail, setBillDetail] = useState(null);
     const [content, setContent] = useState('');
+    const [params, setParams] = useState({});
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalBillDetail, setOpenModalBillDetail] = useState(false);
     const cancelModalBillDetail = useRef(null);
+
+    // Filter
+    const handleFilterChange = (key, value) => {
+        const updatedParams = {...params};
+        updatedParams[key] = value !== "all" ? parseInt(value) : null;
+
+        setParams(updatedParams);
+
+        searchData(content, url, setContent, setIsLoading, setBills, setMeta, updatedParams)
+            .then(r => r)
+            .catch(e => console.error("Error while fetching data:", e)); // Proper error handling
+    };
 
     const getBillDetail = async (id) => {
         try {
@@ -38,11 +56,53 @@ export default function Bills() {
         meta?.total === 0 ? setIsEmpty(true) : setIsEmpty(false);
     }, [meta]);
 
+    useEffect(() => {
+        let isMounted = true;
+        const controller = new AbortController();
+
+        getData(
+            controller,
+            isMounted,
+            '/shop?is_all=true',
+            0,
+            setBranches
+        ).then(r => r).catch(e => e);
+
+        getData(
+            controller,
+            isMounted,
+            '/employee?is_all=true',
+            0,
+            setMembers
+        ).then(r => r).catch(e => e);
+
+        return () => {
+            isMounted = false;
+            controller.abort();
+        }
+    }, []);
+
+
     return (
         <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                    <h1 className="">ការបញ្ជាទិញ</h1>
+                    <h1 className="me-8">ការបញ្ជាទិញ</h1>
+                    <Filter
+                        title="សាខា"
+                        id="filter-branch"
+                        onChange={(e) => handleFilterChange('shop_id', e.target.value)}
+                        selectOptions={branches}
+                        className="me-8"
+                    />
+
+                    <Filter
+                        title="អ្នកលក់"
+                        id="filter-member"
+                        onChange={(e) => handleFilterChange('created_by', e.target.value)}
+                        selectOptions={members}
+                        className="me-8"
+                    />
                 </div>
 
                 <Search

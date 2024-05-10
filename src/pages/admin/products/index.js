@@ -22,7 +22,7 @@ export default function Products() {
     let url = '/product';
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
-    const [params, setParams] = useState({})
+    const [params, setParams] = useState({});
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -145,7 +145,7 @@ export default function Products() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete, url]);
+    }, [openModalAddItem, openModalDelete]);
 
     return (
         <div className="h-full flex flex-col">
