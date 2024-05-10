@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Toaster} from "react-hot-toast";
 import Pagination from "../../../components/pagination";
 import Loading from "../../../components/loading";
