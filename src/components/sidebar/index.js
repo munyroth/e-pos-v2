@@ -16,7 +16,7 @@ export default function Sidebar() {
         auth.role === 'admin' ? [
             {
                 link: "bills",
-                name: "ការកម្មង់",
+                name: "ការបញ្ជាទិញ",
                 icon: <svg
                     aria-hidden="true"
                     className="w-6 h-6"

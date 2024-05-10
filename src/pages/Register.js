@@ -432,7 +432,7 @@ export default function Register() {
                         </div>}
                     <p
                         ref={errRef}
-                        className={errMsg ? "text-sm font-medium leading-6 text-red-900" : "hidden"}
+                        className={errMsg ? "text-sm font-medium leading-6 text-red-600" : "hidden"}
                         aria-live="assertive"
                     >
                         {errMsg}

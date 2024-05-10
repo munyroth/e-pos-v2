@@ -60,29 +60,29 @@ export default function Bills() {
                     <thead
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="2/12 px-6 py-3 rounded-l-lg">
                             លេខការបញ្ជាទិញ
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="2/12 px-6 py-3">
                             តម្លៃទំនិញសរុប
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="1/12 px-6 py-3">
                             ការបញ្ចុះតម្លៃ
                         </th>
-                        <th scope="col" className="px-6 py-3">
-                            តម្លៃសរុបចុងក្រោយ
+                        <th scope="col" className="2/12 px-6 py-3">
+                            តម្លៃសរុប
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="2/12 px-6 py-3">
                             ប្រាក់ទទួល
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="1/12 px-6 py-3">
                             ប្រាក់អាប់
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="1/12 px-6 py-3">
                             អ្នកលក់
                         </th>
-                        <th scope="col" className="px-6 py-3 rounded-r-lg">
-                            ហាង
+                        <th scope="col" className="1/12 px-6 py-3 rounded-r-lg">
+                            សាខា
                         </th>
                     </tr>
                     </thead>
@@ -90,12 +90,12 @@ export default function Bills() {
                     {isLoading
                         ? null
                         : bills.map(bill => (
-                            <tr className="h-14 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600"
+                            <tr className="h-14 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-600 cursor-pointer"
                                 onClick={() => getBillDetail(bill.id)}
                             >
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    {bill.shop.name} : {bill.order_no}
+                                    {bill.order_no}
                                 </th>
                                 <td className="px-6 py-4 text-main">
                                     ${bill.subtotal.toFixed(2)}
@@ -148,9 +148,24 @@ export default function Bills() {
                 setOpenModal={setOpenModalBillDetail}
                 cancelModalRef={cancelModalBillDetail}
             >
+                <div className="mb-2 px-3 dark:text-white">
+                    <p className="text-lg font-semibold">កាលបរិច្ឆេទ: {
+                        new Date(billDetail?.created_at).toLocaleString('km-KH', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            second: 'numeric'
+                        })}</p>
+                    <p className="text-lg font-semibold">លេខការបញ្ជាទិញ: {billDetail?.order_no}</p>
+                    <p className="text-lg font-semibold">អ្នកលក់: {billDetail?.user.name}</p>
+                    <p className="text-lg font-semibold">សាខា: {billDetail?.shop.name}</p>
+                    <p className="text-lg font-semibold">ផលិតផលសរុប: {billDetail?.order_details.length}</p>
+                </div>
                 <div className="flex-1">
                     <ul role="listitem" className="h-full flex flex-col space-y-4 overflow-y-scroll no-scrollbar">
-                        {(billDetail !== null) ? billDetail.order_details?.map(item => (
+                        {billDetail?.order_details?.map(item => (
                                 <li className="p-3 border border-gray-200 rounded-lg flow-root dark:bg-gray-800 dark:border-gray-700">
                                     <div className="flex items-center space-x-4">
                                         <div className="flex-shrink-0">
@@ -163,25 +178,46 @@ export default function Bills() {
                                             <p className="font-medium text-gray-900 truncate dark:text-white">
                                                 {item.name_kh}
                                             </p>
-                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            <p className="text-sm text-gray-600 truncate dark:text-gray-400">
                                                 {item.barcode}
                                             </p>
                                             <div className="flex justify-between items-end">
-                                                <div className="flex">
-                                                    <div className="relative rounded-md text-main">
-                                                        តម្លៃ ${item.price}
-                                                    </div>
+                                                <div className="font-bold text-main">
+                                                    ${item.price}
                                                 </div>
-                                                <div className="text-gray-900 truncate dark:text-white">
-                                                    បរិមាណ {item.qty}
+                                                <div className="text-gray-600 truncate dark:text-gray-300">
+                                                    x{item.qty}
+                                                </div>
+                                                <div className="font-bold text-red-600">
+                                                    -${item.discount}
+                                                </div>
+                                                <div className="font-bold text-lg text-main">
+                                                    ${(item.price * item.qty) - item.discount}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                             )
-                        ) : <div></div>}
+                        )}
                     </ul>
+                </div>
+                <div className="mt-2 px-3 dark:text-white">
+                    <div
+                        className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
+                        <p>សរុប:</p>
+                        <p className="font-bold text-main">${billDetail?.subtotal}</p>
+                    </div>
+                    <div
+                        className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
+                        <p>បញ្ចុះតម្លៃ:</p>
+                        <p className="font-bold text-red-600">-${billDetail?.discount}</p>
+                    </div>
+                    <div
+                        className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
+                        <p>សរុបចុងក្រោយ:</p>
+                        <p className="font-bold text-main text-lg">${billDetail?.total}</p>
+                    </div>
                 </div>
             </BaseDialog>
         </div>

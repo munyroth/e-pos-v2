@@ -73,7 +73,7 @@ export default function AddStore() {
                                onChange={handleChange} required className="input w-full"/>
                     </div>
                 </div>
-                <p ref={errRef} className={errMsg ? "text-sm font-medium leading-6 text-red-900" : "hidden"}
+                <p ref={errRef} className={errMsg ? "text-sm font-medium leading-6 text-red-600" : "hidden"}
                    aria-live="assertive">{errMsg}</p>
                 <div>
                     {isLoading ? (
