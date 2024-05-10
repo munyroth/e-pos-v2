@@ -110,9 +110,15 @@ export default function Cashier() {
                 console.log(parseFloat(res.data.data.return_usd).toFixed(2), returnUsd.toFixed(2))
                 if (parseFloat(res.data.data.return_usd).toFixed(2) === returnUsd.toFixed(2)) {
                     await handleOrder()
-                } else console.log('Failed to checkout: return usd is not correct')
+                } else {
+                    console.log('Failed to checkout: return usd is not correct')
+                    toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+                    setIsLoadingCheckout(false);
+                }
             } catch (error) {
                 console.error("Failed to checkout:", error);
+                toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+                setIsLoadingCheckout(false);
             }
         }
     }
@@ -142,7 +148,7 @@ export default function Cashier() {
     }
 
     const sumPrice = useCallback((data) => {
-        return (data.length === 0 ? 0 : data[0].totalPrice + sumPrice(data.slice(1)));
+        return (data.length === 0 ? 0 : (data[0].price * data[0].qty) + sumPrice(data.slice(1)));
     }, []);
 
     const sumDiscount = useCallback((data) => {
@@ -274,7 +280,7 @@ export default function Cashier() {
                                     <div className="h-full overflow-scroll px-4">
                                         <ul className="-my-3 divide-y divide-gray-200">
                                             {itemsProcessing.map((product) => (
-                                                <li key={product.id} className="flex py-3">
+                                                <li key={product.id} className="flex py-3 items-center">
                                                     <div
                                                         className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
                                                         <img
@@ -287,26 +293,63 @@ export default function Cashier() {
                                                     <div className="ml-4 flex flex-1 flex-col">
                                                         <div>
                                                             <div
-                                                                className="flex justify-between text-base font-medium text-gray-900">
+                                                                className="flex justify-between text-base font-medium text-gray-900 items-center">
                                                                 <h3>
-                                                                    <a href={product.href}>{product.name_kh}</a>
+                                                                    {product.name_kh}
                                                                 </h3>
-                                                                <p className="ml-4 text-main">${product.price}</p>
+                                                                <div className="flex">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeFromCart(product.product_id)}
+                                                                        className="font-medium text-red-500 hover:text-red-600"
+                                                                    >
+                                                                        ដកចេញ
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                             <p className="text-sm text-gray-500">{product.barcode}</p>
                                                         </div>
-                                                        <div className="flex flex-1 items-end justify-between text-sm">
-                                                            <p className="text-gray-500">បរិមាណ: {product.qty}</p>
-
-                                                            <div className="flex">
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => removeFromCart(product.product_id)}
-                                                                    className="font-medium text-red-500 hover:text-red-600"
-                                                                >
-                                                                    ដកចេញ
-                                                                </button>
-                                                            </div>
+                                                        <div
+                                                            className="text-base flex flex-1 items-center">
+                                                            <p className="text-main me-4">${product.price}</p>
+                                                            <Input
+                                                                className="w-28 me-4"
+                                                                id="qty"
+                                                                onChange={e => setItemsProcessing(itemsProcessing.map(item => {
+                                                                    if (item.product_id === product.product_id) {
+                                                                        let qty = parseInt(e.target.value) || 0;
+                                                                        return {
+                                                                            ...item,
+                                                                            qty: qty,
+                                                                            totalPrice: item.price * qty - item.discount
+                                                                        };
+                                                                    } else return item;
+                                                                }))}
+                                                                value={product.qty}
+                                                                leading="បរិមាណ:"
+                                                                leadingWidth="pl-16"
+                                                                textEnd={true}
+                                                            />
+                                                            <Input
+                                                                className="w-32 me-4"
+                                                                id="discount"
+                                                                onChange={e => setItemsProcessing(itemsProcessing.map(item => {
+                                                                    if (item.product_id === product.product_id) {
+                                                                        let discount = parseFloat(e.target.value) || 0;
+                                                                        return {
+                                                                            ...item,
+                                                                            discount: discount,
+                                                                            totalPrice: item.price * item.qty - discount
+                                                                        };
+                                                                    } else return item;
+                                                                }))}
+                                                                value={product.discount}
+                                                                leading="បញ្ចុះតម្លៃ:  $"
+                                                                leadingWidth="pl-20"
+                                                                textEnd={true}
+                                                            />
+                                                            <div className="flex-1"></div>
+                                                            <p className="font-bold text-lg text-main">${product.totalPrice}</p>
                                                         </div>
                                                     </div>
                                                 </li>

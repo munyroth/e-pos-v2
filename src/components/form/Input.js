@@ -12,9 +12,12 @@ export default function Input(props) {
         selectId,
         selectOptions,
         leading,
+        leadingWidth,
         isFocus,
         isRequire,
-        isValidate
+        isValidate,
+        className,
+        textEnd,
     } = props
 
     const ref = useRef(null)
@@ -29,12 +32,12 @@ export default function Input(props) {
 
     return (
         (!isValidate)
-            ? <div>
-                <label htmlFor={id}
-                       className="font-medium leading-6 text-gray-900 dark:text-white">
+            ? <div className={className}>
+                {title && <label htmlFor={id}
+                                 className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
                     {title} {isRequire && <span className="text-red-600">*</span>}
-                </label>
-                <div className="relative mt-2">
+                </label>}
+                <div className="relative h-full">
                     {leading && <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <span className="text-gray-500 sm:text-sm dark:text-gray-200">{leading}</span>
                     </div>}
@@ -50,8 +53,14 @@ export default function Input(props) {
 
                         className={classNames(
                             'input w-full',
-                            leading ? 'pl-7' : '',
-                            selectId ? 'pr-20' : ''
+                            leading
+                                ? leadingWidth
+                                    ? leadingWidth
+                                    : 'pl-7'
+                                : '',
+                            selectId ? 'pr-20' : '',
+                            className ? 'h-full' : '',
+                            textEnd ? 'text-end' : ''
                         )}
                         placeholder={placeholder}
                     />
