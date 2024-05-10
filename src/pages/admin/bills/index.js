@@ -42,12 +42,12 @@ export default function Bills() {
         <div className="h-full flex flex-col">
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                    <h1 className="">ការកម្មង់</h1>
+                    <h1 className="">ការបញ្ជាទិញ</h1>
                 </div>
 
                 <Search
                     id="search-bill"
-                    placeholder="ស្វែងរកលេខការកម្មង់"
+                    placeholder="ស្វែងរកលេខការបញ្ជាទិញ"
                     url={url}
                     setContent={setContent}
                     setIsLoading={setIsLoading}
@@ -61,7 +61,7 @@ export default function Bills() {
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="px-6 py-3 rounded-l-lg">
-                            លេខការកម្មង់
+                            លេខការបញ្ជាទិញ
                         </th>
                         <th scope="col" className="px-6 py-3">
                             តម្លៃទំនិញសរុប
@@ -126,7 +126,7 @@ export default function Bills() {
             {isLoading
                 ? <Loading/>
                 : isEmpty
-                    ? <Empty title="ការកម្មង់"/>
+                    ? <Empty title="ការបញ្ជាទិញ"/>
                     : <div className="flex-1"></div>
             }
             <Pagination
@@ -143,7 +143,7 @@ export default function Bills() {
                     <DocumentTextIcon className="h-6 w-6 text-green-600"
                                       aria-hidden="true"/>
                 </div>}
-                title="លម្អិតការកម្មង់"
+                title="លម្អិតការបញ្ជាទិញ"
                 openModal={openModalBillDetail}
                 setOpenModal={setOpenModalBillDetail}
                 cancelModalRef={cancelModalBillDetail}
