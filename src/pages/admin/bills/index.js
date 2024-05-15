@@ -195,7 +195,9 @@ export default function Bills() {
                 setMeta={setMeta}
                 setItems={setBills}
                 setLoader={setIsLoading}
-                url={url}/>
+                url={url}
+                params={params}
+            />
 
             <BaseDialog
                 icon={<div

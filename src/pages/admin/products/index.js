@@ -283,7 +283,9 @@ export default function Products() {
                 setMeta={setMeta}
                 setItems={setProducts}
                 setLoader={setIsLoading}
-                url={url}/>
+                url={url}
+                params={params}
+            />
 
             <FormDialog
                 title="ទំនិញ"

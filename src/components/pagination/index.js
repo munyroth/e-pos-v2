@@ -2,7 +2,7 @@ import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
 import {axiosPrivate} from "../../api/axios";
 
 export default function Pagination(
-    {content, meta, setMeta, setItems, setLoader, url}
+    {content, meta, setMeta, setItems, setLoader, url, params}
 ) {
     let totalPages = Math.ceil(meta.total / meta.size) || 1;
 
@@ -12,7 +12,8 @@ export default function Pagination(
             const res = await axiosPrivate.get("/admin"+url, {
                 params: {
                     content,
-                    page
+                    page,
+                    ...params
                 }
             });
             setItems(res.data.data);
