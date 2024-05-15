@@ -69,51 +69,51 @@ class LineChart extends Component {
                                         },
                                     }
                                 },
-                                {
-                                    breakpoint: 1300,
-                                    options: {
-                                        chart: {
-                                            width: "900",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 1200,
-                                    options: {
-                                        chart: {
-                                            width: "800",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 1100,
-                                    options: {
-                                        chart: {
-                                            width: "700",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 1000,
-                                    options: {
-                                        chart: {
-                                            width: "600",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 900,
-                                    options: {
-                                        chart: {
-                                            width: "550",
-                                            height: "300"
-                                        },
-                                    }
-                                },
+                                // {
+                                //     breakpoint: 1300,
+                                //     options: {
+                                //         chart: {
+                                //             width: "900",
+                                //             height: "300"
+                                //         },
+                                //     }
+                                // },
+                                // {
+                                //     breakpoint: 1200,
+                                //     options: {
+                                //         chart: {
+                                //             width: "800",
+                                //             height: "300"
+                                //         },
+                                //     }
+                                // },
+                                // {
+                                //     breakpoint: 1100,
+                                //     options: {
+                                //         chart: {
+                                //             width: "700",
+                                //             height: "300"
+                                //         },
+                                //     }
+                                // },
+                                // {
+                                //     breakpoint: 1000,
+                                //     options: {
+                                //         chart: {
+                                //             width: "600",
+                                //             height: "300"
+                                //         },
+                                //     }
+                                // },
+                                // {
+                                //     breakpoint: 900,
+                                //     options: {
+                                //         chart: {
+                                //             width: "550",
+                                //             height: "300"
+                                //         },
+                                //     }
+                                // },
                             ],
                             fill: {
                                 type: 'gradient',
