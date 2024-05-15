@@ -104,6 +104,60 @@ class LineChart extends Component {
                         // },
                         responsive: [
                             {
+                                breakpoint: 2600,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 2500,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 2400,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 2300,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 2200,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
+                                breakpoint: 2100,
+                                options: {
+                                    chart: {
+                                        width: "1250",
+                                        height: "300"
+                                    },
+                                }
+                            },
+                            {
                                 breakpoint: 2000,
                                 options: {
                                     chart: {
