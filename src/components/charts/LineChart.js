@@ -252,7 +252,7 @@ class LineChart extends Component {
                                 options: {
                                     chart: {
                                         width: "600",
-                                        height: "250"
+                                        height: "300"
                                     },
                                 }
                             },
@@ -261,7 +261,7 @@ class LineChart extends Component {
                                 options: {
                                     chart: {
                                         width: "550",
-                                        height: "200"
+                                        height: "300"
                                     },
                                 }
                             },
