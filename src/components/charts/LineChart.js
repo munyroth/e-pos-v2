@@ -28,21 +28,21 @@ const THEMES = {
     light: {
         borderColor: '#32a852',
         backgroundColor: 'rgba(50, 168, 82, 0.2)',
+        titleColor: 'black',
     },
     dark: {
         borderColor: '#32a852',
         backgroundColor: 'rgba(50, 168, 82, 0.2)',
+        titleColor: 'white',
     },
-}
+};
+
 export default function LineChart({title, data}) {
-    const systemTheme = useMemo(() => {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? DARK_THEME
-            : LIGHT_THEME;
-    }, []);
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? DARK_THEME
+        : LIGHT_THEME;
 
-
-    console.log(systemTheme);
+    const theme = THEMES[systemTheme];
 
     const formattedData = useMemo(() => {
         return Object.entries(data).map(([date, value]) => ({
@@ -54,6 +54,14 @@ export default function LineChart({title, data}) {
         }));
     }, [data]);
 
+    const maxValue = useMemo(() => {
+        return Math.max(...formattedData.map(({value}) => value));
+    }, [formattedData]);
+
+    const stepSize = useMemo(() => {
+        return Math.ceil(maxValue * 0.1);
+    }, [maxValue]);
+
     const chartOptions = {
         plugins: {
             title: {
@@ -62,7 +70,7 @@ export default function LineChart({title, data}) {
                 font: {
                     size: 16,
                 },
-                color: systemTheme === DARK_THEME ? 'white' : 'black',
+                color: theme.titleColor,
             },
             legend: {
                 display: true,
@@ -84,7 +92,8 @@ export default function LineChart({title, data}) {
                 },
                 ticks: {
                     beginAtZero: true,
-                    stepSize: 100,
+                    stepSize: stepSize,
+                    min: 0,
                 },
             },
         },
@@ -96,8 +105,8 @@ export default function LineChart({title, data}) {
             {
                 label: 'ចំនួនលក់សរុប',
                 data: formattedData.map(({value}) => value),
-                borderColor: '#32a852',
-                backgroundColor: 'rgba(50, 168, 82, 0.2)',
+                borderColor: theme.borderColor,
+                backgroundColor: theme.backgroundColor,
                 tension: 0.3,
             },
         ],
