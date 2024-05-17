@@ -215,14 +215,14 @@ export default function Dashboard() {
                     </div>
                     <div className="col-span-4 flex items-start h-full">
                         <div
-                            className="flex flex-col justify-between w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 dark:bg-gray-800 dark:border-gray-700">
-                            <div className="flex-col items-center mb-4">
-                                <h2 className="text-main mb-4">
+                            className="pb-4 flex flex-col justify-between w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 dark:bg-gray-800 dark:border-gray-700">
+                            <div className="flex-col items-center">
+                                <h2 className="text-main">
                                     $ {report.gross_sales.total.toFixed(2)}
                                 </h2>
                             </div>
                             <LineChart
-                                title="ចំនួនលក់"
+                                title="ចំនួនលក់ប្រចាំថ្ងៃ"
                                 data={report.gross_sales?.daily || {}}
                             />
                         </div>

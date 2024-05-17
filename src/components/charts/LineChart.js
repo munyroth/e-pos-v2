@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
     CategoryScale,
@@ -29,11 +29,15 @@ const THEMES = {
         borderColor: '#32a852',
         backgroundColor: 'rgba(50, 168, 82, 0.2)',
         titleColor: 'black',
+        tickColor: 'rgba(0, 0, 0, 0.8)',
+        gridColor: 'rgba(0, 0, 0, 0.1)',
     },
     dark: {
         borderColor: '#32a852',
         backgroundColor: 'rgba(50, 168, 82, 0.2)',
         titleColor: 'white',
+        tickColor: 'rgba(209, 209, 209, 0.8)',
+        gridColor: 'rgba(255, 255, 255, 0.1)',
     },
 };
 
@@ -44,23 +48,17 @@ export default function LineChart({title, data}) {
 
     const theme = THEMES[systemTheme];
 
-    const formattedData = useMemo(() => {
-        return Object.entries(data).map(([date, value]) => ({
-            date: new Date(date).toLocaleDateString('km-KH', {
-                month: 'short',
-                day: 'numeric',
-            }),
-            value: parseInt(value, 10) || 0,
-        }));
-    }, [data]);
+    const formattedData = Object.entries(data).map(([date, value]) => ({
+        date: new Date(date).toLocaleDateString('km-KH', {
+            month: 'short',
+            day: 'numeric',
+        }),
+        value: parseInt(value, 10) || 0,
+    }));
 
-    const maxValue = useMemo(() => {
-        return Math.max(...formattedData.map(({value}) => value));
-    }, [formattedData]);
+    const maxValue = Math.max(...formattedData.map(({value}) => value));
 
-    const stepSize = useMemo(() => {
-        return Math.ceil(maxValue * 0.1);
-    }, [maxValue]);
+    const stepSize = Math.ceil(maxValue * 0.1)
 
     const chartOptions = {
         plugins: {
@@ -73,8 +71,7 @@ export default function LineChart({title, data}) {
                 color: theme.titleColor,
             },
             legend: {
-                display: true,
-                position: 'bottom',
+                display: false,
             },
         },
         responsive: true,
@@ -83,6 +80,12 @@ export default function LineChart({title, data}) {
                 title: {
                     display: false,
                     text: 'ថ្ងៃ',
+                },
+                ticks: {
+                    color: theme.tickColor,
+                },
+                grid: {
+                    color: theme.gridColor,
                 },
             },
             y: {
@@ -93,7 +96,11 @@ export default function LineChart({title, data}) {
                 ticks: {
                     beginAtZero: true,
                     stepSize: stepSize,
-                    min: 0,
+                    color: theme.tickColor,
+                },
+                min: 0,
+                grid: {
+                    color: theme.gridColor,
                 },
             },
         },
@@ -120,6 +127,8 @@ export default function LineChart({title, data}) {
 }
 
 LineChart.propTypes = {
-    title: PropTypes.string,
-    data: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
+    title: PropTypes.string.isRequired,
+    data: PropTypes.objectOf(
+        PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    ).isRequired,
 };
