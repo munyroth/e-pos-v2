@@ -220,9 +220,6 @@ export default function Dashboard() {
                                 <h2 className="text-main mb-4">
                                     $ {report.gross_sales.total.toFixed(2)}
                                 </h2>
-                                <h3 className="">
-                                    ចំនួនលក់
-                                </h3>
                             </div>
                             <LineChart
                                 title="ចំនួនលក់"
