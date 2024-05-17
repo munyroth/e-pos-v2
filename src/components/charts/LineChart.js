@@ -1,18 +1,19 @@
 import React, {Component} from "react";
 import Chart from "react-apexcharts";
+import PropTypes from 'prop-types';
 
 class LineChart extends Component {
 
     render() {
         const data = Object.entries(this.props.data).map(([date, value]) => ({date, value: parseInt(value)}));
-        let max = data.reduce((max, p) => p.value > max ? p.value : max, data[0]?.value);
+        const max = data.length > 0 ? data.reduce((max, p) => p.value > max ? p.value : max, data[0].value) : 0;
 
         return (
             <div className="flex justify-center w-full">
                 <Chart
                     series={[
                         {
-                            name: "ថ្ងៃនេះ",
+                            name: "Value",
                             data: data.map(({value}) => value)
                         }
                     ]}
@@ -30,6 +31,7 @@ class LineChart extends Component {
                                     show: false
                                 },
                                 categories: data.map(({date}) => date),
+                                type: 'datetime',
                             },
                             grid: {
                                 strokeDashArray: 10
@@ -135,11 +137,10 @@ class LineChart extends Component {
                                 foreColor: '#808080',
                                 dropShadow: {
                                     enabled: true,
-                                    color: ['#32a852'],
+                                    color: '#32a852',
                                     top: 5,
                                     left: 5,
                                     blur: 2,
-
                                 },
                                 zoom: {
                                     enabled: false
@@ -183,5 +184,9 @@ class LineChart extends Component {
         );
     }
 }
+
+LineChart.propTypes = {
+    data: PropTypes.object.isRequired,
+};
 
 export default LineChart;
