@@ -97,6 +97,9 @@ export default function LineChart({title, data}) {
                     beginAtZero: true,
                     stepSize: stepSize,
                     color: theme.tickColor,
+                    callback: value => {
+                        return '$' + value;
+                    }
                 },
                 min: 0,
                 grid: {
