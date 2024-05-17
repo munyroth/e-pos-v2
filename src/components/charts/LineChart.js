@@ -13,7 +13,7 @@ class LineChart extends Component {
                 <Chart
                     series={[
                         {
-                            name: "Value",
+                            name: "ចំនួនលក់សរុប",
                             data: data.map(({value}) => value)
                         }
                     ]}
@@ -30,8 +30,10 @@ class LineChart extends Component {
                                 axisTicks: {
                                     show: false
                                 },
-                                categories: data.map(({date}) => date),
-                                type: 'datetime',
+                                categories: data.map(({date}) => new Date(date).toLocaleDateString('km-KH', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                })),
                             },
                             grid: {
                                 strokeDashArray: 10
@@ -155,7 +157,7 @@ class LineChart extends Component {
                                 max: max,
                                 labels: {
                                     formatter: function (val) {
-                                        return '$'+(val).toFixed(0);
+                                        return '$' + (val).toFixed(0);
                                     },
                                 },
                             },
