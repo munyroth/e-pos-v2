@@ -14,6 +14,7 @@ export default function Login() {
     const errRef = useRef();
 
     const [remember, setRemember] = useState(false);
+    const [isShowPassword, setsShowPassword] = useState(false);
 
     const [isValidate, setIsValidate] = useState({
         phone: false,
@@ -91,12 +92,14 @@ export default function Login() {
                     isValidate={isValidate.phone}
                 />
                 <Input
-                    type="password"
+                    type={isShowPassword ? "text" : "password"}
                     id="password"
                     title="ពាក្យសំងាត់"
                     onChange={handleChange}
                     autoComplete="password"
                     isValidate={isValidate.password}
+                    isShowPassword={isShowPassword}
+                    setShowPassword={setsShowPassword}
                 />
                 <p
                     ref={errRef}
@@ -107,9 +110,12 @@ export default function Login() {
                 </p>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                        <input id="remember" aria-describedby="remember" type="checkbox"
-                               onChange={() => setRemember(!remember)}
-                               className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                        <input
+                            id="remember"
+                            aria-describedby="remember"
+                            type="checkbox"
+                            onChange={() => setRemember(!remember)}
+                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
                         />
                         <label htmlFor="remember" className="text-gray-500 dark:text-gray-300 ms-2 text-sm">
                             ចង់ចាំខ្ញុំ
