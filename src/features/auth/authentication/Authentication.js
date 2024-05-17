@@ -1,6 +1,5 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-
 import useAuth from "../../../hooks/useAuth";
 import axios from "../../../api/axios";
 
@@ -9,61 +8,69 @@ const Authentication = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    let token = localStorage.getItem('token');
-    let refreshToken = localStorage.getItem('refresh_token');
-    let role = localStorage.getItem('role');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refresh_token');
+    const role = localStorage.getItem('role') || sessionStorage.getItem('role');
 
-    let isMounted = true;
-    const controller = new AbortController();
+    useEffect(() => {
+        const controller = new AbortController();
+        let isMounted = true;
 
-    const getUser = async () => {
-        let url = role === 'admin' ? '/admin/user' : '/user';
-        try {
-            const res = await axios.get(url, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (res.data.status === 200) isMounted && setUser(token, res.data.data.role);
-            else if (res.data.status === 401) {
-                const r = await axios.post('/refresh-token', {
-                    refresh_token: refreshToken
-                }, {
+        const getUser = async () => {
+            const url = role === 'admin' ? '/admin/user' : '/user';
+            try {
+                const res = await axios.get(url, {
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    signal: controller.signal
                 });
-                if (r.data.status === 200) {
-                    isMounted && login(r.data.data.token, r.data.data.refresh_token, r.data.data.user.role);
+                if (res.data.status === 200) {
+                    if (isMounted) setUser(token, res.data.data.role);
+                } else if (res.data.status === 401) {
+                    const r = await axios.post('/refresh-token', {
+                        refresh_token: refreshToken
+                    }, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (r.data.status === 200) {
+                        if (isMounted) login(r.data.data.token, r.data.data.refresh_token, r.data.data.user.role, true);
+                    } else {
+                        navigate('/login', {state: {from: location}, replace: true});
+                    }
                 } else {
                     navigate('/login', {state: {from: location}, replace: true});
                 }
-            } else {
-                navigate('/login', {state: {from: location}, replace: true});
+            } catch (err) {
+                if (isMounted) {
+                    console.error('Error during authentication', err);
+                    navigate('/login', {state: {from: location}, replace: true});
+                }
             }
-        } catch (err) {
+        };
+
+        if (token) {
+            getUser().then(r => r);
+        } else {
             navigate('/login', {state: {from: location}, replace: true});
         }
-    }
 
-    if (auth?.token) {
-        return (<Outlet/>)
-    } else if (token) {
-        getUser().then();
         return () => {
             isMounted = false;
             controller.abort();
-        }
-    } else {
-        navigate('/login', {state: {from: location}, replace: true});
+        };
+    }, [token, refreshToken, role, setUser, login, navigate, location]);
+
+    if (auth?.token) {
+        return <Outlet/>;
     }
 
-    return (
-        <></>
-    )
+    return null;
 };
 
 export default Authentication;

@@ -51,10 +51,15 @@ export const AuthProvider = ({children}) => {
         navigate(location.state?.path || '/stores/add', {replace: true});
     };
 
-    const login = (token, refresh_token, role) => {
-        localStorage.setItem(TOKEN, token);
-        localStorage.setItem(REFRESH_TOKEN, refresh_token);
-        localStorage.setItem(ROLE, role);
+    const login = (token, refresh_token, role, remember) => {
+        if (remember) {
+            localStorage.setItem(TOKEN, token);
+            localStorage.setItem(REFRESH_TOKEN, refresh_token);
+            localStorage.setItem(ROLE, role);
+        } else {
+            sessionStorage.setItem(TOKEN, token);
+            sessionStorage.setItem(ROLE, role);
+        }
         let storeId = localStorage.getItem(SHOP_ID);
         const permissions = role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,

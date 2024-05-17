@@ -13,6 +13,8 @@ export default function Login() {
 
     const errRef = useRef();
 
+    const [remember, setRemember] = useState(false);
+
     const [isValidate, setIsValidate] = useState({
         phone: false,
         password: false
@@ -57,7 +59,7 @@ export default function Login() {
                     'Content-Type': 'application/json'
                 }
             });
-            if (res.data.status === 200) login(res.data.data.token, res.data.data.refresh_token, res.data.data.user.role);
+            if (res.data.status === 200) login(res.data.data.token, res.data.data.refresh_token, res.data.data.user.role, remember);
             else if (res.data.status === 401) {
                 setErrMsg('លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ');
             } else if (res.data.status === 422) {
@@ -106,8 +108,9 @@ export default function Login() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <input id="remember" aria-describedby="remember" type="checkbox"
+                               onChange={() => setRemember(!remember)}
                                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                               required=""/>
+                        />
                         <label htmlFor="remember" className="text-gray-500 dark:text-gray-300 ms-2 text-sm">
                             ចង់ចាំខ្ញុំ
                         </label>
