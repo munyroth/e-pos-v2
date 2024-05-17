@@ -1,199 +1,70 @@
-import React, {Component} from "react";
-import Chart from "react-apexcharts";
-import PropTypes from 'prop-types';
+import React from 'react';
+import {
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    LineElement,
+    PointElement,
+    Title,
+    Tooltip,
+} from 'chart.js';
+import {Line} from 'react-chartjs-2';
 
-class LineChart extends Component {
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
-    render() {
-        const data = Object.entries(this.props.data).map(([date, value]) => ({date, value: parseInt(value)}));
-        const max = data.length > 0 ? data.reduce((max, p) => p.value > max ? p.value : max, data[0].value) : 0;
+export default function LineChart({title, data}) {
 
-        return (
-            <div className="flex justify-center w-full">
-                <Chart
-                    series={[
+    const d = Object.entries(data).map(([date, value]) => ({date, value: parseInt(value)}));
+
+    return (
+        <div className="flex justify-center w-full">
+            <Line
+                data={{
+                    labels: d.map(({date}) => new Date(date).toLocaleDateString('km-KH', {
+                        month: 'short',
+                        day: 'numeric',
+                    })),
+                    datasets: [
                         {
-                            name: "ចំនួនលក់សរុប",
-                            data: data.map(({value}) => value)
+                            label: 'ចំនួនលក់សរុប',
+                            data: d.map(({value}) => value),
+                            borderColor: '#32a852',
+                            backgroundColor: 'rgba(50, 168, 82, 0.2)',
+                            tension: 0.3,
                         }
-                    ]}
-                    type="area"
-                    options={
-                        {
-                            dataLabels: {
-                                enabled: false
+                    ]
+                }}
+                options={{
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: false,
+                                text: 'ថ្ងៃ',
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: false,
+                                text: 'ចំនួនលក់',
                             },
-                            xaxis: {
-                                axisBorder: {
-                                    show: false
-                                },
-                                axisTicks: {
-                                    show: false
-                                },
-                                categories: data.map(({date}) => new Date(date).toLocaleDateString('km-KH', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                })),
-                            },
-                            grid: {
-                                strokeDashArray: 10
-                            },
-                            legend: {
-                                position: 'top',
-                                horizontalAlign: 'right',
-                                floating: true,
-                                offsetY: -40,
-                                offsetX: -5
-                            },
-                            responsive: [
-                                {
-                                    breakpoint: 1600,
-                                    options: {
-                                        chart: {
-                                            width: "1050",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 1500,
-                                    options: {
-                                        chart: {
-                                            width: "1000",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                {
-                                    breakpoint: 1400,
-                                    options: {
-                                        chart: {
-                                            width: "950",
-                                            height: "300"
-                                        },
-                                    }
-                                },
-                                // {
-                                //     breakpoint: 1300,
-                                //     options: {
-                                //         chart: {
-                                //             width: "900",
-                                //             height: "300"
-                                //         },
-                                //     }
-                                // },
-                                // {
-                                //     breakpoint: 1200,
-                                //     options: {
-                                //         chart: {
-                                //             width: "800",
-                                //             height: "300"
-                                //         },
-                                //     }
-                                // },
-                                // {
-                                //     breakpoint: 1100,
-                                //     options: {
-                                //         chart: {
-                                //             width: "700",
-                                //             height: "300"
-                                //         },
-                                //     }
-                                // },
-                                // {
-                                //     breakpoint: 1000,
-                                //     options: {
-                                //         chart: {
-                                //             width: "600",
-                                //             height: "300"
-                                //         },
-                                //     }
-                                // },
-                                // {
-                                //     breakpoint: 900,
-                                //     options: {
-                                //         chart: {
-                                //             width: "550",
-                                //             height: "300"
-                                //         },
-                                //     }
-                                // },
-                            ],
-                            fill: {
-                                type: 'gradient',
-                                gradient: {
-                                    shadeIntensity: 1,
-                                    opacityFrom: 0.4,
-                                    opacityTo: 0.2,
-                                    stops: [0, 90, 100]
-                                }
-                            },
-                            markers: {
-                                size: 4,
-                                colors: ['#32a852'],
-                                strokeWidth: 2,
-                            },
-                            chart: {
-                                type: "area",
-                                fontFamily: 'Helvetica, Arial, sans-serif',
-                                foreColor: '#808080',
-                                dropShadow: {
-                                    enabled: true,
-                                    color: '#32a852',
-                                    top: 5,
-                                    left: 5,
-                                    blur: 2,
-                                },
-                                zoom: {
-                                    enabled: false
-                                },
-                                toolbar: {
-                                    show: true
-                                }
-                            },
-                            yaxis: {
-                                tickAmount: 4,
-                                min: 0,
-                                max: max,
-                                labels: {
-                                    formatter: function (val) {
-                                        return '$' + (val).toFixed(0);
-                                    },
-                                },
-                            },
-                            stroke: {
-                                curve: 'smooth',
-                                width: 2,
-                            },
-                            colors: ['#32a852'],
-                            // title: {
-                            //     text: this.props.title,
-                            //     style: {
-                            //         fontSize: '18px',
-                            //         fontWeight:  '700',
-                            //         color:  '#111827'
-                            //       },
-                            // },
-                            // theme: {
-                            //     mode: 'light',
-                            //     palette: 'palette1',
-                            //     monochrome: {
-                            //         enabled: false,
-                            //         color: '#255aee',
-                            //         shadeTo: 'light',
-                            //         shadeIntensity: 0.65
-                            //     },
-                            // },
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 100
+                            }
                         }
                     }
-                />
-            </div>
-        );
-    }
+                }}
+            />
+        </div>
+    );
 }
-
-LineChart.propTypes = {
-    data: PropTypes.object.isRequired,
-};
-
-export default LineChart;

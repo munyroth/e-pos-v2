@@ -225,8 +225,9 @@ export default function Dashboard() {
                                 </h3>
                             </div>
                             <LineChart
+                                title="ចំនួនលក់"
                                 data={report.gross_sales?.daily || {}}
-                                title="ចំនួនលក់"/>
+                            />
                         </div>
                     </div>
                     <div className="col-span-2 flex items-start row-span-2 mb-4">
