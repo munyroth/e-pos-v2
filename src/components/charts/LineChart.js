@@ -152,7 +152,12 @@ class LineChart extends Component {
                             yaxis: {
                                 tickAmount: 4,
                                 min: 0,
-                                max: max
+                                max: max,
+                                labels: {
+                                    formatter: function (val) {
+                                        return '$'+(val).toFixed(0);
+                                    },
+                                },
                             },
                             stroke: {
                                 curve: 'smooth',
