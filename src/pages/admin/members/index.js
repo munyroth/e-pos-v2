@@ -313,6 +313,7 @@ export default function Products() {
                     onChange={handleChangeAdd}
                     value={data.name}
                     autoComplete="name"
+                    isFocus={true}
                     isRequire={true}
                     isValidate={isValidate.name}
                 />
