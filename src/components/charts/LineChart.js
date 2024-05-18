@@ -58,7 +58,7 @@ export default function LineChart({title, data}) {
 
     const maxValue = Math.max(...formattedData.map(({value}) => value));
 
-    const stepSize = Math.ceil(maxValue * 0.1)
+    const stepSize = Math.ceil(maxValue * 0.1);
 
     const chartOptions = {
         plugins: {
@@ -72,6 +72,13 @@ export default function LineChart({title, data}) {
             },
             legend: {
                 display: false,
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return '$' + context.raw;
+                    },
+                },
             },
         },
         responsive: true,
