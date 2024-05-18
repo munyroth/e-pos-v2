@@ -74,8 +74,8 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
         setAuth({token, role, permissions});
-        const defaultPath = '/stores';
-        !storeId && navigate(location.state?.path || defaultPath, {replace: true});
+        const defaultPath = !storeId ? '/stores' : '/admin/dashboard';
+        navigate(location.state?.path || defaultPath, {replace: true});
     };
 
     const logout = () => {

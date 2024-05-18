@@ -15,7 +15,7 @@ export default function AddStore() {
     const [data, setData] = useState({
         image: null,
         name: "",
-        type: "Retails (Sales and Services)"
+        type: "Retails"
     });
     const [errMsg, setErrMsg] = useState('');
 

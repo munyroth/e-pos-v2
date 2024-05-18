@@ -92,7 +92,7 @@ export default function Login() {
                     isValidate={isValidate.phone}
                 />
                 <Input
-                    type={isShowPassword ? "text" : "password"}
+                    type="password"
                     id="password"
                     title="ពាក្យសំងាត់"
                     onChange={handleChange}

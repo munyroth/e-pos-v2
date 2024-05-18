@@ -3,15 +3,17 @@ import {Link} from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
 import BaseForm from "../components/form";
+import Input from "../components/form/Input";
 
 const REGISTER_URL = '/register'
 
 export default function Register() {
     const {register} = useAuth();
 
-    const nameRef = useRef();
     const firstCodeRef = useRef();
     const errRef = useRef();
+
+    const [isShowPassword, setsShowPassword] = useState(false);
 
     const [isValidate, setIsValidate] = useState({
         phone: false,
@@ -207,10 +209,6 @@ export default function Register() {
     }
 
     useEffect(() => {
-        if (!isSendOTP) nameRef.current.focus();
-    }, [isSendOTP]);
-
-    useEffect(() => {
         if (isSendOTP && firstCodeRef.current) {
             firstCodeRef.current.focus();
         }
@@ -292,144 +290,41 @@ export default function Register() {
                     <h1 className="text-center">
                         ចុះឈ្មោះគណនី
                     </h1>
-                    {isValidate.name
-                        ? <div>
-                            <label htmlFor="name" className="label-error">
-                                ឈ្មោះ
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    autoComplete="name"
-                                    ref={nameRef}
-                                    onChange={handleChange}
-
-                                    className="input-error w-full"
-                                    placeholder="សូមបញ្ចូលឈ្មោះ"
-                                />
-                            </div>
-                        </div>
-                        : <div>
-                            <label htmlFor="name" className="dark:text-white">
-                                ឈ្មោះ
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    autoComplete="name"
-                                    ref={nameRef}
-                                    onChange={handleChange}
-
-                                    className="input w-full"
-                                />
-                            </div>
-                        </div>}
-                    {isValidate.phone
-                        ? <div>
-                            <label htmlFor="phone" className="label-error">
-                                លេខទូរស័ព្ទ
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="phone"
-                                    name="phone"
-                                    type="text"
-                                    autoComplete="email"
-                                    onChange={handleChange}
-
-                                    className="input-error w-full"
-                                    placeholder="សូមបញ្ចូលលេខទូរស័ព្ទ"
-                                />
-                            </div>
-                        </div>
-                        : <div>
-                            <label htmlFor="phone" className="dark:text-white">
-                                លេខទូរស័ព្ទ
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="phone"
-                                    name="phone"
-                                    type="text"
-                                    autoComplete="email"
-                                    onChange={handleChange}
-
-                                    className="input w-full"
-                                />
-                            </div>
-                        </div>}
-                    {isValidate.password
-                        ? <div>
-                            <label htmlFor="password" className="label-error">
-                                បង្កើតពាក្យសំងាត់
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="password"
-                                    onChange={handleChange}
-
-                                    className="input-error w-full"
-                                    placeholder="សូមបញ្ចូលពាក្យសម្ងាត់"
-                                />
-                            </div>
-                        </div>
-                        : <div>
-                            <label htmlFor="password" className="dark:text-white">
-                                បង្កើតពាក្យសំងាត់
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="password"
-                                    onChange={handleChange}
-
-                                    className="input w-full"
-                                />
-                            </div>
-                        </div>}
-                    {isValidate.password_confirmation
-                        ? <div>
-                            <label htmlFor="password_confirmation" className="label-error">
-                                បញ្ជាក់ពាក្យសំងាត់
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    type="password"
-                                    autoComplete="password"
-                                    onChange={handleChange}
-
-                                    className="input-error w-full"
-                                    placeholder="សូមបញ្ចូលពាក្យសម្ងាត់"
-                                />
-                            </div>
-                        </div>
-                        : <div>
-                            <label htmlFor="password_confirmation" className="dark:text-white">
-                                បញ្ជាក់ពាក្យសំងាត់
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    type="password"
-                                    autoComplete="password"
-                                    onChange={handleChange}
-
-                                    className="input w-full"
-                                />
-                            </div>
-                        </div>}
+                    <Input
+                        title="ឈ្មោះ"
+                        id="name"
+                        type="text"
+                        autoComplete="name"
+                        onChange={handleChange}
+                        isFocus={true}
+                        isValidate={isValidate.name}
+                    />
+                    <Input
+                        title="លេខទូរស័ព្ទ"
+                        id="phone"
+                        type="text"
+                        autoComplete="phone"
+                        onChange={handleChange}
+                        isValidate={isValidate.phone}
+                    />
+                    <Input
+                        title="ពាក្យសំងាត់"
+                        id="password"
+                        type="password"
+                        onChange={handleChange}
+                        isValidate={isValidate.password}
+                        isShowPassword={isShowPassword}
+                        setShowPassword={setsShowPassword}
+                    />
+                    <Input
+                        title="បញ្ជាក់ពាក្យសំងាត់"
+                        id="password_confirmation"
+                        type="password"
+                        onChange={handleChange}
+                        isValidate={isValidate.password_confirmation}
+                        isShowPassword={isShowPassword}
+                        setShowPassword={setsShowPassword}
+                    />
                     <p
                         ref={errRef}
                         className={errMsg ? "text-sm font-medium leading-6 text-red-600" : "hidden"}

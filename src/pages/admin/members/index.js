@@ -23,6 +23,8 @@ export default function Products() {
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
+    const [isShowPassword, setsShowPassword] = useState(false);
+
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
     const cancelModalAddItemRef = useRef(null);
     const [updateId, setUpdateId] = useState(0);
@@ -347,6 +349,8 @@ export default function Products() {
                     autoComplete="password"
                     isRequire={true}
                     isValidate={isValidate.password}
+                    isShowPassword={isShowPassword}
+                    setShowPassword={setsShowPassword}
                 />
             </FormDialog>
             <DeleteDialog

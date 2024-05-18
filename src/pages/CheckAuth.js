@@ -5,9 +5,9 @@ const CheckAuth = () => {
     const {auth} = useAuth();
     const location = useLocation();
 
-    let token = localStorage.getItem('token');
-    let role = localStorage.getItem('role');
-    let shop = localStorage.getItem('shopId');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const role = localStorage.getItem('role') || sessionStorage.getItem('role');
+    const shop = localStorage.getItem('shopId');
 
     return (
         (auth.token || token)
