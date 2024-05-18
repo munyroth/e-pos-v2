@@ -121,7 +121,7 @@ const Input = (
                 )}
                 {isShowPassword != null && (
                     <div
-                        className="absolute inset-y-0 right-0 px-3 flex items-center leading-5 cursor-pointer text-gray-500 dark:text-gray-400"
+                        className="absolute inset-y-0 right-0 px-3 flex items-center leading-5 cursor-pointer text-gray-500 dark:text-gray-200"
                         onClick={() => setShowPassword(!isShowPassword)}
                     >
                         {renderSvgIcon()}
@@ -165,7 +165,7 @@ const Input = (
                 )}
                 {isShowPassword != null && (
                     <div
-                        className="absolute inset-y-0 right-0 px-3 flex items-center leading-5 cursor-pointer text-gray-500 dark:text-gray-400"
+                        className="absolute inset-y-0 right-0 px-3 flex items-center leading-5 cursor-pointer text-gray-500 dark:text-gray-200"
                         onClick={() => setShowPassword(!isShowPassword)}
                     >
                         {renderSvgIcon()}

@@ -52,9 +52,9 @@ export default function InputImage(props) {
     return (
         (!isValidate)
             ? renderInputField()
-            : <>
+            : <div>
                 {renderInputField()}
                 <div className="mt-2 text-sm text-red-600">សូមបញ្ចូល{title}</div>
-            </>
+            </div>
     )
 }
