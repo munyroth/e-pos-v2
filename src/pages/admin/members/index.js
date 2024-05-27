@@ -17,7 +17,8 @@ import Search from "../../../components/form/Search";
 import Empty from "../../../components/empty";
 
 export default function Products() {
-    let url = '/employee';
+    let shopId = localStorage.getItem('shopId');
+    let url = '/employee?business_id=' + shopId;
     const [roles, setRoles] = useState([]);
 
     const [content, setContent] = useState('');
@@ -168,7 +169,7 @@ export default function Products() {
 
                 <Search
                     id="search-member"
-                    placeholder="ស្វែងរកឈ្មោះ ឬលេខទូរសព្ទសមាជិក"
+                    placeholder="ស្វែងរកឈ្មោះ ឬលេខទូរស័ព្ទសមាជិក"
                     url={url}
                     setContent={setContent}
                     setIsLoading={setIsLoading}

@@ -26,10 +26,13 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
                         page: 1,
                     }
                 });
-                if (isMounted) {
+                if (isMounted && res.data.status === 200) {
                     setData(res.data.data);
                     setMeta(res.data.meta);
                     setIsLoading(false);
+                } else {
+                    // Handle error
+                    console.error('Error fetching data on :', url + res.data.message);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);

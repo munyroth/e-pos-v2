@@ -19,7 +19,7 @@ export default function Branches() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    let url = '/shop';
+    let url = '/shop?business_id=' + shopId;
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -36,8 +36,6 @@ export default function Branches() {
         name: false,
     });
 
-    // eslint-disable-next-line
-    const [contentSearchMember, setContentSearchMember] = useState('');
     const [members, metaMembers, isLoadMembers, setMembers, setMetaMembers, setIsLoadMembers] = useGetDataList('/employee');
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -105,7 +103,6 @@ export default function Branches() {
                     name: false,
                 });
                 setUpdateId(0);
-                setContentSearchMember('');
             }, 200);
         }
     }, [openModalAddItem]);
@@ -250,7 +247,6 @@ export default function Branches() {
                             id="search-member"
                             placeholder="ស្វែងរកឈ្មោះ"
                             url="/employee"
-                            setContent={setContentSearchMember}
                             setIsLoading={setIsLoadMembers}
                             setData={setMembers}
                             setMeta={setMetaMembers}

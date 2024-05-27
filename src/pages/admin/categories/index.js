@@ -14,7 +14,8 @@ import Search from "../../../components/form/Search";
 import Empty from "../../../components/empty";
 
 export default function Categories() {
-    let url = '/category';
+    let shopId = localStorage.getItem('shopId');
+    let url = '/category?business_id=' + shopId;
 
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);

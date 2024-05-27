@@ -27,7 +27,10 @@ export default function Navbar() {
     useEffect(() => {
         let shopId = localStorage.getItem('shopId');
         if (shopId && !isLoadingShops) {
-            setSelected(shops.find(shop => shop.id === parseInt(shopId)))
+            const foundShop = shops.find(shop => shop.id === parseInt(shopId));
+            if (foundShop) {
+                setSelected(foundShop);
+            }
         }
     }, [shops, isLoadingShops]);
 
@@ -49,14 +52,17 @@ export default function Navbar() {
                                     fill="currentFill"/>
                             </svg>
                             : <Listbox value={selected.id} onChange={e => {
-                                setSelected(shops.find(shop => shop.id === e))
+                                const foundShop = shops.find(shop => shop.id === e);
+                                if (foundShop) {
+                                    setSelected(foundShop);
+                                }
                             }}>
                                 {({open}) => (
                                     <div className="">
                                         <Listbox.Button
                                             className="relative w-full cursor-pointer rounded-md py-1.5 px-3 text-left sm:leading-6 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <span className="flex items-center">
-                                            <span className="block truncate">{selected.name}</span>
+                                            <span className="block truncate">{selected.name || "ជ្រើសរើសហាង"}</span>
                                         </span>
                                         </Listbox.Button>
 

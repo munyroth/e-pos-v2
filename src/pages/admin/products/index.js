@@ -19,7 +19,8 @@ import Search from "../../../components/form/Search";
 import Empty from "../../../components/empty";
 
 export default function Products() {
-    let url = '/product';
+    let shopId = localStorage.getItem('shopId');
+    let url = '/product?business_id=' + shopId;
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
     const [params, setParams] = useState({});
@@ -112,7 +113,7 @@ export default function Products() {
         getData(
             controller,
             isMounted,
-            '/category?is_all=true',
+            '/category?is_all=true&business_id=' + shopId,
             0,
             setCategories
         ).then(r => r).catch(e => e);
@@ -145,7 +146,7 @@ export default function Products() {
             isMounted = false;
             controller.abort();
         }
-    }, [openModalAddItem, openModalDelete]);
+    }, [openModalAddItem, openModalDelete, shopId]);
 
     return (
         <div className="h-full flex flex-col">
