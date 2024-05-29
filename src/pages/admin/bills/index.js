@@ -16,7 +16,8 @@ export default function Bills() {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
 
-    let url = '/order';
+    let shopId = localStorage.getItem('shopId');
+    let url = '/order?business_id=' + shopId;
     const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url);
     const [branches, setBranches] = useState([]);
     const [members, setMembers] = useState([]);

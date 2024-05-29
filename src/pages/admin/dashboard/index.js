@@ -6,6 +6,7 @@ import Filter from "../../../components/form/Filter";
 
 
 export default function Dashboard() {
+    let businessId = localStorage.getItem('shopId');
     let url = '/admin/report/sale';
     const axiosPrivate = useAxiosPrivate();
 
@@ -68,12 +69,15 @@ export default function Dashboard() {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal,
                     params: {
+                        business_id: businessId,
                         past_day: activeTab,
                         year: activeYear,
                         month: activeYear ? activeMonth : null
                     }
                 });
-                isMounted && setReport(res.data.data);
+                if (res.data.status === 200 && isMounted) {
+                    isMounted && setReport(res.data.data);
+                }
                 setIsLoading(false);
             } catch (e) {
                 console.error("Error fetching data:", e);
@@ -197,7 +201,7 @@ export default function Dashboard() {
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="dark:text-white">
-                                <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយក្រដាសប្រាក់</h5>
+                                <h5 className="text-lg">ចំនួនលក់បង់ដោយក្រដាសប្រាក់</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
                             <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type?.cash}</p>
@@ -207,7 +211,7 @@ export default function Dashboard() {
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="dark:text-white">
-                                <h5 className="text-lg">ចំនួនទំនិញលក់បង់ដោយអនឡាញ</h5>
+                                <h5 className="text-lg">ចំនួនលក់បង់ដោយអនឡាញ</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
                             <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type.khqr}</p>

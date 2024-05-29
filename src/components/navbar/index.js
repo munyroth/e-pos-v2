@@ -55,6 +55,7 @@ export default function Navbar() {
                                 const foundShop = shops.find(shop => shop.id === e);
                                 if (foundShop) {
                                     setSelected(foundShop);
+                                    window.location.reload(); // Refresh the page
                                 }
                             }}>
                                 {({open}) => (
