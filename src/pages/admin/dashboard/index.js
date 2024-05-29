@@ -86,7 +86,7 @@ export default function Dashboard() {
 
         getReport().then();
 
-    }, [url, axiosPrivate, activeTab, activeYear, activeMonth]);
+    }, [url, axiosPrivate, activeTab, activeYear, activeMonth, businessId]);
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
