@@ -93,7 +93,7 @@ export default function Categories() {
                 setUpdateId(0);
             }, 200);
         }
-    }, [openModalAddItem]);
+    }, [openModalAddItem, shopId]);
 
     return (
         <div className="h-full flex flex-col">

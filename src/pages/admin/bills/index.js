@@ -83,7 +83,7 @@ export default function Bills() {
             isMounted = false;
             controller.abort();
         }
-    }, []);
+    }, [shopId]);
 
 
     return (
