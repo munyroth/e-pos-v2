@@ -191,20 +191,10 @@ export default function Dashboard() {
                         <div
                             className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="dark:text-white">
-                                <h5 className="text-lg">ចំនួនទំនិញលក់សរុប</h5>
-                                {/*<p className="text-main">+1%</p>*/}
-                            </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report.total_items_sales}</p>
-                        </div>
-                    </div>
-                    <div className="h-full">
-                        <div
-                            className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <div className="dark:text-white">
                                 <h5 className="text-lg">ចំនួនលក់បង់ដោយក្រដាសប្រាក់</h5>
                                 {/*<p className="text-main">+1%</p>*/}
                             </div>
-                            <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type?.cash}</p>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type.cash}</p>
                         </div>
                     </div>
                     <div className="h-full">
@@ -217,12 +207,22 @@ export default function Dashboard() {
                             <p className="text-3xl mt-2 dark:text-white">{report.total_sales_by_payment_type.khqr}</p>
                         </div>
                     </div>
+                    <div className="h-full">
+                        <div
+                            className="w-full h-full py-4 font-bold text-center border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                            <div className="dark:text-white">
+                                <h5 className="text-lg">ចំនួនទំនិញលក់សរុប</h5>
+                                {/*<p className="text-main">+1%</p>*/}
+                            </div>
+                            <p className="text-3xl mt-2 dark:text-white">{report.total_items_sales}</p>
+                        </div>
+                    </div>
                     <div className="col-span-4 flex items-start h-full">
                         <div
                             className="pb-4 flex flex-col justify-between w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex-col items-center">
                                 <h2 className="text-main">
-                                    $ {report.gross_sales.total.toFixed(2)}
+                                    ចំណូលសរុប៖ ${report.gross_sales.total.toFixed(2)}
                                 </h2>
                             </div>
                             <LineChart
