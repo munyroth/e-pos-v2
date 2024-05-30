@@ -13,7 +13,6 @@ const Authentication = () => {
     const role = localStorage.getItem('role') || sessionStorage.getItem('role');
 
     const getUser = useCallback(async () => {
-        console.log('getUser');
         const url = role === 'admin' ? '/admin/user' : '/user';
         try {
             const res = await axios.get(url, {

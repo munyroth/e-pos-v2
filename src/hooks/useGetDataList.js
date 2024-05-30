@@ -6,7 +6,7 @@ const useGetDataList = (
     url,
     openModalAdd,
     openModalDelete,
-    params
+    p
 ) => {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -16,6 +16,7 @@ const useGetDataList = (
         'size': 10,
         'total': 0
     });
+    const [params] = useState(p);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

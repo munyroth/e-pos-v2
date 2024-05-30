@@ -19,7 +19,10 @@ export default function Branches() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    let url = '/shop?business_id=' + shopId;
+    let url = '/shop';
+    const [params] = useState({
+        business_id: shopId
+    });
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -36,14 +39,18 @@ export default function Branches() {
         name: false,
     });
 
-    const [members, metaMembers, isLoadMembers, setMembers, setMetaMembers, setIsLoadMembers] = useGetDataList('/employee');
+    // eslint-disable-next-line
+    const [contentMembers, setContentMembers] = useState('');
+    const [members, metaMembers, isLoadMembers, setMembers, setMetaMembers, setIsLoadMembers] = useGetDataList('/employee', !openModalAddItem, null, {
+        business_id: shopId
+    });
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const cancelModalDeleteRef = useRef(null);
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
+    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -103,9 +110,10 @@ export default function Branches() {
                     name: false,
                 });
                 setUpdateId(0);
+                setIsLoadMembers(true);
             }, 200);
         }
-    }, [openModalAddItem]);
+    }, [openModalAddItem, setIsLoadMembers]);
 
     return (
         <div className="h-full flex flex-col">
@@ -130,6 +138,7 @@ export default function Branches() {
                     setIsLoading={setIsLoading}
                     setData={setShops}
                     setMeta={setMeta}
+                    params={params}
                 />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
@@ -247,10 +256,14 @@ export default function Branches() {
                             id="search-member"
                             placeholder="ស្វែងរកឈ្មោះ"
                             url="/employee"
+                            setContent={setContentMembers}
                             setIsLoading={setIsLoadMembers}
                             setData={setMembers}
                             setMeta={setMetaMembers}
                             className="w-full p-3"
+                            params={{
+                                business_id: shopId
+                            }}
                         />
                         <ul className=" px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
                             aria-labelledby="dropdownSearchButton">

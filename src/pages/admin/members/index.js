@@ -18,9 +18,12 @@ import Empty from "../../../components/empty";
 
 export default function Products() {
     let shopId = localStorage.getItem('shopId');
-    let url = '/employee?business_id=' + shopId;
+    let url = '/employee';
     const [roles, setRoles] = useState([]);
 
+    const [params] = useState({
+        business_id: shopId
+    });
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -53,7 +56,7 @@ export default function Products() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
+    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -67,6 +70,7 @@ export default function Products() {
 
     const constructFormData = (data, isUpdate) => {
         let formData = new FormData();
+        formData.append('business_id', shopId);
         formData.append('name', data.name);
         formData.append('role', data.role);
         formData.append('phone', data.phone);
@@ -175,6 +179,7 @@ export default function Products() {
                     setIsLoading={setIsLoading}
                     setData={setMembers}
                     setMeta={setMeta}
+                    params={params}
                 />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
