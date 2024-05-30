@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from "./useAuth";
 
-const useGetDataList = (url, openModalAdd, openModalDelete) => {
+const useGetDataList = (url, openModalAdd, openModalDelete, p = {}) => {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState([]);
@@ -12,6 +12,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
         'total': 0
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [params] = useState(p);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -24,6 +25,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
                     signal: controller.signal,
                     params: {
                         page: 1,
+                        ...params
                     }
                 });
                 if (isMounted && res.data.status === 200) {
@@ -48,7 +50,7 @@ const useGetDataList = (url, openModalAdd, openModalDelete) => {
             isMounted = false;
             controller.abort();
         };
-    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete]);
+    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete, params]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };

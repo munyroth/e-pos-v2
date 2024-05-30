@@ -20,10 +20,12 @@ import Empty from "../../../components/empty";
 
 export default function Products() {
     let shopId = localStorage.getItem('shopId');
-    let url = '/product?business_id=' + shopId;
+    let url = '/product';
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
-    const [params, setParams] = useState({});
+    const [params, setParams] = useState({
+        business_id: shopId
+    });
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -53,7 +55,7 @@ export default function Products() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -67,6 +69,7 @@ export default function Products() {
 
     const constructFormData = (data, categories, isUpdate) => {
         const formData = new FormData();
+        formData.append('business_id', shopId);
         formData.append('category_id', data.category || categories[0].id);
         formData.append('barcode', data.barcode);
         formData.append('name_en', data.name);
@@ -99,7 +102,7 @@ export default function Products() {
     }
 
     const handleDelete = async id => {
-        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
+        await deleteData(`${url}/${id}?business_id=${shopId}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
     }
 
     useEffect(() => {
@@ -166,7 +169,7 @@ export default function Products() {
                         id="filter-category"
                         onChange={(e) => {
                             const {value} = e.target;
-                            const p = value !== "all" ? {category_id: parseInt(value)} : {}
+                            const p = value !== "all" ? {...params, category_id: value} : {...params};
                             setParams(p)
                             searchData(content, url, setContent, setIsLoading, setProducts, setMeta, p).then(r => r).catch(e => e);
                         }}
