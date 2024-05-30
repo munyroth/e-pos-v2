@@ -15,8 +15,11 @@ import Empty from "../../../components/empty";
 
 export default function Categories() {
     let shopId = localStorage.getItem('shopId');
-    let url = '/category?business_id=' + shopId;
+    let url = '/category';
 
+    const [params] = useState({
+        business_id: shopId
+    });
     const [content, setContent] = useState('');
     const [isEmpty, setIsEmpty] = useState(false);
 
@@ -25,6 +28,7 @@ export default function Categories() {
     const [updateId, setUpdateId] = useState(0);
     const [isLoadingAdd, setIsLoadingAdd] = useState(false);
     const [data, setData] = useState({
+        business_id: shopId,
         name: "",
     });
 
@@ -37,7 +41,7 @@ export default function Categories() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [categories, meta, isLoading, setCategories, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete);
+    const [categories, meta, isLoading, setCategories, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
 
     const handleChangeAdd = e => {
         handleChange(
@@ -80,6 +84,7 @@ export default function Categories() {
             // wait for the modal to close
             setTimeout(() => {
                 setData({
+                    business_id: shopId,
                     name: "",
                 });
                 setIsValidate({
@@ -113,6 +118,7 @@ export default function Categories() {
                     setIsLoading={setIsLoading}
                     setData={setCategories}
                     setMeta={setMeta}
+                    params={params}
                 />
             </div>
             <div className="dark:bg-gray-800 dark:border-gray-700">
@@ -145,6 +151,7 @@ export default function Categories() {
                                                 setUpdateId(shop.id);
                                                 setOpenModalAddItem(true);
                                                 setData({
+                                                    business_id: shopId,
                                                     name: shop.name
                                                 });
                                             }}

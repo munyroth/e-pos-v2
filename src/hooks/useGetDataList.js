@@ -2,7 +2,12 @@ import {useEffect, useState} from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from "./useAuth";
 
-const useGetDataList = (url, openModalAdd, openModalDelete, p = {}) => {
+const useGetDataList = (
+    url,
+    openModalAdd,
+    openModalDelete,
+    params
+) => {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const [data, setData] = useState([]);
@@ -12,7 +17,6 @@ const useGetDataList = (url, openModalAdd, openModalDelete, p = {}) => {
         'total': 0
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [params] = useState(p);
 
     useEffect(() => {
         const controller = new AbortController();

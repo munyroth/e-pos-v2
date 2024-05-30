@@ -17,14 +17,16 @@ export default function Bills() {
     const axiosPrivate = useAxiosPrivate();
 
     let shopId = localStorage.getItem('shopId');
-    let url = '/order?business_id=' + shopId;
-    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url);
+    let url = '/order';
+    const [params, setParams] = useState({
+        business_id: shopId,
+    });
+    const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url, null, null, params);
     const [branches, setBranches] = useState([]);
     const [members, setMembers] = useState([]);
 
     const [billDetail, setBillDetail] = useState(null);
     const [content, setContent] = useState('');
-    const [params, setParams] = useState({});
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalBillDetail, setOpenModalBillDetail] = useState(false);
@@ -64,7 +66,7 @@ export default function Bills() {
         getData(
             controller,
             isMounted,
-            '/shop?is_all=true',
+            '/shop?is_all=true&business_id=' + shopId,
             0,
             setBranches
         ).then(r => r).catch(e => e);
@@ -72,7 +74,7 @@ export default function Bills() {
         getData(
             controller,
             isMounted,
-            '/employee?is_all=true',
+            '/employee?is_all=true&business_id=' + shopId,
             0,
             setMembers
         ).then(r => r).catch(e => e);
