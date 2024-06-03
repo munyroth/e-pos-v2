@@ -7,12 +7,14 @@ const searchData = async (
     setIsLoading,
     setData,
     setMeta,
-    params
+    params,
+    role
 ) => {
     setContent(content);
     setIsLoading(true);
     const controller = new AbortController();
-    const res = await axiosPrivate.get("/admin"+url, {
+    const u = role === 'sale' ? url : "/admin" + url;
+    const res = await axiosPrivate.get(u, {
         signal: controller.signal,
         params: {
             content: content,

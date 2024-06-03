@@ -1,19 +1,23 @@
 import React, {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
-import useGetDataList from "../../hooks/useGetDataList";
-import BaseDialog from "../../components/dialog";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import Input from "../../components/form/Input";
-import handleChange from "../../features/handleChange";
-import handleValidation from "../../features/validation/validation";
-import Loading from "../../components/loading";
+import useGetDataList from "../../../hooks/useGetDataList";
+import BaseDialog from "../../../components/dialog";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Input from "../../../components/form/Input";
+import handleChange from "../../../features/handleChange";
+import handleValidation from "../../../features/validation/validation";
+import Loading from "../../../components/loading";
 import toast, {Toaster} from "react-hot-toast";
 
 export default function Cashier() {
     const axiosPrivate = useAxiosPrivate();
+    const shopId = localStorage.getItem('shopId');
 
     let url = '/product';
-    const [products, meta, isLoading, setProducts] = useGetDataList(url);
+    const [params] = useState({
+        shop_id: shopId,
+    });
+    const [products, meta, isLoading, setProducts] = useGetDataList(url, null, null, params);
     const [isLoadMore, setIsLoadMore] = useState(false);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
@@ -199,7 +203,8 @@ export default function Cashier() {
                 try {
                     const res = await axiosPrivate.get(url, {
                         params: {
-                            page: meta.page
+                            page: meta.page,
+                            ...params
                         }
                     });
                     setProducts(prevProducts => [...prevProducts, ...res.data.data]);
@@ -215,7 +220,7 @@ export default function Cashier() {
         return () => {
             productContainer && productContainer.removeEventListener('scroll', handleScroll);
         };
-    }, [axiosPrivate, isLoadMore, meta, setProducts, url]);
+    }, [axiosPrivate, isLoadMore, meta, setProducts, url, params]);
 
     return (
         <>

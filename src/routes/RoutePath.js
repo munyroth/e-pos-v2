@@ -6,8 +6,8 @@ import Bills from "../pages/admin/bills";
 import Members from "../pages/admin/members";
 import Branches from "../pages/admin/branches";
 import AddStore from "../pages/admin/stores/add";
-import Home from "../pages/home";
-import Cashier from "../pages/cashier";
+import Sale from "../pages/sale";
+import Cashier from "../pages/sale/cashier";
 import Profile from "../pages/profile";
 import Login from "../pages/Login";
 import Page404 from "../pages/Page404";
@@ -33,9 +33,6 @@ const RoutePath = () => {
                         <Route path="/admin/" element={<Admin/>}>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
                                 <Route exact path="profile" element={<Profile/>}/>
-                            </Route>
-                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
-                                <Route exact path="cashier" element={<Cashier/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
                                 <Route exact path="dashboard" element={<Dashboard/>}/>
@@ -66,9 +63,19 @@ const RoutePath = () => {
                             </Route>
                         </Route>
 
-                        <Route element={<Home/>}>
-                            <Route exact path="cashier" element={<Cashier/>}/>
-                            <Route exact path="profile" element={<Profile/>}/>
+                        <Route element={<Sale/>}>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
+                                <Route exact path="profile" element={<Profile/>}/>
+                            </Route>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
+                                <Route exact path="dashboard" element={<Dashboard/>}/>
+                            </Route>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BILLS]}/>}>
+                                <Route exact path="bills" element={<Bills/>}/>
+                            </Route>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
+                                <Route exact path="cashier" element={<Cashier/>}/>
+                            </Route>
                         </Route>
                     </Route>
 

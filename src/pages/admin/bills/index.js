@@ -18,8 +18,10 @@ export default function Bills() {
 
     let shopId = localStorage.getItem('shopId');
     let url = '/order';
-    const [params, setParams] = useState({
-        business_id: shopId,
+    const [params, setParams] = useState(() => {
+        return auth.role === 'admin'
+            ? {business_id: shopId}
+            : {shop_id: shopId}
     });
     const [bills, meta, isLoading, setBills, setMeta, setIsLoading] = useGetDataList(url, null, null, params);
     const [branches, setBranches] = useState([]);
@@ -46,8 +48,8 @@ export default function Bills() {
 
     const getBillDetail = async (id) => {
         try {
-            let u = auth.role === 'admin' ? 'admin' + url : url;
-            const res = await axiosPrivate.get(u + '/' + id);
+            const u = auth.role === 'admin' ? 'admin' + url : url;
+            const res = await axiosPrivate.get(`${u}/${id}`);
             setBillDetail(res.data.data);
             setOpenModalBillDetail(true)
         } catch (error) {
@@ -63,27 +65,29 @@ export default function Bills() {
         let isMounted = true;
         const controller = new AbortController();
 
-        getData(
-            controller,
-            isMounted,
-            '/shop?is_all=true&business_id=' + shopId,
-            0,
-            setBranches
-        ).then(r => r).catch(e => e);
+        if (auth.role === 'admin') {
+            getData(
+                controller,
+                isMounted,
+                '/shop?is_all=true&business_id=' + shopId,
+                0,
+                setBranches
+            ).then(r => r).catch(e => e);
 
-        getData(
-            controller,
-            isMounted,
-            '/employee?is_all=true&business_id=' + shopId,
-            0,
-            setMembers
-        ).then(r => r).catch(e => e);
+            getData(
+                controller,
+                isMounted,
+                '/employee?is_all=true&business_id=' + shopId,
+                0,
+                setMembers
+            ).then(r => r).catch(e => e);
+        }
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, [shopId]);
+    }, [shopId, auth.role]);
 
 
     return (
@@ -91,27 +95,32 @@ export default function Bills() {
             <div className="h-10 mb-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="me-8">ការបញ្ជាទិញ</h1>
-                    <Filter
-                        title="សាខា"
-                        id="filter-branch"
-                        onChange={(e) => handleFilterChange('shop_id', e.target.value)}
-                        selectOptions={branches}
-                        className="me-8"
-                    />
+                    {auth.role === 'admin'
+                        ? <>
+                            <Filter
+                                title="សាខា"
+                                id="filter-branch"
+                                onChange={(e) => handleFilterChange('shop_id', e.target.value)}
+                                selectOptions={branches}
+                                className="me-8"
+                            />
 
-                    <Filter
-                        title="អ្នកលក់"
-                        id="filter-member"
-                        onChange={(e) => handleFilterChange('created_by', e.target.value)}
-                        selectOptions={members}
-                        className="me-8"
-                    />
+                            <Filter
+                                title="អ្នកលក់"
+                                id="filter-member"
+                                onChange={(e) => handleFilterChange('created_by', e.target.value)}
+                                selectOptions={members}
+                                className="me-8"
+                            />
+                        </> : null}
                 </div>
 
                 <Search
                     id="search-bill"
                     placeholder="ស្វែងរកលេខការបញ្ជាទិញ"
                     url={url}
+                    params={params}
+                    role={auth.role}
                     setContent={setContent}
                     setIsLoading={setIsLoading}
                     setData={setBills}
@@ -141,12 +150,15 @@ export default function Bills() {
                         <th scope="col" className="1/12 px-6 py-3">
                             ប្រាក់អាប់
                         </th>
-                        <th scope="col" className="1/12 px-6 py-3">
-                            អ្នកលក់
-                        </th>
-                        <th scope="col" className="1/12 px-6 py-3 rounded-r-lg">
-                            សាខា
-                        </th>
+                        {auth.role === 'admin'
+                            ? <>
+                                <th scope="col" className="1/12 px-6 py-3">
+                                    អ្នកលក់
+                                </th>
+                                <th scope="col" className="1/12 px-6 py-3 rounded-r-lg">
+                                    សាខា
+                                </th>
+                            </> : null}
                     </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -175,12 +187,16 @@ export default function Bills() {
                                 <td className="px-6 py-4 text-red-500 font-semibold">
                                     ${bill.return_usd.toFixed(2)}
                                 </td>
-                                <td className="px-6 py-4">
-                                    {bill.user.name}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {bill.shop.name}
-                                </td>
+                                {auth.role === 'admin'
+                                    ? <>
+                                        <td className="px-6 py-4">
+                                            {bill.user.name}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {bill.shop.name}
+                                        </td>
+                                    </>
+                                    : null}
                             </tr>
                         ))}
                     </tbody>
@@ -224,8 +240,12 @@ export default function Bills() {
                             second: 'numeric'
                         })}</p>
                     <p className="text-lg font-semibold">លេខការបញ្ជាទិញ: {billDetail?.order_no}</p>
-                    <p className="text-lg font-semibold">អ្នកលក់: {billDetail?.user.name}</p>
-                    <p className="text-lg font-semibold">សាខា: {billDetail?.shop.name}</p>
+                    {auth.role === 'admin'
+                        ? <>
+                            <p className="text-lg font-semibold">អ្នកលក់: {billDetail?.user.name}</p>
+                            <p className="text-lg font-semibold">សាខា: {billDetail?.shop.name}</p>
+                        </>
+                        : null}
                     <p className="text-lg font-semibold">ផលិតផលសរុប: {billDetail?.order_details.length}</p>
                 </div>
                 <div className="flex-1">

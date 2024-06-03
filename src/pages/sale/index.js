@@ -1,6 +1,6 @@
 import Sidebar from "../../components/sidebar";
 
-export default function Home() {
+export default function Sale() {
 
     return (
         <>

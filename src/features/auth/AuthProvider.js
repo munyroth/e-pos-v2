@@ -18,8 +18,8 @@ export const AuthProvider = ({children}) => {
         permissions: []
     });
 
-    const setUser = (token, role) => {
-        const permissions = role === 'admin' ? [
+    const setPermissions = (role) => {
+        return role === 'admin' ? [
             PERMISSIONS.CAN_VIEW_PROFILE,
             PERMISSIONS.CAN_VIEW_DASHBOARD,
             PERMISSIONS.CAN_VIEW_PRODUCTS,
@@ -29,8 +29,14 @@ export const AuthProvider = ({children}) => {
             PERMISSIONS.CAN_VIEW_CASHIER
         ] : [
             PERMISSIONS.CAN_VIEW_PROFILE,
+            PERMISSIONS.CAN_VIEW_DASHBOARD,
+            PERMISSIONS.CAN_VIEW_BILLS,
             PERMISSIONS.CAN_VIEW_CASHIER
         ];
+    };
+
+    const setUser = (token, role) => {
+        const permissions = setPermissions(role);
         setAuth({token, role, permissions});
     };
 
@@ -38,15 +44,7 @@ export const AuthProvider = ({children}) => {
         localStorage.setItem(TOKEN, token);
         localStorage.setItem(REFRESH_TOKEN, refresh_token);
         localStorage.setItem(ROLE, 'admin');
-        const permissions = [
-            PERMISSIONS.CAN_VIEW_PROFILE,
-            PERMISSIONS.CAN_VIEW_DASHBOARD,
-            PERMISSIONS.CAN_VIEW_PRODUCTS,
-            PERMISSIONS.CAN_VIEW_BILLS,
-            PERMISSIONS.CAN_VIEW_MEMBERS,
-            PERMISSIONS.CAN_VIEW_BRANCHES,
-            PERMISSIONS.CAN_VIEW_CASHIER
-        ];
+        const permissions = setPermissions('admin');
         setAuth({token, role: 'admin', permissions});
         navigate(location.state?.path || '/stores/add', {replace: true});
     };
@@ -61,20 +59,10 @@ export const AuthProvider = ({children}) => {
             sessionStorage.setItem(ROLE, role);
         }
         let storeId = localStorage.getItem(SHOP_ID);
-        const permissions = role === 'admin' ? [
-            PERMISSIONS.CAN_VIEW_PROFILE,
-            PERMISSIONS.CAN_VIEW_DASHBOARD,
-            PERMISSIONS.CAN_VIEW_PRODUCTS,
-            PERMISSIONS.CAN_VIEW_BILLS,
-            PERMISSIONS.CAN_VIEW_MEMBERS,
-            PERMISSIONS.CAN_VIEW_BRANCHES,
-            PERMISSIONS.CAN_VIEW_CASHIER
-        ] : [
-            PERMISSIONS.CAN_VIEW_PROFILE,
-            PERMISSIONS.CAN_VIEW_CASHIER
-        ];
+        const permissions = setPermissions(role);
         setAuth({token, role, permissions});
-        const defaultPath = !storeId ? '/stores' : '/admin/dashboard';
+        const defaultPath = !storeId ? '/stores'
+            : (role === 'admin' ? '/admin/dashboard' : '/cashier');
         navigate(location.state?.path || defaultPath, {replace: true});
     };
 

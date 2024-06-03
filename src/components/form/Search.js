@@ -11,6 +11,7 @@ export default function Search(props) {
         setData,
         setMeta,
         params,
+        role,
         className = "w-80"
     } = props
 
@@ -27,7 +28,7 @@ export default function Search(props) {
                     </svg>
                 </div>
                 <input
-                    onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setData, setMeta, params)}
+                    onChange={(e) => searchData(e.target.value, url, setContent, setIsLoading, setData, setMeta, params, role)}
                     type="text"
                     id={id}
                     className="input w-full pl-10"
