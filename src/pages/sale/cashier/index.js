@@ -141,8 +141,12 @@ export default function Cashier() {
             const res = await axiosPrivate.post('order', data);
 
             console.log(res.data)
+            if (res.data.status === 201) {
+                toast.success('បានទូទាត់ជោគជ័យ');
+            } else {
+                toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+            }
             setIsModalPayment(false);
-            toast.success('បានទូទាត់ជោគជ័យ');
             setItemsProcessing([]);
         } catch (error) {
             console.error("Failed to order:", error);
