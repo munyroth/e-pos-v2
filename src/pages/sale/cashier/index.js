@@ -135,7 +135,7 @@ export default function Cashier() {
                 shop_id: shopId,
                 received_usd: payment.receive,
                 received_khr: 0,
-                payment_type: 'cash',
+                payment_type: 'Cash',
                 order_details: itemsProcessing
             }
             const res = await axiosPrivate.post('order', data);
