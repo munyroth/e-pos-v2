@@ -16,7 +16,7 @@ export default function Navbar() {
     const {auth, logout} = useAuth();
 
     const [user, isLoadingUser] = useGetDataObject('/user')
-    let url = auth.role === 'admin' ? '/business' : '/shop';
+    let url = auth.role === 'admin' ? '/business?is_all=true' : '/shop?is_all=true';
     // eslint-disable-next-line
     const [shops, meta, isLoadingShops] = useGetDataList(url)
     const [selected, setSelected] = useState({

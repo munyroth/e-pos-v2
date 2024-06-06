@@ -29,11 +29,18 @@ const useGetDataList = (
                 const res = await axiosPrivate.get(u, {
                     signal: controller.signal,
                     params: {
-                        page: 1,
+                        page: meta.page,
                         ...params
                     }
                 });
                 if (isMounted && res.data.status === 200) {
+                    if (res.data.data.length === 0 && meta.page > 1) {
+                        setMeta(prevMeta => ({
+                            ...res.data.meta,
+                            page: prevMeta.page - 1
+                        }));
+                        return;
+                    }
                     setData(res.data.data);
                     setMeta(res.data.meta);
                     setIsLoading(false);
@@ -55,7 +62,7 @@ const useGetDataList = (
             isMounted = false;
             controller.abort();
         };
-    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete, params]);
+    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete, params, meta.page]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };

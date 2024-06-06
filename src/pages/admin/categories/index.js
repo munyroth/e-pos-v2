@@ -186,6 +186,7 @@ export default function Categories() {
                 setMeta={setMeta}
                 setItems={setCategories}
                 setLoader={setIsLoading}
+                params={params}
                 url={url}/>
 
             <FormDialog

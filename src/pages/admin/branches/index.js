@@ -225,6 +225,7 @@ export default function Branches() {
                 setMeta={setMeta}
                 setItems={setShops}
                 setLoader={setIsLoading}
+                params={params}
                 url={url}/>
 
             <FormDialog

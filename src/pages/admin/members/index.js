@@ -291,6 +291,7 @@ export default function Products() {
                 setMeta={setMeta}
                 setItems={setMembers}
                 setLoader={setIsLoading}
+                params={params}
                 url={url}/>
 
             <FormDialog

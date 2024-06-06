@@ -18,7 +18,7 @@ export default function Stores() {
         const controller = new AbortController();
 
         const getShop = async () => {
-            let url = auth.role === 'admin' ? '/admin/business' : '/shop';
+            let url = auth.role === 'admin' ? '/admin/business?is_all=true' : '/shop?is_all=true';
             try {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal
@@ -43,6 +43,15 @@ export default function Stores() {
     return (
         <BaseForm>
             <ul className="space-y-2 font-medium p-6 md:space-y-6 sm:p-8">
+                <div className="text-2xl font-bold text-center dark:text-white">
+                    {auth.role === 'admin'
+                        ? 'សូមជ្រើសរើសហាងរបស់អ្នក'
+                        : 'សូមជ្រើសរើសសាខា'
+                    }
+                </div>
+                <div className="flex items-center justify-center w-full">
+                    <div className="h-0.5 w-3/4 bg-gray-300 dark:bg-gray-700"/>
+                </div>
                 {isLoading
                     ? <Loading/>
                     : shop.map(item => (
