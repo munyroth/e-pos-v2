@@ -102,7 +102,7 @@ export default function Products() {
     }
 
     const handleDelete = async id => {
-        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបទំនិញដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
+        await deleteData(`${url}/${id}?business_id=${shopId}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបសមាជិកដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលលុបទំនិញ')
     }
 
     useEffect(() => {
