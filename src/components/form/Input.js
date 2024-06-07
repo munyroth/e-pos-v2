@@ -20,7 +20,8 @@ const Input = (
         className,
         textEnd,
         isShowPassword,
-        setShowPassword
+        setShowPassword,
+        disabled
     }
 ) => {
     const ref = useRef(null);
@@ -84,7 +85,7 @@ const Input = (
     return !isValidate ? (
         <div className={className}>
             {title && (
-                <label htmlFor={id} className="mb-2 font-medium leading-6 text-gray-900 dark:text-white">
+                <label htmlFor={id} className="mb-2 font-medium leading-6 text-gray-900 dark:text-gray-300">
                     {title} {isRequire && <span className="text-red-600">*</span>}
                 </label>
             )}
@@ -104,6 +105,7 @@ const Input = (
                     ref={ref}
                     className={inputClassNames}
                     placeholder={placeholder}
+                    disabled={disabled}
                 />
                 {selectId && (
                     <div className="absolute inset-y-0 right-0 flex items-center">
@@ -131,7 +133,7 @@ const Input = (
         </div>
     ) : (
         <div>
-            <label htmlFor={id} className="font-medium leading-6 text-gray-900 dark:text-white">
+            <label htmlFor={id} className="font-medium leading-6 text-gray-900 dark:text-gray-300">
                 {title} {isRequire && <span className="text-red-600">*</span>}
             </label>
             <div className="relative mt-2">
@@ -148,6 +150,7 @@ const Input = (
                     onChange={onChange}
                     ref={ref}
                     className={inputClassNames}
+                    disabled={disabled}
                 />
                 {selectId && (
                     <div className="absolute inset-y-0 right-0 flex items-center">
