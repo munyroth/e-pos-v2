@@ -344,7 +344,17 @@ export default function Cashier() {
                                                                 id="discount"
                                                                 onChange={e => setItemsProcessing(itemsProcessing.map(item => {
                                                                     if (item.product_id === product.product_id) {
-                                                                        let discount = parseFloat(e.target.value) || 0;
+                                                                        let discount = e.target.value;
+                                                                        // Regular expression to check if input is a valid decimal number
+                                                                        const regex = /^\d*\.?\d*$/;
+                                                                        if (regex.test(discount)) {
+                                                                            if (!isNaN(discount) && discount.trim() !== '' && discount.slice(-1) !== '.') {
+                                                                                discount = parseFloat(discount) || 0;
+                                                                            }
+                                                                        } else {
+                                                                            // If input is not a valid decimal number, revert to the previous discount value
+                                                                            discount = product.discount;
+                                                                        }
                                                                         return {
                                                                             ...item,
                                                                             discount: discount,
