@@ -1,5 +1,5 @@
 import {useParams} from "react-router";
-import useGetDataObject from "../../../../hooks/useGetDataObject";
+import useGetDataObject from "hooks/useGetDataObject";
 import {Link} from "react-router-dom";
 import React from "react";
 
@@ -7,7 +7,7 @@ export default function BranchDetail() {
 
     const {id} = useParams();
 
-    let url = '/shop/'+id;
+    let url = '/shop/' + id;
     // eslint-disable-next-line
     const [branch, isLoading, setBranch, setIsLoading] = useGetDataObject(url);
 

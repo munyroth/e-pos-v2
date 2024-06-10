@@ -9,7 +9,8 @@ const postData = async (
     isEmpty,
     setIsEmpty,
     successMessage,
-    errorMessage
+    errorMessage,
+    isNotShowSuccessToast
 ) => {
     setIsLoading(true);
     const controller = new AbortController();
@@ -21,7 +22,8 @@ const postData = async (
         if (response.data.status === 201 || response.data.status === 200) {
             setOpenModal(false);
             isEmpty && setIsEmpty(false);
-            toast.success(successMessage || 'បានបញ្ចូលទិន្នន័យដោយជោគជ័យ');
+            !isNotShowSuccessToast && toast.success(successMessage || 'បានបញ្ចូលទិន្នន័យដោយជោគជ័យ');
+            return response.data.data;
         } else toast.error(response.data.message);
     } catch (error) {
         toast.error(errorMessage || 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលទិន្នន័យ');

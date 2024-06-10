@@ -1,16 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Loading from "../../../components/loading";
-import Pagination from "../../../components/pagination";
+import Loading from "components/loading";
+import Pagination from "components/pagination";
 import {DocumentTextIcon} from "@heroicons/react/24/outline";
-import BaseDialog from "../../../components/dialog";
-import useGetDataList from "../../../hooks/useGetDataList";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import Search from "../../../components/form/Search";
-import useAuth from "../../../hooks/useAuth";
-import Empty from "../../../components/empty";
-import searchData from "../../../requestApi/searchData";
-import Filter from "../../../components/form/Filter";
-import getData from "../../../requestApi/getData";
+import BaseDialog from "components/dialog";
+import useGetDataList from "hooks/useGetDataList";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import Search from "components/form/Search";
+import useAuth from "hooks/useAuth";
+import Empty from "components/empty";
+import searchData from "requestApi/searchData";
+import Filter from "components/form/Filter";
+import getData from "requestApi/getData";
 
 export default function Bills() {
     const {auth} = useAuth();

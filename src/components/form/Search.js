@@ -1,4 +1,4 @@
-import searchData from "../../requestApi/searchData";
+import searchData from "requestApi/searchData";
 import React from "react";
 
 export default function Search(props) {

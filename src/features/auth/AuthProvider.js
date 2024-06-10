@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import AuthContext from "../../contexts/AuthContext";
+import AuthContext from "contexts/AuthContext";
 import PERMISSIONS from "./permissions/Permissions";
 
 const TOKEN = 'token';

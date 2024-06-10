@@ -1,25 +1,29 @@
 import React, {useEffect, useRef, useState} from "react";
-import Pagination from "../../../components/pagination";
-import Loading from "../../../components/loading";
-import handleChange from "../../../features/handleChange";
-import handleValidation from "../../../features/validation/validation";
-import postData from "../../../requestApi/postData";
-import deleteData from "../../../requestApi/deleteData";
-import getData from "../../../requestApi/getData";
-import FormDialog from "../../../components/dialog/FormDialog";
-import Input from "../../../components/form/Input";
-import DeleteDialog from "../../../components/dialog/DeleteDialog";
+import Pagination from "components/pagination";
+import Loading from "components/loading";
+import handleChange from "features/handleChange";
+import handleValidation from "features/validation/validation";
+import postData from "requestApi/postData";
+import deleteData from "requestApi/deleteData";
+import FormDialog from "components/dialog/FormDialog";
+import Input from "components/form/Input";
+import DeleteDialog from "components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
-import InputImage from "../../../components/form/InputImage";
-import Select from "../../../components/form/Select";
-import useGetDataList from "../../../hooks/useGetDataList";
-import Search from "../../../components/form/Search";
-import Empty from "../../../components/empty";
+import InputImage from "components/form/InputImage";
+import Select from "components/form/Select";
+import useGetDataList from "hooks/useGetDataList";
+import Search from "components/form/Search";
+import Empty from "components/empty";
+import {useNavigate} from "react-router-dom";
 
-export default function Products() {
+export default function Members() {
+    const navigate = useNavigate();
+
     let shopId = localStorage.getItem('shopId');
     let url = '/employee';
-    const [roles, setRoles] = useState([]);
+    const [roles] = useState([
+        "sale",
+    ]);
 
     const [params] = useState({
         business_id: shopId
@@ -88,7 +92,8 @@ export default function Products() {
             setIsValidate
         )) return;
         const formData = constructFormData(data);
-        await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, 'បានបញ្ចូលសមាជិកដោយជោគជ័យ', 'មានបញ្ហាកើតឡើងនៅពេលបញ្ចូលសមាជិក');
+        const member = await postData(url, formData, setIsLoadingAdd, setOpenModalAddItem, isEmpty, setIsEmpty, null, null, true);
+        navigate(`/admin/members/${member.id}`);
     }
 
     const handleUpdate = async id => {
@@ -110,21 +115,21 @@ export default function Products() {
     }, [meta]);
 
     useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
+        // let isMounted = true;
+        // const controller = new AbortController();
 
         // Get roles
-        if (openModalAddItem) {
-            getData(
-                controller,
-                isMounted,
-                '/role',
-                0,
-                setRoles,
-                null,
-                null
-            ).then(r => r).catch(e => e)
-        }
+        // if (openModalAddItem) {
+        //     getData(
+        //         controller,
+        //         isMounted,
+        //         '/role',
+        //         0,
+        //         setRoles,
+        //         null,
+        //         null
+        //     ).then(r => r).catch(e => e)
+        // }
 
         // Reset form data when modal is closed
         if (!openModalAddItem) {
@@ -150,10 +155,10 @@ export default function Products() {
             }, 200);
         }
 
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
+        // return () => {
+        //     isMounted = false;
+        //     controller.abort();
+        // }
     }, [openModalAddItem, openModalDelete, url]);
 
     return (
@@ -187,13 +192,6 @@ export default function Products() {
                     <thead
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        {/*<th scope="col" className="p-4 rounded-l-lg">*/}
-                        {/*    <div className="flex items-center">*/}
-                        {/*        <input id="checkbox-all-search" type="checkbox"*/}
-                        {/*               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>*/}
-                        {/*        <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>*/}
-                        {/*    </div>*/}
-                        {/*</th>*/}
                         <th scope="col" className="w-4/12 px-6 py-3 rounded-l-lg">
                             ឈ្មោះ
                         </th>
@@ -213,13 +211,6 @@ export default function Products() {
                         ? null
                         : members.map(member => (
                             <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                {/*<td className="w-4 p-4">*/}
-                                {/*    <div className="flex items-center">*/}
-                                {/*        <input id="checkbox-table-search-1" type="checkbox"*/}
-                                {/*               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>*/}
-                                {/*        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>*/}
-                                {/*    </div>*/}
-                                {/*</td>*/}
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                     <img className="w-10 h-10"
@@ -246,6 +237,13 @@ export default function Products() {
                                     <div className="flex justify-center">
                                         <button
                                             onClick={() => {
+                                                navigate(`/admin/members/${member.id}`);
+                                            }}
+                                            className="font-medium text-green-600 dark:text-green-600 hover:underline">
+                                            តែងតាំង
+                                        </button>
+                                        <button
+                                            onClick={() => {
                                                 setUpdateId(member.id);
                                                 setOpenModalAddItem(true);
                                                 setData({
@@ -260,7 +258,7 @@ export default function Products() {
                                                     setIsImage(true);
                                                 }
                                             }}
-                                            className="pl-1 font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            className="pl-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                             កែប្រែ
                                         </button>
                                         <button

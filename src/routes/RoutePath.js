@@ -1,26 +1,27 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Admin from "../pages/admin";
-import Dashboard from "../pages/admin/dashboard";
-import Products from "../pages/admin/products";
-import Bills from "../pages/admin/bills";
-import Members from "../pages/admin/members";
-import Branches from "../pages/admin/branches";
-import AddStore from "../pages/admin/stores/add";
-import Sale from "../pages/sale";
-import Cashier from "../pages/sale/cashier";
-import Profile from "../pages/profile";
-import Login from "../pages/Login";
-import Page404 from "../pages/Page404";
-import Authentication from "../features/auth/authentication/Authentication";
-import Authorization from "../features/auth/authorization/Authorization";
-import PERMISSIONS from "../features/auth/permissions/Permissions";
-import {AuthProvider} from "../features/auth/AuthProvider";
+import Admin from "pages/admin";
+import Dashboard from "pages/admin/dashboard";
+import Products from "pages/admin/products";
+import Bills from "pages/admin/bills";
+import Members from "pages/admin/members";
+import Branches from "pages/admin/branches";
+import AddStore from "pages/admin/stores/add";
+import Sale from "pages/sale";
+import Cashier from "pages/sale/cashier";
+import Profile from "pages/profile";
+import Login from "pages/Login";
+import Page404 from "pages/Page404";
+import Authentication from "features/auth/authentication/Authentication";
+import Authorization from "features/auth/authorization/Authorization";
+import PERMISSIONS from "features/auth/permissions/Permissions";
+import {AuthProvider} from "features/auth/AuthProvider";
 import React from "react";
-import CheckAuth from "../pages/CheckAuth";
-import Register from "../pages/Register";
-import Stores from "../pages/admin/stores";
-import BranchDetail from "../pages/admin/branches/branchDetail";
-import Categories from "../pages/admin/categories";
+import CheckAuth from "pages/CheckAuth";
+import Register from "pages/Register";
+import Stores from "pages/admin/stores";
+import BranchDetail from "pages/admin/branches/branchDetail";
+import Categories from "pages/admin/categories";
+import Assign from "pages/admin/members/assign";
 
 const RoutePath = () => {
     return (
@@ -47,7 +48,16 @@ const RoutePath = () => {
                                 <Route exact path="bills" element={<Bills/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_MEMBERS]}/>}>
-                                <Route exact path="members" element={<Members/>}/>
+                                <Route path="members">
+                                    <Route
+                                        index
+                                        element={<Members/>}
+                                    />
+                                    <Route
+                                        path=":id"
+                                        element={<Assign/>}
+                                    />
+                                </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BRANCHES]}/>}>
                                 <Route path="branches">

@@ -1,5 +1,5 @@
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
-import {axiosPrivate} from "../../api/axios";
+import {axiosPrivate} from "api/axios";
 
 export default function Pagination(
     {content, meta, setMeta, setItems, setLoader, url, params}

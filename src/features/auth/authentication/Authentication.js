@@ -1,7 +1,7 @@
 import React, {useEffect, useCallback} from "react";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
-import axios from "../../../api/axios";
+import useAuth from "hooks/useAuth";
+import axios from "api/axios";
 
 const Authentication = () => {
     const {auth, setUser, login} = useAuth();

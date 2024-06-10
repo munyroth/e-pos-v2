@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Link, NavLink, Outlet} from "react-router-dom";
-import Navbar from "../navbar";
-import useAuth from "../../hooks/useAuth";
+import Navbar from "components/navbar";
+import useAuth from "hooks/useAuth";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')

@@ -1,11 +1,11 @@
 import {Fragment, useEffect, useState} from 'react'
 import {Disclosure, Listbox, Menu, Transition} from '@headlessui/react'
 import {Link} from "react-router-dom";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
 import {CheckIcon} from "@heroicons/react/20/solid";
-import useAuth from "../../hooks/useAuth";
-import useGetDataObject from "../../hooks/useGetDataObject";
-import useGetDataList from "../../hooks/useGetDataList";
+import useAuth from "hooks/useAuth";
+import useGetDataObject from "hooks/useGetDataObject";
+import useGetDataList from "hooks/useGetDataList";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')

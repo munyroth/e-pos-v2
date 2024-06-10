@@ -1,18 +1,18 @@
 import React, {useEffect, useRef, useState} from "react";
-import Pagination from "../../../components/pagination";
-import Loading from "../../../components/loading";
-import handleChange from "../../../features/handleChange";
-import handleValidation from "../../../features/validation/validation";
-import postData from "../../../requestApi/postData";
-import deleteData from "../../../requestApi/deleteData";
-import Input from "../../../components/form/Input";
-import DeleteDialog from "../../../components/dialog/DeleteDialog";
+import Pagination from "components/pagination";
+import Loading from "components/loading";
+import handleChange from "features/handleChange";
+import handleValidation from "features/validation/validation";
+import postData from "requestApi/postData";
+import deleteData from "requestApi/deleteData";
+import Input from "components/form/Input";
+import DeleteDialog from "components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
-import FormDialog from "../../../components/dialog/FormDialog";
-import useGetDataList from "../../../hooks/useGetDataList";
+import FormDialog from "components/dialog/FormDialog";
+import useGetDataList from "hooks/useGetDataList";
 import {useLocation, useNavigate} from "react-router-dom";
-import Search from "../../../components/form/Search";
-import Empty from "../../../components/empty";
+import Search from "components/form/Search";
+import Empty from "components/empty";
 
 export default function Branches() {
     let shopId = localStorage.getItem('shopId');
