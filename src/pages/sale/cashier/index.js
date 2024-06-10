@@ -108,19 +108,15 @@ export default function Cashier() {
                 }
                 const res = await axiosPrivate.post('order/pre-checkout', data);
 
-                console.log(res.data)
                 // Check if return usd is correct
                 // get float number 2 decimal
-                console.log(parseFloat(res.data.data.return_usd).toFixed(2), returnUsd.toFixed(2))
                 if (parseFloat(res.data.data.return_usd).toFixed(2) === returnUsd.toFixed(2)) {
                     await handleOrder()
                 } else {
-                    console.log('Failed to checkout: return usd is not correct')
                     toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
                     setIsLoadingCheckout(false);
                 }
             } catch (error) {
-                console.error("Failed to checkout:", error);
                 toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
                 setIsLoadingCheckout(false);
             }
@@ -140,7 +136,6 @@ export default function Cashier() {
             }
             const res = await axiosPrivate.post('order', data);
 
-            console.log(res.data)
             if (res.data.status === 201) {
                 toast.success('បានទូទាត់ជោគជ័យ');
             } else {
