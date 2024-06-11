@@ -34,7 +34,6 @@ const useGetDataList = (
                         ...p
                     }
                 });
-                console.log('useGetDataList', url, p, content);
                 if (isMounted && res.data.status === 200) {
                     if (res.data.data.length === 0) {
                         setMeta(prevMeta => ({

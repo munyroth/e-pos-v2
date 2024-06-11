@@ -1,15 +1,18 @@
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
 import {axiosPrivate} from "api/axios";
+import useAuth from "../../hooks/useAuth";
 
 export default function Pagination(
     {content, meta, setMeta, setItems, setLoader, url, params}
 ) {
+    const {auth} = useAuth();
     let totalPages = Math.ceil(meta.total / meta.size) || 1;
 
     const searchProduct = async (content, page) => {
         setLoader(true)
         try {
-            const res = await axiosPrivate.get("/admin"+url, {
+            const u = auth.role === 'admin' ? '/admin' + url : url;
+            const res = await axiosPrivate.get(u, {
                 params: {
                     content,
                     page,
