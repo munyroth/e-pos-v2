@@ -104,7 +104,7 @@ export default function Profile() {
                                 <div className="absolute bottom-0 right-0">
                                     <label htmlFor="file"
                                            className="button cursor-pointer text-white rounded-full p-2">
-                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                        <svg className="w-6 h-6 text-gray-100" aria-hidden="true"
                                              xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                              viewBox="0 0 24 24">
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
