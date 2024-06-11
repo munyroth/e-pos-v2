@@ -50,7 +50,7 @@ export default function Branches() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
+    const [shops, meta, isLoading, setShops, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params, content);
 
     const handleChangeAdd = e => {
         handleChange(

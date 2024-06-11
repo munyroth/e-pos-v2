@@ -1,24 +1,31 @@
 import React, {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {CreditCardIcon} from "@heroicons/react/24/outline";
-import useGetDataList from "../../../hooks/useGetDataList";
-import BaseDialog from "../../../components/dialog";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import Input from "../../../components/form/Input";
-import handleChange from "../../../features/handleChange";
-import handleValidation from "../../../features/validation/validation";
-import Loading from "../../../components/loading";
+import useGetDataList from "hooks/useGetDataList";
+import BaseDialog from "components/dialog";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import Input from "components/form/Input";
+import handleChange from "features/handleChange";
+import handleValidation from "features/validation/validation";
+import Loading from "components/loading";
 import toast, {Toaster} from "react-hot-toast";
+import useAuth from "hooks/useAuth";
+import Filter from "../../../components/form/Filter";
+import getData from "../../../requestApi/getData";
 
 export default function Cashier() {
+    const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const shopId = localStorage.getItem('shopId');
 
-    let url = '/product';
-    const [params] = useState({
-        shop_id: shopId,
-    });
-    const [products, meta, isLoading, setProducts] = useGetDataList(url, null, null, params);
+    const url = '/product';
+    const [params, setParams] = useState(auth.role === 'admin'
+        ? {business_id: shopId}
+        : {shop_id: shopId});
+    const [page, setPage] = useState(1);
+    const [categories, setCategories] = useState([]);
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, null, null, params);
     const [isLoadMore, setIsLoadMore] = useState(false);
+    const [isLoadingSearch, setIsLoadingSearch] = useState(false);
 
     const [isModalPayment, setIsModalPayment] = useState(false);
     const cancelButtonRef = useRef(null);
@@ -41,11 +48,7 @@ export default function Cashier() {
         return: false
     });
 
-    const addToCart = (productId, isBarcode) => {
-        const product = products.find(items => {
-            if (isBarcode) return items.barcode === productId;
-            else return items.id === productId;
-        });
+    const addToCart = (product) => {
         if (product) {
             let isExist = false;
             setItemsProcessing(itemsProcessing.map(item => {
@@ -75,11 +78,40 @@ export default function Cashier() {
         setItemsProcessing(itemsProcessing.filter(item => item.product_id !== id));
     }
 
-    const handleSearchItem = e => {
+    const handleSearchItem = async e => {
         if (e.key === 'Enter') {
+            setIsLoadingSearch(true);
             const value = e.target.value;
-            addToCart(value, true);
+
+            // Find product by barcode
+            const product = products.find(product => product.barcode === value);
+
+            if (product) {
+                addToCart(product);
+            } else {
+                // Fetch product by barcode
+                try {
+                    const u = auth.role === 'admin' ? '/admin/product' : '/product';
+                    const res = await axiosPrivate.get(u, {
+                        params: {
+                            barcode: value,
+                            ...params
+                        }
+                    });
+                    if (res.data.status === 200) {
+                        addToCart(res.data.data);
+                    } else if (res.data.status === 404) {
+                        toast.error('រកមិនឃើញទំនិញ');
+                    } else {
+                        toast.error('មានបញ្ហាក្នុងការស្វែងរកសូមព្យាយាមម្តងទៀត');
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch product:", error);
+                }
+            }
+
             clearSearchRef.current.value = '';
+            setIsLoadingSearch(false);
         }
     }
 
@@ -106,7 +138,8 @@ export default function Cashier() {
                     received_usd: payment.receive,
                     received_khr: 0
                 }
-                const res = await axiosPrivate.post('order/pre-checkout', data);
+                const u = auth.role === 'admin' ? '/admin/order/pre-checkout' : '/order/pre-checkout';
+                const res = await axiosPrivate.post(u, data);
 
                 // Check if return usd is correct
                 // get float number 2 decimal
@@ -134,7 +167,8 @@ export default function Cashier() {
                 payment_type: 'Cash',
                 order_details: itemsProcessing
             }
-            const res = await axiosPrivate.post('order', data);
+            const u = auth.role === 'admin' ? '/admin/order' : '/order';
+            const res = await axiosPrivate.post(u, data);
 
             if (res.data.status === 201) {
                 toast.success('បានទូទាត់ជោគជ័យ');
@@ -196,16 +230,20 @@ export default function Cashier() {
 
         const handleScroll = async () => {
             const {scrollTop, clientHeight, scrollHeight} = productContainer;
-            if (scrollTop + clientHeight > scrollHeight - 20 && meta.page < meta.total / meta.size && !isLoadMore) {
+            console.log(page, meta.total, meta.size);
+            if (scrollTop + clientHeight > scrollHeight - 20 && page < meta.total / meta.size && !isLoadMore) {
                 setIsLoadMore(true);
-                meta.page++;
+                const p = page + 1;
+                setPage(p);
                 try {
-                    const res = await axiosPrivate.get(url, {
+                    const u = auth.role === 'admin' ? '/admin' + url : url;
+                    const res = await axiosPrivate.get(u, {
                         params: {
-                            page: meta.page,
+                            page: p,
                             ...params
                         }
                     });
+                    console.log(res.data.data);
                     setProducts(prevProducts => [...prevProducts, ...res.data.data]);
                     setIsLoadMore(false);
                 } catch (error) {
@@ -219,7 +257,26 @@ export default function Cashier() {
         return () => {
             productContainer && productContainer.removeEventListener('scroll', handleScroll);
         };
-    }, [axiosPrivate, isLoadMore, meta, setProducts, url, params]);
+    }, [axiosPrivate, isLoadMore, meta, setProducts, url, params, page, auth.role]);
+
+    useEffect(() => {
+        let isMounted = true;
+        const controller = new AbortController();
+
+        getData(
+            controller,
+            isMounted,
+            '/category?is_all=true&business_id=' + shopId,
+            0,
+            setCategories
+        ).then(r => r).catch(e => e);
+
+
+        return () => {
+            isMounted = false;
+            controller.abort();
+        }
+    }, [shopId]);
 
     return (
         <>
@@ -243,7 +300,7 @@ export default function Cashier() {
                                             {products.map(product => (
                                                 <div
                                                     className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                                    <img className="aspect-square h-32 p-4 rounded-t-lg"
+                                                    <img className="aspect-square h-32 m-4 rounded-md"
                                                          src={product.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                                          alt={product.name_kh}/>
                                                     <div className="px-4 pb-4 w-full">
@@ -253,12 +310,13 @@ export default function Cashier() {
                                                         <div className="flex items-center justify-between">
                                                             <span
                                                                 className="text-3xl font-bold text-main">${product.price}</span>
-                                                            <button
-                                                                onClick={() => addToCart(product.id)}
-                                                                className="h-8 w-8  rounded-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                            >+
-                                                            </button>
                                                         </div>
+                                                        <button
+                                                            onClick={() => addToCart(product)}
+                                                            className="mt-2 button h-10 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 font-medium text-sm dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                        >
+                                                            បន្ថែមទៅកន្ត្រក
+                                                        </button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -405,7 +463,33 @@ export default function Cashier() {
                     </div>
                 </div>
                 <div className="h-10 mb-4 flex items-center justify-between">
-                    <h1 className="">ការលក់</h1>
+                    <div className="relative flex items-center">
+                        <h1 className="me-8">លក់ទំនិញ</h1>
+                        <Filter
+                            title="ប្រភេទ"
+                            id="filter-category"
+                            onChange={async (e) => {
+                                const {value} = e.target;
+                                const p = value !== "all" ? {...params, category_id: value} : {...params};
+                                setParams(p);
+                                setIsLoading(true);
+                                const u = auth.role === 'sale' ? url : "/admin" + url;
+                                const res = await axiosPrivate.get(u, {
+                                    params: {
+                                        page: 1,
+                                        ...p
+                                    }
+                                });
+                                setProducts(res.data.data);
+                                setMeta(res.data.meta);
+                                setPage(1);
+                                setIsLoading(false);
+                            }}
+                            selectOptions={categories}
+                            isHasNon={true}
+                            className="w-52 me-8"
+                        />
+                    </div>
                     <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -422,7 +506,22 @@ export default function Cashier() {
                                name="scan"
                                id="scan"
                                className="input w-80 pl-10"
-                               placeholder="ស្វែងរកបារកូដ"/>
+                               placeholder="ស្វែងរកបារកូដ"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            {isLoadingSearch ? (
+                                <svg aria-hidden="true"
+                                     className="inline w-6 h-6 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
+                                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor"/>
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill"/>
+                                </svg>
+                            ) : null}
+                        </div>
                     </div>
                 </div>
             </div>

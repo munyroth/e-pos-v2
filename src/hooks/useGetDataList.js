@@ -6,7 +6,8 @@ const useGetDataList = (
     url,
     openModalAdd,
     openModalDelete,
-    p
+    p,
+    content,
 ) => {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -16,7 +17,6 @@ const useGetDataList = (
         'size': 10,
         'total': 0
     });
-    const [params] = useState(p);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -29,15 +29,17 @@ const useGetDataList = (
                 const res = await axiosPrivate.get(u, {
                     signal: controller.signal,
                     params: {
-                        page: meta.page,
-                        ...params
+                        content: content,
+                        page: 1,
+                        ...p
                     }
                 });
+                console.log('useGetDataList', url, p, content);
                 if (isMounted && res.data.status === 200) {
-                    if (res.data.data.length === 0 && meta.page > 1) {
+                    if (res.data.data.length === 0) {
                         setMeta(prevMeta => ({
                             ...res.data.meta,
-                            page: prevMeta.page - 1
+                            page: prevMeta.page > 1 ? prevMeta.page - 1 : 1
                         }));
                         return;
                     }
@@ -62,7 +64,8 @@ const useGetDataList = (
             isMounted = false;
             controller.abort();
         };
-    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete, params, meta.page]);
+        // eslint-disable-next-line
+    }, [url, auth.role, axiosPrivate, openModalAdd, openModalDelete]);
 
     return [data, meta, isLoading, setData, setMeta, setIsLoading];
 };

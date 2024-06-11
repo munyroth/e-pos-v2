@@ -60,7 +60,7 @@ export default function Members() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
+    const [members, meta, isLoading, setMembers, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params, content);
 
     const handleChangeAdd = e => {
         handleChange(

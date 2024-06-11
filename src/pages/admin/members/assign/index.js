@@ -155,7 +155,7 @@ export default function Assign() {
                                         {shop.employees.map(employee => employee.id).includes(Number(id)) ? (
                                             <>
                                                 <div
-                                                    className="me-4 rounded-md bg-gray-700 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-default"
+                                                    className="button-disabled me-4 rounded-md flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-default"
                                                 >
                                                     បានបន្ថែមរួចរាល់
                                                 </div>

@@ -71,6 +71,9 @@ const RoutePath = () => {
                                     />
                                 </Route>
                             </Route>
+                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
+                                <Route exact path="cashier" element={<Cashier/>}/>
+                            </Route>
                         </Route>
 
                         <Route element={<Sale/>}>

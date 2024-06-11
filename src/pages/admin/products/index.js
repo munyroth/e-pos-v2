@@ -23,9 +23,7 @@ export default function Products() {
     let url = '/product';
     const [categories, setCategories] = useState([]);
     const [content, setContent] = useState('');
-    const [params, setParams] = useState({
-        business_id: shopId
-    });
+    const [params, setParams] = useState({});
     const [isEmpty, setIsEmpty] = useState(false);
 
     const [openModalAddItem, setOpenModalAddItem] = useState(false);
@@ -55,7 +53,20 @@ export default function Products() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
+    useEffect(() => {
+        setParams({
+            business_id: shopId,
+            ...params
+        });
+        // eslint-disable-next-line
+    }, []);
+
+    const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, {
+            business_id: shopId,
+            ...params
+        },
+        content
+    );
 
     const handleChangeAdd = e => {
         handleChange(

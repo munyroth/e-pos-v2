@@ -41,7 +41,7 @@ export default function Categories() {
     const [deleteId, setDeleteId] = useState(0);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-    const [categories, meta, isLoading, setCategories, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params);
+    const [categories, meta, isLoading, setCategories, setMeta, setIsLoading] = useGetDataList(url, openModalAddItem, openModalDelete, params, content);
 
     const handleChangeAdd = e => {
         handleChange(
