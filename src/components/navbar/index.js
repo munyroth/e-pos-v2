@@ -233,8 +233,8 @@ export default function Navbar() {
                                             <Menu.Item>
                                                 {({active}) => (
                                                     <Link
-                                                        to={user.role === 'admin' ? '/admin/profile' : '/profile'}
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-700')}
+                                                        to={user.role === 'admin' ? '/admin/profile/information' : '/profile/information'}
+                                                        className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                     >
                                                         គណនី
                                                     </Link>
@@ -245,7 +245,7 @@ export default function Navbar() {
                                                     {({active}) => (
                                                         <Link
                                                             to="/admin/dashboard"
-                                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-700')}
+                                                            className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                         >
                                                             ផ្ទាំងទិន្នន័យ
                                                         </Link>
@@ -263,7 +263,7 @@ export default function Navbar() {
                                                                 console.error("Error during logout:", err);
                                                             }
                                                         }}
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'w-full text-start block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-700')}
+                                                        className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'w-full text-start block px-4 py-2 text-sm text-red-600')}
                                                     >
                                                         ចាកចេញ
                                                     </button>

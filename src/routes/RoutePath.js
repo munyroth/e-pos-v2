@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 import Admin from "pages/admin";
 import Dashboard from "pages/admin/dashboard";
 import Products from "pages/admin/products";
@@ -22,6 +22,8 @@ import Stores from "pages/admin/stores";
 import BranchDetail from "pages/admin/branches/branchDetail";
 import Categories from "pages/admin/categories";
 import Assign from "pages/admin/members/assign";
+import Information from "pages/profile/information";
+import Security from "pages/profile/security";
 
 const RoutePath = () => {
     return (
@@ -32,8 +34,13 @@ const RoutePath = () => {
                         <Route exact path="stores" element={<Stores/>}/>
                         <Route exact path="stores/add" element={<AddStore/>}/>
                         <Route path="/admin/" element={<Admin/>}>
+                            <Route index element={<Navigate to="dashboard"/>}/>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
-                                <Route exact path="profile" element={<Profile/>}/>
+                                <Route path="profile" element={<Profile/>}>
+                                    <Route index element={<Navigate to="information"/>}/>
+                                    <Route exact path="information" element={<Information/>}/>
+                                    <Route exact path="security" element={<Security/>}/>
+                                </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
                                 <Route exact path="dashboard" element={<Dashboard/>}/>
@@ -49,26 +56,14 @@ const RoutePath = () => {
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_MEMBERS]}/>}>
                                 <Route path="members">
-                                    <Route
-                                        index
-                                        element={<Members/>}
-                                    />
-                                    <Route
-                                        path=":id"
-                                        element={<Assign/>}
-                                    />
+                                    <Route index element={<Members/>}/>
+                                    <Route path=":id" element={<Assign/>}/>
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BRANCHES]}/>}>
                                 <Route path="branches">
-                                    <Route
-                                        index
-                                        element={<Branches/>}
-                                    />
-                                    <Route
-                                        path=":id"
-                                        element={<BranchDetail/>}
-                                    />
+                                    <Route index element={<Branches/>}/>
+                                    <Route path=":id" element={<BranchDetail/>}/>
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
@@ -78,7 +73,11 @@ const RoutePath = () => {
 
                         <Route element={<Sale/>}>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
-                                <Route exact path="profile" element={<Profile/>}/>
+                                <Route path="profile" element={<Profile/>}>
+                                    <Route index element={<Navigate to="information"/>}/>
+                                    <Route exact path="information" element={<Information/>}/>
+                                    <Route exact path="security" element={<Security/>}/>
+                                </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
                                 <Route exact path="dashboard" element={<Dashboard/>}/>
@@ -99,7 +98,7 @@ const RoutePath = () => {
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
-    )
+    );
 }
 
 export default RoutePath;

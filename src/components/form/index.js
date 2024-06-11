@@ -3,12 +3,15 @@ export default function BaseForm(
 ) {
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-4">
                 <img
                     className="mx-auto h-16 w-auto"
                     src="https://res.cloudinary.com/dlb5onqd6/image/upload/v1673491430/data/logo_ioru7h.png"
                     alt="ePOS"
                 />
+                <p className="text-center text-2xl font-extrabold text-gray-900 dark:text-gray-200">
+                    ePOS System
+                </p>
             </div>
             <div
                 className="mt-10 w-full bg-white rounded-lg shadow dark:border sm:mx-auto sm:w-full sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
