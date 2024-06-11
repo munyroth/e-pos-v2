@@ -219,7 +219,7 @@ export default function Products() {
                             <tr className="hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img className="w-10 h-10"
+                                    <img className="w-10 h-10 rounded-md"
                                          src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                          alt={item.name_kh}/>
                                     <div className="pl-3">

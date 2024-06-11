@@ -213,7 +213,7 @@ export default function Members() {
                             <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img className="w-10 h-10"
+                                    <img className="w-10 h-10 rounded-md"
                                          src={
                                              member.img_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
                                          } alt={member.name}/>
@@ -240,7 +240,7 @@ export default function Members() {
                                                 navigate(`/admin/members/${member.id}`);
                                             }}
                                             className="font-medium text-green-600 dark:text-green-600 hover:underline">
-                                            តែងតាំង
+                                            សាខា
                                         </button>
                                         <button
                                             onClick={() => {
