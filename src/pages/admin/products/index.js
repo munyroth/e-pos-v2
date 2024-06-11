@@ -239,12 +239,12 @@ export default function Products() {
                                     </div>
                                 </th>
                                 <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="pl-3">
+                                    <div className="">
                                         <div className="text-base font-semibold text-main">${item.price}</div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div className="pl-3">
+                                    <div className="">
                                         <div
                                             className="font-semibold">{item.category ? item.category.name : "មិនមាន"}</div>
                                     </div>

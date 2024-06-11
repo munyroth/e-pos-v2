@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, NavLink, Outlet} from "react-router-dom";
+import {NavLink, Outlet} from "react-router-dom";
 import Navbar from "components/navbar";
 import useAuth from "hooks/useAuth";
 
@@ -10,10 +10,68 @@ function classNames(...classes) {
 export default function Sidebar() {
     const {auth} = useAuth();
 
-    const [isShowECommerce, setIsShowECommerce] = useState(false);
+    const [isShowSidebar, setIsShowSidebar] = useState(true);
 
     const nav =
         auth.role === 'admin' ? [
+            {
+                link: "dashboard",
+                name: "ផ្ទាំងទិន្នន័យ",
+                icon: <svg
+                    aria-hidden="true"
+                    className="w-6 h-6"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                </svg>
+            },
+            {
+                link: "products",
+                name: "ទំនិញ",
+                icon: <svg
+                    aria-hidden="true"
+                    className="w-6 h-6"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        fillRule="evenodd"
+                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                        clipRule="evenodd"/>
+                </svg>
+            },
+            {
+                link: "categories",
+                name: "ប្រភេទទំនិញ",
+                icon: (
+                    <svg
+                        aria-hidden="true"
+                        className="w-6 h-6"
+                        fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                        version="1.0"
+                        preserveAspectRatio="xMidYMid meet">
+
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                           fill="evenodd" stroke="none">
+                            <path d="M805 4551 c-90 -22 -172 -90 -215 -176 l-25 -50 0 -645 0 -645 23
+                                    -45 c35 -72 75 -114 144 -151 l63 -34 645 0 645 0 63 34 c70 38 100 69 140
+                                    145 l27 51 0 645 0 645 -34 63 c-37 69 -79 109 -151 144 l-45 23 -625 2 c-344
+                                    1 -638 -2 -655 -6z"/>
+                            <path d="M3045 4551 c-90 -22 -172 -90 -215 -176 l-25 -50 0 -645 0 -645 23
+                                    -45 c35 -72 75 -114 144 -151 l63 -34 645 0 645 0 63 34 c70 38 100 69 140
+                                    145 l27 51 0 645 0 645 -34 63 c-37 69 -79 109 -151 144 l-45 23 -625 2 c-344
+                                    1 -638 -2 -655 -6z"/>
+                            <path d="M805 2311 c-90 -22 -172 -90 -215 -176 l-25 -50 0 -645 0 -645 23
+                                    -45 c35 -72 75 -114 144 -151 l63 -34 645 0 645 0 63 34 c70 38 100 69 140
+                                    145 l27 51 0 645 0 645 -34 63 c-37 69 -79 109 -151 144 l-45 23 -625 2 c-344
+                                    1 -638 -2 -655 -6z"/>
+                            <path d="M3565 2313 c-60 -8 -181 -42 -239 -68 -417 -185 -623 -656 -476
+                                    -1092 82 -246 297 -461 543 -543 558 -188 1130 198 1164 785 25 438 -289 834
+                                    -722 910 -81 14 -198 17 -270 8z"/>
+                        </g>
+                    </svg>
+                )
+            },
             {
                 link: "bills",
                 name: "ការបញ្ជាទិញ",
@@ -75,6 +133,18 @@ export default function Sidebar() {
             }
         ] : [
             {
+                link: "dashboard",
+                name: "ផ្ទាំងទិន្នន័យ",
+                icon: <svg
+                    aria-hidden="true"
+                    className="w-6 h-6"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                </svg>
+            },
+            {
                 link: "bills",
                 name: "ការបញ្ជាទិញ",
                 icon: <svg
@@ -123,103 +193,39 @@ export default function Sidebar() {
             </button>
 
             <aside id="logo-sidebar"
-                   className="fixed top-0 left-0 w-64 h-screen transition-transform -translate-x-full border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                   className={isShowSidebar
+                       ? "fixed top-0 left-0 w-48 h-screen transition-transform -translate-x-full border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                       : "fixed top-0 left-0 w-16 h-screen transition-transform -translate-x-full border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                   }
+
                    aria-label="Sidebar">
                 <div className="h-full px-3 overflow-y-auto bg-white dark:bg-gray-800">
-                    <Link
-                        to="dashboard"
-                        className="flex items-center justify-center py-4">
-                        <img
-                            className="h-6 mr-3 sm:h-8"
-                            src="https://res.cloudinary.com/dlb5onqd6/image/upload/v1673491430/data/logo_ioru7h.png"
-                            alt="ePOS"
-                        />
-                        <span
-                            className="text-main self-center text-xl font-semibold whitespace-nowrap sm:text-2xl">ePOS</span>
-                    </Link>
-                    <ul className="space-y-2 font-medium mt-4">
-                        <li>
-                            <NavLink
-                                to="dashboard"
-                                className={({isActive}) => classNames(
-                                    isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                    'flex items-center w-full p-2 transition duration-75 rounded-lg group'
-                                )}
-                            >
-                                <svg
-                                    aria-hidden="true"
-                                    className="w-6 h-6"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                </svg>
-                                <span className="ml-3">ផ្ទាំងទិន្នន័យ</span>
-                            </NavLink>
-                        </li>
-                        {auth.role === "admin" && <li>
-                            <button
-                                type="button"
-                                onClick={() => setIsShowECommerce(!isShowECommerce)}
-                                className="flex items-center w-full p-2 transition duration-75 rounded-lg group text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                                <svg
-                                    aria-hidden="true"
-                                    className="w-6 h-6"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                                        clipRule="evenodd"></path>
-                                </svg>
+                    <div className="flex items-center py-4">
+                        <button
+                            onClick={() => {
+                                setIsShowSidebar(!isShowSidebar);
+                            }}
+                            className="ms-1 me-3 p-1 rounded-full hover:bg-gray-700">
+                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                 viewBox="0 0 24 24">
+                                <path stroke="currentColor" strokeLinecap="round" strokeWidth="2"
+                                      d="M5 7h14M5 12h14M5 17h14"/>
+                            </svg>
+                        </button>
+                        {isShowSidebar && (
+                            <>
+                                <img
+                                    className="h-6 mr-3 sm:h-8"
+                                    src="https://res.cloudinary.com/dlb5onqd6/image/upload/v1673491430/data/logo_ioru7h.png"
+                                    alt="ePOS"
+                                />
                                 <span
-                                    className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">គ្រប់គ្រងទំនិញ</span>
-                                {isShowECommerce
-                                    ? <svg
-                                        aria-hidden="true"
-                                        className="w-3 h-3"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 10 6">
-                                        <path
-                                            stroke="currentColor"
-                                            strokeLinecap="round" strokeLinejoin="round"
-                                            strokeWidth="2" d="m1 4 4-4 4 4"/>
-                                    </svg>
-                                    : <svg
-                                        aria-hidden="true"
-                                        className="w-3 h-3"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 10 6">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                                              strokeWidth="2" d="m1 1 4 4 4-4"/>
-                                    </svg>}
-                            </button>
-                            {isShowECommerce && (
-                                <ul className="py-2 space-y-2">
-                                    <li>
-                                        <NavLink
-                                            to="products"
-                                            className={({isActive}) => classNames(
-                                                isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                                'flex items-center w-full p-2 transition duration-75 rounded-lg group'
-                                            )}
-                                        ><span className="ml-9">ទំនិញ</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink
-                                            to="categories"
-                                            className={({isActive}) => classNames(
-                                                isActive ? 'bg-main text-white' : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                                                'flex items-center w-full p-2 transition duration-75 rounded-lg group'
-                                            )}
-                                        ><span className="ml-9">ប្រភេទទំនិញ</span>
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            )}
-                        </li>
-                        }
+                                    className="text-main self-center text-xl font-semibold whitespace-nowrap sm:text-2xl">ePOS</span>
+                            </>
+                        )}
+                    </div>
+                    <ul className="space-y-2 font-medium">
                         {nav.map(n => (
                             <li>
                                 <NavLink
@@ -230,7 +236,7 @@ export default function Sidebar() {
                                     )}
                                 >
                                     {n.icon}
-                                    <span className="ml-3">{n.name}</span>
+                                    {isShowSidebar && (<span className="ml-3">{n.name}</span>)}
                                 </NavLink>
                             </li>
                         ))}
@@ -238,7 +244,12 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            <div className="relative h-screen sm:ml-64">
+            <div
+                className={isShowSidebar
+                    ? "relative h-screen sm:ml-48"
+                    : "relative h-screen sm:ml-16"
+                }
+            >
                 <div className="absolute top-0 pt-20 px-4 h-full w-full">
                     <Outlet/>
                 </div>
