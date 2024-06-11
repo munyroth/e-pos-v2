@@ -482,42 +482,46 @@ export default function Cashier() {
                 <div className="h-10 mb-4 flex items-center justify-between">
                     <div className="relative flex items-center">
                         <h1 className="me-8">លក់ទំនិញ</h1>
-                        <Filter
-                            isHasAll={false}
-                            title="សាខា"
-                            id="filter-branch"
-                            onChange={async (e) => {
-                                const {value} = e.target;
-                                setBranchId(value);
-                            }}
-                            selectOptions={branches}
-                            className="me-8"
-                        />
+                        {!isLoading && branches.length > 0 && (
+                            <>
+                                <Filter
+                                    isHasAll={false}
+                                    title="សាខា"
+                                    id="filter-branch"
+                                    onChange={async (e) => {
+                                        const {value} = e.target;
+                                        setBranchId(value);
+                                    }}
+                                    selectOptions={branches}
+                                    className="me-8"
+                                />
 
-                        <Filter
-                            title="ប្រភេទ"
-                            id="filter-category"
-                            onChange={async (e) => {
-                                const {value} = e.target;
-                                const p = value !== "all" ? {...params, category_id: value} : {...params};
-                                setParams(p);
-                                setIsLoading(true);
-                                const u = auth.role === 'sale' ? url : "/admin" + url;
-                                const res = await axiosPrivate.get(u, {
-                                    params: {
-                                        page: 1,
-                                        ...p
-                                    }
-                                });
-                                setProducts(res.data.data);
-                                setMeta(res.data.meta);
-                                setPage(1);
-                                setIsLoading(false);
-                            }}
-                            selectOptions={categories}
-                            isHasNon={true}
-                            className="w-52 me-8"
-                        />
+                                <Filter
+                                    title="ប្រភេទ"
+                                    id="filter-category"
+                                    onChange={async (e) => {
+                                        const {value} = e.target;
+                                        const p = value !== "all" ? {...params, category_id: value} : {...params};
+                                        setParams(p);
+                                        setIsLoading(true);
+                                        const u = auth.role === 'sale' ? url : "/admin" + url;
+                                        const res = await axiosPrivate.get(u, {
+                                            params: {
+                                                page: 1,
+                                                ...p
+                                            }
+                                        });
+                                        setProducts(res.data.data);
+                                        setMeta(res.data.meta);
+                                        setPage(1);
+                                        setIsLoading(false);
+                                    }}
+                                    selectOptions={categories}
+                                    isHasNon={true}
+                                    className="w-52 me-8"
+                                />
+                            </>
+                        )}
                     </div>
                     <label htmlFor="table-search" className="sr-only">ស្វែងរក</label>
                     <div className="relative">
