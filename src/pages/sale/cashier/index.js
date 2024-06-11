@@ -16,12 +16,14 @@ export default function Cashier() {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const shopId = localStorage.getItem('shopId');
+    const [branchId, setBranchId] = useState(0);
 
     const url = '/product';
     const [params, setParams] = useState(auth.role === 'admin'
         ? {business_id: shopId}
         : {shop_id: shopId});
     const [page, setPage] = useState(1);
+    const [branches, setBranches] = useState([]);
     const [categories, setCategories] = useState([]);
     const [products, meta, isLoading, setProducts, setMeta, setIsLoading] = useGetDataList(url, null, null, params);
     const [isLoadMore, setIsLoadMore] = useState(false);
@@ -157,11 +159,15 @@ export default function Cashier() {
     }
 
     const handleOrder = async () => {
-        let shopId = localStorage.getItem('shopId');
-
+        const pId = branchId === 0 ? branches[0].id : branchId;
+        if (pId === 0) {
+            toast.error('សូមជ្រើសរើសសាខា');
+            return;
+        }
         try {
+            const id = auth.role === 'admin' ? pId : shopId;
             const data = {
-                shop_id: shopId,
+                shop_id: Number(id),
                 received_usd: payment.receive,
                 received_khr: 0,
                 payment_type: 'Cash',
@@ -230,7 +236,6 @@ export default function Cashier() {
 
         const handleScroll = async () => {
             const {scrollTop, clientHeight, scrollHeight} = productContainer;
-            console.log(page, meta.total, meta.size);
             if (scrollTop + clientHeight > scrollHeight - 20 && page < meta.total / meta.size && !isLoadMore) {
                 setIsLoadMore(true);
                 const p = page + 1;
@@ -243,7 +248,6 @@ export default function Cashier() {
                             ...params
                         }
                     });
-                    console.log(res.data.data);
                     setProducts(prevProducts => [...prevProducts, ...res.data.data]);
                     setIsLoadMore(false);
                 } catch (error) {
@@ -266,17 +270,30 @@ export default function Cashier() {
         getData(
             controller,
             isMounted,
-            '/category?is_all=true&business_id=' + shopId,
+            '/shop?is_all=true&business_id=' + shopId,
             0,
-            setCategories
+            setBranches,
+            null,
+            null,
+            auth.role === 'sale' ? 'sale' : 'admin'
         ).then(r => r).catch(e => e);
 
+        getData(
+            controller,
+            isMounted,
+            '/category?is_all=true&business_id=' + shopId,
+            0,
+            setCategories,
+            null,
+            null,
+            auth.role === 'sale' ? 'sale' : 'admin'
+        ).then(r => r).catch(e => e);
 
         return () => {
             isMounted = false;
             controller.abort();
         }
-    }, [shopId]);
+    }, [shopId, auth.role]);
 
     return (
         <>
@@ -465,6 +482,18 @@ export default function Cashier() {
                 <div className="h-10 mb-4 flex items-center justify-between">
                     <div className="relative flex items-center">
                         <h1 className="me-8">លក់ទំនិញ</h1>
+                        <Filter
+                            isHasAll={false}
+                            title="សាខា"
+                            id="filter-branch"
+                            onChange={async (e) => {
+                                const {value} = e.target;
+                                setBranchId(value);
+                            }}
+                            selectOptions={branches}
+                            className="me-8"
+                        />
+
                         <Filter
                             title="ប្រភេទ"
                             id="filter-category"
