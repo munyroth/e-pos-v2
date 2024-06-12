@@ -46,7 +46,9 @@ export default function LineChart({title, data}) {
         ? DARK_THEME
         : LIGHT_THEME;
 
-    const theme = THEMES[systemTheme];
+    const storageTheme = localStorage.getItem('theme');
+
+    const theme = THEMES[storageTheme || systemTheme];
 
     const formattedData = Object.entries(data).map(([date, value]) => ({
         date: new Date(date).toLocaleDateString('km-KH', {

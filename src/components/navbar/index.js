@@ -11,21 +11,23 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
+const LIGHT_THEME = 'light';
+const DARK_THEME = 'dark';
 export default function Navbar() {
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME;
     const storageTheme = localStorage.getItem('theme');
     const [theme, setTheme] = useState(storageTheme || systemTheme);
 
     const applyTheme = (newTheme) => {
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
+        if (newTheme === DARK_THEME) {
+            document.documentElement.classList.add(DARK_THEME);
         } else {
-            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.remove(DARK_THEME);
         }
     };
 
     const toggleTheme = () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
+        const newTheme = theme === LIGHT_THEME ? DARK_THEME : LIGHT_THEME;
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
         applyTheme(newTheme);
@@ -38,7 +40,7 @@ export default function Navbar() {
     useEffect(() => {
         const handleSystemThemeChange = (e) => {
             if (!localStorage.getItem('theme')) {
-                setTheme(e.matches ? 'dark' : 'light');
+                setTheme(e.matches ? DARK_THEME : LIGHT_THEME);
             }
         };
 
@@ -163,7 +165,7 @@ export default function Navbar() {
                                 onClick={toggleTheme}
                                 className="me-3 p-1.5 rounded-full text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
-                                {theme === 'light'
+                                {theme === LIGHT_THEME
                                     ? (<svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             fill="currentColor"

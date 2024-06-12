@@ -225,7 +225,9 @@ export default function Members() {
                                     {member.phone}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {member.role === "manager" ? (
+                                    {member.role === "admin" ? (
+                                        "ម្ចាស់ហាង"
+                                    ) : member.role === "manager" ? (
                                         "អ្នកគ្រប់គ្រង"
                                     ) : member.role === "sale" ? (
                                         "អ្នកលក់"

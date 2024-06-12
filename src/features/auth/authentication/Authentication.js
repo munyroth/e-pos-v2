@@ -36,7 +36,7 @@ const Authentication = () => {
                 });
 
                 if (r.data.status === 200) {
-                    login(r.data.data.token, r.data.data.refresh_token, r.data.data.user.role);
+                    login(r.data.data.token, r.data.data.refresh_token, r.data.data.user);
                 } else {
                     navigate('/login', {state: {from: location}, replace: true});
                 }

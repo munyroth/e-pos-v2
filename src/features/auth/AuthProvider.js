@@ -49,7 +49,10 @@ export const AuthProvider = ({children}) => {
         navigate(location.state?.path || '/stores/add', {replace: true});
     };
 
-    const login = (token, refresh_token, role, remember) => {
+    const login = (token, refresh_token, user, remember) => {
+        const role = user.role;
+        const businessesCount = user.businesses_count;
+
         if (remember) {
             localStorage.setItem(TOKEN, token);
             localStorage.setItem(REFRESH_TOKEN, refresh_token);
@@ -61,9 +64,12 @@ export const AuthProvider = ({children}) => {
         let storeId = localStorage.getItem(SHOP_ID);
         const permissions = setPermissions(role);
         setAuth({token, role, permissions});
-        const defaultPath = !storeId ? '/stores'
-            : (role === 'admin' ? '/admin/dashboard' : '/cashier');
-        navigate(location.state?.path || defaultPath, {replace: true});
+        if (role === 'admin' && businessesCount === 0) navigate('/stores/add', {replace: true});
+        else {
+            const defaultPath = !storeId ? '/stores'
+                : (role === 'admin' ? '/admin/dashboard' : '/cashier');
+            navigate(location.state?.path || defaultPath, {replace: true});
+        }
     };
 
     const logout = () => {

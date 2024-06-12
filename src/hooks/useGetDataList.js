@@ -35,7 +35,7 @@ const useGetDataList = (
                     }
                 });
                 if (isMounted && res.data.status === 200) {
-                    if (res.data.data.length === 0) {
+                    if (res.data.data.length === 0 && res.data.meta.page > 1) {
                         setMeta(prevMeta => ({
                             ...res.data.meta,
                             page: prevMeta.page > 1 ? prevMeta.page - 1 : 1

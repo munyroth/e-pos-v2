@@ -9,8 +9,9 @@ import handleValidation from "features/validation/validation";
 import Loading from "components/loading";
 import toast, {Toaster} from "react-hot-toast";
 import useAuth from "hooks/useAuth";
-import Filter from "../../../components/form/Filter";
-import getData from "../../../requestApi/getData";
+import Filter from "components/form/Filter";
+import getData from "requestApi/getData";
+import Empty from "components/empty";
 
 export default function Cashier() {
     const {auth} = useAuth();
@@ -311,38 +312,40 @@ export default function Cashier() {
                                 <div className="h-full w-full absolute pt-12">
                                     {isLoading
                                         ? <Loading/>
-                                        : <div id="product-list"
-                                               className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4"
-                                        >
-                                            {products.map(product => (
-                                                <div
-                                                    className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                                    <img className="aspect-square h-32 m-4 rounded-md"
-                                                         src={product.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
-                                                         alt={product.name_kh}/>
-                                                    <div className="px-4 pb-4 w-full">
-                                                        <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{product.name_kh}</h5>
-                                                        <h5 className="text-sm tracking-tight text-gray-900 dark:text-gray-300">{product.barcode}</h5>
+                                        : products.length === 0
+                                            ? <Empty title="ទំនិញ"/>
+                                            : <div id="product-list"
+                                                 className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4"
+                                            >
+                                                {products.map(product => (
+                                                    <div
+                                                        className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                                        <img className="aspect-square h-32 m-4 rounded-md"
+                                                             src={product.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                                                             alt={product.name_kh}/>
+                                                        <div className="px-4 pb-4 w-full">
+                                                            <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{product.name_kh}</h5>
+                                                            <h5 className="text-sm tracking-tight text-gray-900 dark:text-gray-300">{product.barcode}</h5>
 
-                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center justify-between">
                                                             <span
                                                                 className="text-3xl font-bold text-main">${product.price}</span>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => addToCart(product)}
+                                                                className="mt-2 button h-10 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 font-medium text-sm dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                            >
+                                                                បន្ថែមទៅកន្ត្រក
+                                                            </button>
                                                         </div>
-                                                        <button
-                                                            onClick={() => addToCart(product)}
-                                                            className="mt-2 button h-10 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 font-medium text-sm dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        >
-                                                            បន្ថែមទៅកន្ត្រក
-                                                        </button>
                                                     </div>
-                                                </div>
-                                            ))}
-                                            {isLoadMore && <div
-                                                className="w-full h-12 flex items-center justify-center sm:col-span-1 lg:col-span-2 xl:col-span-3"
-                                            >
-                                                <Loading/>
-                                            </div>}
-                                        </div>
+                                                ))}
+                                                {isLoadMore && <div
+                                                    className="w-full h-12 flex items-center justify-center sm:col-span-1 lg:col-span-2 xl:col-span-3"
+                                                >
+                                                    <Loading/>
+                                                </div>}
+                                            </div>
                                     }
                                 </div>
                             </div>
