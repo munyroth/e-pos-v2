@@ -20,6 +20,7 @@ export default function Security() {
         password_confirmation: false
     });
 
+    const [isShowPassword, setsShowPassword] = useState(false);
     const [isLoadingSave, setIsLoadingSave] = useState(false);
 
     const handleInputChange = e => {
@@ -69,7 +70,7 @@ export default function Security() {
             <div className="text-center text-xl font-bold py-4 dark:text-white">
                 កែប្រែពាក្យសំងាត់
             </div>
-            <div className="flex space-x-8 justify-center">
+            <div className="w-1/3 mx-auto">
                 <Input
                     title="ពាក្យសំងាត់ចាស់"
                     id="current_password"
@@ -77,9 +78,11 @@ export default function Security() {
                     isValidate={isValidate.current_password}
                     onChange={handleInputChange}
                     type="password"
+                    isShowPassword={isShowPassword}
+                    setShowPassword={setsShowPassword}
                 />
             </div>
-            <div className="flex space-x-8 justify-center">
+            <div className="w-1/3 mx-auto">
                 <Input
                     title="ពាក្យសំងាត់ថ្មី"
                     id="password"
@@ -87,9 +90,11 @@ export default function Security() {
                     isValidate={isValidate.password}
                     onChange={handleInputChange}
                     type="password"
+                    isShowPassword={isShowPassword}
+                    setShowPassword={setsShowPassword}
                 />
             </div>
-            <div className="flex space-x-8 justify-center">
+            <div className="w-1/3 mx-auto">
                 <Input
                     title="បញ្ជាក់ពាក្យសំងាត់ថ្មី"
                     id="password_confirmation"
@@ -97,19 +102,21 @@ export default function Security() {
                     isValidate={isValidate.password_confirmation}
                     onChange={handleInputChange}
                     type="password"
+                    isShowPassword={isShowPassword}
+                    setShowPassword={setsShowPassword}
                 />
             </div>
 
-            <div className="flex justify-center">
+            <div className="w-1/3 mx-auto">
                 <button
                     disabled={isDisabled || isLoadingSave}
                     onClick={handleSave}
                     type="button"
                     className={isDisabled
-                        ? "absolute bottom-4 button-disabled px-12"
+                        ? "absolute bottom-4 button-disabled w-1/3"
                         : isLoadingSave
-                            ? "absolute bottom-4 button-loading px-12"
-                            : "absolute bottom-4 button px-12"}
+                            ? "absolute bottom-4 button-loading w-1/3"
+                            : "absolute bottom-4 button w-1/3"}
                 >{isLoadingSave ? (
                     <>
                         <svg aria-hidden="true" role="status"

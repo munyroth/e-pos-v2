@@ -85,7 +85,7 @@ export default function Information() {
             <div className="text-center text-xl font-bold py-4 dark:text-white">
                 កែប្រែព័ត៌មានផ្ទាល់ខ្លួន
             </div>
-            <div className="flex space-x-8 justify-center">
+            <div className="w-1/3 mx-auto">
                 <Input
                     title="ឈ្មោះ"
                     id="name"
@@ -94,7 +94,7 @@ export default function Information() {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className="flex space-x-8 justify-center">
+            <div className="w-1/3 mx-auto">
                 <Input
                     title="លេខទូរស័ព្ទ"
                     id="phone"
@@ -104,16 +104,16 @@ export default function Information() {
                 />
             </div>
 
-            <div className="flex justify-center">
+            <div className="w-1/3 mx-auto">
                 <button
                     disabled={isDisabled || isLoadingSave}
                     onClick={handleSave}
                     type="button"
                     className={isDisabled
-                        ? "absolute bottom-4 button-disabled px-12"
+                        ? "absolute bottom-4 button-disabled w-1/3"
                         : isLoadingSave
-                            ? "absolute bottom-4 button-loading px-12"
-                            : "absolute bottom-4 button px-12"}
+                            ? "absolute bottom-4 button-loading w-1/3"
+                            : "absolute bottom-4 button w-1/3"}
                 >{isLoadingSave ? (
                     <>
                         <svg aria-hidden="true" role="status"
