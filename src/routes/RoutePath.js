@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Admin from "pages/admin";
 import Dashboard from "pages/admin/dashboard";
 import Products from "pages/admin/products";
@@ -24,6 +24,7 @@ import Categories from "pages/admin/categories";
 import Assign from "pages/admin/members/assign";
 import Information from "pages/profile/information";
 import Security from "pages/profile/security";
+import Business from "pages/profile/business";
 
 const RoutePath = () => {
     return (
@@ -40,6 +41,7 @@ const RoutePath = () => {
                                     <Route index element={<Navigate to="information"/>}/>
                                     <Route exact path="information" element={<Information/>}/>
                                     <Route exact path="security" element={<Security/>}/>
+                                    <Route exact path="business" element={<Business/>}/>
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>

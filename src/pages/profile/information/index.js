@@ -85,7 +85,7 @@ export default function Information() {
             <div className="text-center text-xl font-bold py-4 dark:text-white">
                 កែប្រែព័ត៌មានផ្ទាល់ខ្លួន
             </div>
-            <div className="w-1/3 mx-auto">
+            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
                 <Input
                     title="ឈ្មោះ"
                     id="name"
@@ -94,7 +94,7 @@ export default function Information() {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className="w-1/3 mx-auto">
+            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
                 <Input
                     title="លេខទូរស័ព្ទ"
                     id="phone"
@@ -104,16 +104,16 @@ export default function Information() {
                 />
             </div>
 
-            <div className="w-1/3 mx-auto">
+            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
                 <button
                     disabled={isDisabled || isLoadingSave}
                     onClick={handleSave}
                     type="button"
                     className={isDisabled
-                        ? "absolute bottom-4 button-disabled w-1/3"
+                        ? "absolute bottom-4 button-disabled lg:w-72 md:w-64 sm:w-44"
                         : isLoadingSave
-                            ? "absolute bottom-4 button-loading w-1/3"
-                            : "absolute bottom-4 button w-1/3"}
+                            ? "absolute bottom-4 button-loading lg:w-72 md:w-64 sm:w-44"
+                            : "absolute bottom-4 button lg:w-72 md:w-64 sm:w-44"}
                 >{isLoadingSave ? (
                     <>
                         <svg aria-hidden="true" role="status"

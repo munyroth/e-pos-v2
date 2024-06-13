@@ -1,26 +1,24 @@
 import Input from "components/form/Input";
 import React, {useEffect, useState} from "react";
 import handleChange from "features/handleChange";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import handleValidation from "../../../features/validation/validation";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import handleValidation from "features/validation/validation";
 import toast, {Toaster} from "react-hot-toast";
+import useGetDataObject from "hooks/useGetDataObject";
 
-export default function Security() {
+export default function Business() {
+    const businessId = localStorage.getItem('shopId');
     const axiosPrivate = useAxiosPrivate();
+    const [business, isLoading, setBusiness] = useGetDataObject('/business/' + businessId);
 
     const [data, setData] = useState({
-        current_password: '',
-        password: '',
-        password_confirmation: ''
+        name: ''
     });
 
     const [isValidate, setIsValidate] = useState({
-        current_password: false,
-        password: false,
-        password_confirmation: false
+        name: false,
     });
 
-    const [isShowPassword, setsShowPassword] = useState(false);
     const [isLoadingSave, setIsLoadingSave] = useState(false);
 
     const handleInputChange = e => {
@@ -33,7 +31,7 @@ export default function Security() {
 
     const handleSave = async () => {
         if (!handleValidation(
-            ['current_password', 'password', 'password_confirmation'],
+            ['name'],
             data,
             setIsValidate
         )) return;
@@ -41,9 +39,11 @@ export default function Security() {
         setIsLoadingSave(true);
 
         try {
-            const res = await axiosPrivate.post('/password/change', data);
+            const res = await axiosPrivate.put('/admin/business/' + businessId, data);
             if (res.data.status === 200) {
-                toast.success('បានកែប្រែពាក្យសំងាត់បានជោគជ័យ');
+                setBusiness(res.data.data);
+                toast.success('បានកែប្រែព័ត៌មានបានជោគជ័យ');
+                window.location.reload();
             } else {
                 toast.error(res.data.message);
             }
@@ -56,54 +56,36 @@ export default function Security() {
 
     const [isDisabled, setIsDisabled] = useState(true);
 
+    const [isSetData, setIsSetData] = useState(false);
+
     useEffect(() => {
-        if (data.current_password && data.password && data.password_confirmation) {
+        if (data.name !== business.name) {
             setIsDisabled(false);
         } else {
             setIsDisabled(true);
         }
 
-    }, [data]);
+        if (business.name && !isSetData) {
+            setData({
+                ...data,
+                name: business.name || ''
+            });
+            setIsSetData(true);
+        }
+    }, [business, data, isSetData]);
 
     return (
         <>
             <div className="text-center text-xl font-bold py-4 dark:text-white">
-                កែប្រែពាក្យសំងាត់
+                កែប្រែព័ត៌មានហាង
             </div>
             <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
                 <Input
-                    title="ពាក្យសំងាត់ចាស់"
-                    id="current_password"
-                    value={data.current_password}
-                    isValidate={isValidate.current_password}
+                    title="ឈ្មោះ"
+                    id="name"
+                    value={data.name}
+                    isValidate={isValidate.name}
                     onChange={handleInputChange}
-                    type="password"
-                    isShowPassword={isShowPassword}
-                    setShowPassword={setsShowPassword}
-                />
-            </div>
-            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
-                <Input
-                    title="ពាក្យសំងាត់ថ្មី"
-                    id="password"
-                    value={data.password}
-                    isValidate={isValidate.password}
-                    onChange={handleInputChange}
-                    type="password"
-                    isShowPassword={isShowPassword}
-                    setShowPassword={setsShowPassword}
-                />
-            </div>
-            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
-                <Input
-                    title="បញ្ជាក់ពាក្យសំងាត់ថ្មី"
-                    id="password_confirmation"
-                    value={data.password_confirmation}
-                    isValidate={isValidate.password_confirmation}
-                    onChange={handleInputChange}
-                    type="password"
-                    isShowPassword={isShowPassword}
-                    setShowPassword={setsShowPassword}
                 />
             </div>
 
