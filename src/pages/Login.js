@@ -128,7 +128,7 @@ export default function Login() {
                         </label>
                     </div>
                     <Link
-                        to="#"
+                        to="/password/forgot"
                         className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                         ភ្លេចពាក្យសំងាត់?
                     </Link>

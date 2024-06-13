@@ -25,6 +25,7 @@ import Assign from "pages/admin/members/assign";
 import Information from "pages/profile/information";
 import Security from "pages/profile/security";
 import Business from "pages/profile/business";
+import ForgotPassword from "pages/ForgotPassword";
 
 const RoutePath = () => {
     return (
@@ -95,6 +96,7 @@ const RoutePath = () => {
 
                     <Route exact path="login" element={<Login/>}/>
                     <Route exact path="register" element={<Register/>}/>
+                    <Route exact path="password/forgot" element={<ForgotPassword/>}/>
                     <Route exact path="/" element={<CheckAuth/>}/>
                     <Route path="*" element={<Page404/>}/>
                 </Routes>
