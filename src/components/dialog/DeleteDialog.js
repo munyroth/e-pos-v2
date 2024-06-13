@@ -29,7 +29,9 @@ export default function DeleteDialog(
                 <button
                     disabled={isLoadingDelete ? true : ""}
                     type="button"
-                    className="rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                    className={isLoadingDelete
+                        ? "rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-progress"
+                        : "rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"}
                     onClick={() => handleDelete(deleteId)}
                 >{isLoadingDelete ? (
                     <>

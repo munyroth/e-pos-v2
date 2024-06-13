@@ -35,9 +35,12 @@ export default function FormDialog(props) {
             cancelModalRef={cancelModal}
             button={
                 <button
-                    disabled={isLoading ? true : ""}
+                    disabled={isLoading}
                     type="button"
-                    className="rounded-md bg-green-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+                    className={isLoading
+                        ? "rounded-md bg-green-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-progress"
+                        : "rounded-md bg-green-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500"
+                    }
                     onClick={updateId ? () => handleUpdate(updateId) : handleAdd}
                 >{isLoading ? (
                     <>

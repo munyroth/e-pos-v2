@@ -145,7 +145,7 @@ export default function Register() {
                 nextElement.focus();
             } else {
                 target.blur();
-                handleRegister();
+                handleRegister().then(r => r);
             }
         } else if (currentLength > maxLength) {
             target.value = target.value.slice(0, maxLength);

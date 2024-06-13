@@ -36,7 +36,7 @@ export default function Profile() {
         }
     ];
 
-    const [user, isLoading] = useGetDataObject(USER_API_URL);
+    const [user, isLoading, setUser] = useGetDataObject(USER_API_URL);
     const {
         img_url,
         name,
@@ -184,7 +184,9 @@ export default function Profile() {
                     </div>
                     <div
                         className="relative p-4 space-y-4 w-2/3 border border-gray-200 rounded-lg shadow dark:border-gray-700">
-                        <Outlet/>
+                        <Outlet
+                            context={[user, setUser]}
+                        />
                     </div>
                 </div>
             )}
