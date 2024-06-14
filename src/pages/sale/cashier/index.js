@@ -12,6 +12,7 @@ import useAuth from "hooks/useAuth";
 import Filter from "components/form/Filter";
 import getData from "requestApi/getData";
 import Empty from "components/empty";
+import InputQty from "components/form/InputQty";
 
 export default function Cashier() {
     const {auth} = useAuth();
@@ -411,56 +412,60 @@ export default function Cashier() {
                                                             <p className="text-sm text-gray-500">{product.barcode}</p>
                                                         </div>
                                                         <div
-                                                            className="text-base flex flex-1 items-center">
-                                                            <p className="text-main me-4">${product.price}</p>
-                                                            <Input
-                                                                className="w-28 me-4"
-                                                                id="qty"
-                                                                onChange={e => setItemsProcessing(itemsProcessing.map(item => {
-                                                                    if (item.product_id === product.product_id) {
-                                                                        let qty = parseInt(e.target.value) || 0;
-                                                                        return {
-                                                                            ...item,
-                                                                            qty: qty,
-                                                                            totalPrice: item.price * qty - item.discount
-                                                                        };
-                                                                    } else return item;
-                                                                }))}
-                                                                value={product.qty}
-                                                                leading="បរិមាណ:"
-                                                                leadingWidth="pl-16"
-                                                                textEnd={true}
-                                                            />
-                                                            <Input
-                                                                className="w-32 me-4"
-                                                                id="discount"
-                                                                onChange={e => setItemsProcessing(itemsProcessing.map(item => {
-                                                                    if (item.product_id === product.product_id) {
-                                                                        let discount = e.target.value;
-                                                                        // Regular expression to check if input is a valid decimal number
-                                                                        const regex = /^\d*\.?\d*$/;
-                                                                        if (regex.test(discount)) {
-                                                                            if (!isNaN(discount) && discount.trim() !== '' && discount.slice(-1) !== '.') {
-                                                                                discount = parseFloat(discount) || 0;
+                                                            className="text-base flex flex-1 items-center justify-between w-full space-x-4">
+                                                            <p className="text-main w-1/4">${product.price}</p>
+                                                            <div className="flex space-x-4">
+                                                                <InputQty
+                                                                    className="w-40"
+                                                                    id="qty"
+                                                                    onChange={e => setItemsProcessing(itemsProcessing.map(item => {
+                                                                        if (item.product_id === product.product_id) {
+                                                                            let qty = parseInt(e.target.value) || 0;
+                                                                            return {
+                                                                                ...item,
+                                                                                qty: qty,
+                                                                                totalPrice: item.price * qty - item.discount
+                                                                            };
+                                                                        } else return item;
+                                                                    }))}
+                                                                    value={product.qty}
+                                                                />
+                                                                <Input
+                                                                    className="w-36"
+                                                                    id="discount"
+                                                                    onChange={e => setItemsProcessing(itemsProcessing.map(item => {
+                                                                        if (item.product_id === product.product_id) {
+                                                                            let discount = e.target.value;
+                                                                            // Regular expression to check if input is a valid decimal number
+                                                                            const regex = /^\d*\.?\d*$/;
+                                                                            if (regex.test(discount)) {
+                                                                                if (!isNaN(discount) && discount.trim() !== '' && discount.slice(-1) !== '.') {
+                                                                                    discount = parseFloat(discount) || 0;
+                                                                                }
+                                                                            } else {
+                                                                                // If input is not a valid decimal number, revert to the previous discount value
+                                                                                discount = product.discount;
                                                                             }
-                                                                        } else {
-                                                                            // If input is not a valid decimal number, revert to the previous discount value
-                                                                            discount = product.discount;
-                                                                        }
-                                                                        return {
-                                                                            ...item,
-                                                                            discount: discount,
-                                                                            totalPrice: item.price * item.qty - discount
-                                                                        };
-                                                                    } else return item;
-                                                                }))}
-                                                                value={product.discount}
-                                                                leading="បញ្ចុះតម្លៃ:  $"
-                                                                leadingWidth="pl-20"
-                                                                textEnd={true}
-                                                            />
-                                                            <div className="flex-1"></div>
-                                                            <p className="font-bold text-lg text-main">${product.totalPrice}</p>
+                                                                            return {
+                                                                                ...item,
+                                                                                discount: discount,
+                                                                                totalPrice: item.price * item.qty - discount
+                                                                            };
+                                                                        } else return item;
+                                                                    }))}
+                                                                    value={product.discount}
+                                                                    leading="បញ្ចុះតម្លៃ:"
+                                                                    leadingWidth="pl-16"
+                                                                    textEnd={true}
+                                                                    selectId="payment-type"
+                                                                    selectOptions={[
+                                                                        {value: "value", label: "$"},
+                                                                        // {value: "percentage", label: "%"}
+                                                                    ]}
+                                                                    selectWidth="pr-12"
+                                                                />
+                                                            </div>
+                                                            <p className="font-bold text-lg text-main w-1/4 text-end">${product.totalPrice}</p>
                                                         </div>
                                                     </div>
                                                 </li>

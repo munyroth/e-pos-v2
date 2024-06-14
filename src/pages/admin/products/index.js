@@ -201,9 +201,6 @@ export default function Products() {
                     params={params}
                 />
             </div>
-            {/*<div className="relative overflow-x-auto rounded-t-lg dark:bg-gray-800 dark:border-gray-700">*/}
-            {/*    <table className="w-full text-left text-gray-500 dark:text-gray-400">*/}
-            {/*        <thead className="text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">*/}
             <div className="dark:bg-gray-800 dark:border-gray-700">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead
@@ -346,7 +343,6 @@ export default function Products() {
                     onChange={handleChangeAdd}
                     value={data.price}
                     placeholder="0.00"
-                    leading="$"
                     selectId="currency"
                     selectOptions={[
                         {value: "USD", label: "USD"}
