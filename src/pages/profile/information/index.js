@@ -10,6 +10,7 @@ export default function Information() {
     const axiosPrivate = useAxiosPrivate();
     const [user, setUser] = useOutletContext();
     const {
+        img_url,
         name,
         phone
     } = user || {};
@@ -17,13 +18,17 @@ export default function Information() {
     const [data, setData] = useState({
         name: '',
         phone: '',
-        _method: 'PUT'
+        image: null
     });
 
     const [isValidate, setIsValidate] = useState({
         name: false,
         phone: false,
+        image: false
     });
+
+    const [isImage, setIsImage] = useState(false);
+    const [imageURL, setImageURL] = useState("");
 
     const [isLoadingSave, setIsLoadingSave] = useState(false);
 
@@ -31,7 +36,9 @@ export default function Information() {
         handleChange(
             e,
             setData,
-            setIsValidate
+            setIsValidate,
+            setIsImage,
+            setImageURL,
         )
     }
 
@@ -45,9 +52,25 @@ export default function Information() {
         setIsLoadingSave(true);
 
         try {
-            const res = await axiosPrivate.post('/user/me', data);
+            let formData = new FormData();
+            formData.append('_method', 'PUT');
+            formData.append('name', data.name);
+            formData.append('phone', data.phone);
+            data.image
+                ? formData.append('file', data.image)
+                : formData.append('file', 'keep');
+
+            const res = await axiosPrivate.post('/user/me', formData);
             if (res.data.status === 200) {
                 setUser(res.data.data);
+                setData(prevState => {
+                        return {
+                            ...prevState,
+                            image: null
+                        }
+                    }
+                )
+                setIsImage(false);
                 toast.success('បានកែប្រែព័ត៌មានបានជោគជ័យ');
             } else {
                 toast.error(res.data.message);
@@ -64,7 +87,7 @@ export default function Information() {
     const [isSetData, setIsSetData] = useState(false);
 
     useEffect(() => {
-        if (data.phone !== phone || data.name !== name) {
+        if (data.phone !== phone || data.name !== name || isImage) {
             setIsDisabled(false);
         } else {
             setIsDisabled(true);
@@ -78,12 +101,38 @@ export default function Information() {
             });
             setIsSetData(true);
         }
-    }, [phone, name, data, isSetData]);
+    }, [phone, name, data, isSetData, isImage]);
 
     return (
         <>
             <div className="text-center text-xl font-bold py-4 dark:text-white">
                 កែប្រែព័ត៌មានផ្ទាល់ខ្លួន
+            </div>
+            <div className="relative w-32 h-32 mx-auto">
+                <img className="w-full h-full rounded-full object-contain"
+                     src={isImage
+                         ? imageURL
+                         : img_url || `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`}
+                     alt="profile"/>
+                <div className="absolute bottom-0 right-0">
+                    <label htmlFor="image"
+                           className="bg-gray-500 cursor-pointer text-white rounded-full p-1">
+                        <svg className="w-6 h-6 text-gray-100" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                             viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28"/>
+                        </svg>
+                    </label>
+                    <input
+                        onChange={handleInputChange}
+                        type="file"
+                        id="image"
+                        name="image"
+                        className="hidden"
+                    />
+                </div>
             </div>
             <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">
                 <Input

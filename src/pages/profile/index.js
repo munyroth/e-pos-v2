@@ -94,23 +94,9 @@ export default function Profile() {
                         {/* Basic Profile */}
                         <div className="text-center space-y-2">
                             <div className="relative w-32 h-32 mx-auto">
-                                <img className="w-full h-full rounded-full"
+                                <img className="w-full h-full rounded-full object-contain"
                                      src={img_url || `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`}
                                      alt="profile"/>
-                                <div className="absolute bottom-0 right-0">
-                                    <label htmlFor="file"
-                                           className="button cursor-pointer text-white rounded-full p-2">
-                                        <svg className="w-6 h-6 text-gray-100" aria-hidden="true"
-                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                             viewBox="0 0 24 24">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                                                  strokeWidth="2"
-                                                  d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28"/>
-                                        </svg>
-                                    </label>
-                                    <input type="file" id="file" className="hidden"/>
-                                </div>
-
                             </div>
                             <h2 className="text-2xl font-semibold">{name}</h2>
                             <div className="text-gray-600 dark:text-gray-400">

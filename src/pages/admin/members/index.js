@@ -213,7 +213,7 @@ export default function Members() {
                             <tr className="h-14 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img className="w-10 h-10 rounded-md"
+                                    <img className="w-10 h-10 rounded-md object-cover"
                                          src={
                                              member.img_url || 'https://ui-avatars.com/api/?name=' + member.name + '&background=random&color=fff'
                                          } alt={member.name}/>
@@ -236,7 +236,7 @@ export default function Members() {
                                     )}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="flex justify-center">
+                                    {member.role !== "admin" && <div className="flex justify-center">
                                         <button
                                             onClick={() => {
                                                 navigate(`/admin/members/${member.id}`);
@@ -272,7 +272,7 @@ export default function Members() {
                                         >
                                             លុប
                                         </button>
-                                    </div>
+                                    </div>}
                                 </td>
                             </tr>
                         ))}

@@ -201,7 +201,7 @@ export default function Navbar() {
                                     >
                                         <div className="flex items-center justify-center space-x-3">
                                             <img
-                                                className="h-10 w-10 rounded-full"
+                                                className="h-10 w-10 rounded-full object-contain"
                                                 src={user.img_url || 'https://ui-avatars.com/api/?name=' + user.name + '&background=random&color=fff'}
                                                 alt="profile"
                                             />

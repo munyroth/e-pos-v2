@@ -1,10 +1,13 @@
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import useAuth from "hooks/useAuth";
 import axios from "api/axios";
 import BaseForm from "components/form";
 import Input from "components/form/Input";
 import toast, {Toaster} from "react-hot-toast";
+import InputImage from "components/form/InputImage";
+import handleChange from "features/handleChange";
+import handleValidation from "features/validation/validation";
 
 const REGISTER_URL = '/register'
 
@@ -21,6 +24,7 @@ export default function Register() {
         password: false,
         password_confirmation: false,
         name: false,
+        image: false,
     });
     const [isLoading, setIsLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
@@ -28,24 +32,21 @@ export default function Register() {
     const [request, setRequest] = useState({
         phone: '',
         password: '',
-        name: ''
+        name: '',
+        image: null,
     });
+    const [isImage, setIsImage] = useState(false);
+    const [imageURL, setImageURL] = useState("");
     const [isSendOTP, setIsSendOTP] = useState(false);
 
-    const handleChange = e => {
-        const {name} = e.target;
-        setRequest(prevData => {
-            return {
-                ...prevData,
-                [name]: e.target.value
-            }
-        });
-        setIsValidate(prevData => {
-            return {
-                ...prevData,
-                [name]: false
-            }
-        });
+    const handleInputChange = e => {
+        handleChange(
+            e,
+            setRequest,
+            setIsValidate,
+            setIsImage,
+            setImageURL,
+        )
         setErrMsg('');
     }
 
@@ -58,48 +59,16 @@ export default function Register() {
     };
 
     const handleSendOTP = async () => {
-        if (request.phone.length === 0 &&
-            request.password.length === 0 &&
-            request.name.length === 0
-        ) {
-            setIsValidate(prevData => {
-                return {
-                    phone: true,
-                    password: true,
-                    password_confirmation: true,
-                    name: true
-                }
-            });
-            return false;
-        } else if (request.phone.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    phone: true
-                }
-            });
-            return false;
-        } else if (request.password.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    password: true
-                }
-            });
-            return false;
-        } else if (request.password !== request.password_confirmation) {
+        if (!handleValidation(
+            ['image', 'name', 'phone', 'password'],
+            request,
+            setIsValidate
+        )) return;
+        if (request.password !== request.password_confirmation) {
             setIsValidate(prevData => {
                 return {
                     ...prevData,
                     password_confirmation: true
-                }
-            });
-            return false;
-        } else if (request.name.length === 0) {
-            setIsValidate(prevData => {
-                return {
-                    ...prevData,
-                    name: true
                 }
             });
             return false;
@@ -181,20 +150,17 @@ export default function Register() {
         }
 
         try {
+            let formData = new FormData();
+            formData.append('phone', request.phone);
+            formData.append('password', request.password);
+            formData.append('name', request.name);
+            formData.append('otp', otp);
+            request.image && formData.append('file', request.image);
             const res = await axios.post(
                 REGISTER_URL,
-                {
-                    phone: request.phone,
-                    password: request.password,
-                    name: request.name,
-                    otp: otp
-                },
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
+                formData
+            );
+
             if (res.data.status === 201) register(res.data.data.token, res.data.data.refresh_token);
             else if (res.data.status === 422) {
                 if (res.data.message === 'Invalid OTP') {
@@ -293,12 +259,21 @@ export default function Register() {
                         <h1 className="text-center">
                             ចុះឈ្មោះគណនី
                         </h1>
+                        <InputImage
+                            title="រូបភាព"
+                            id="image"
+                            onChange={handleInputChange}
+                            image={imageURL}
+                            isImage={isImage}
+                            isRequire={true}
+                            isValidate={isValidate.image}
+                        />
                         <Input
                             title="ឈ្មោះ"
                             id="name"
                             type="text"
                             autoComplete="name"
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             isFocus={true}
                             isValidate={isValidate.name}
                             isRequire={true}
@@ -308,7 +283,7 @@ export default function Register() {
                             id="phone"
                             type="text"
                             autoComplete="phone"
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             isValidate={isValidate.phone}
                             isRequire={true}
                         />
@@ -316,7 +291,7 @@ export default function Register() {
                             title="ពាក្យសំងាត់"
                             id="password"
                             type="password"
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             isValidate={isValidate.password}
                             isShowPassword={isShowPassword}
                             setShowPassword={setsShowPassword}
@@ -326,7 +301,7 @@ export default function Register() {
                             title="បញ្ជាក់ពាក្យសំងាត់"
                             id="password_confirmation"
                             type="password"
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             isValidate={isValidate.password_confirmation}
                             isShowPassword={isShowPassword}
                             setShowPassword={setsShowPassword}

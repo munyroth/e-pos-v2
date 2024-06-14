@@ -1,22 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Toaster} from "react-hot-toast";
-import Pagination from "../../../components/pagination";
-import Loading from "../../../components/loading";
-import searchData from "../../../requestApi/searchData";
-import postData from "../../../requestApi/postData";
-import deleteData from "../../../requestApi/deleteData";
-import DeleteDialog from "../../../components/dialog/DeleteDialog";
-import FormDialog from "../../../components/dialog/FormDialog";
-import Input from "../../../components/form/Input";
-import handleValidation from "../../../features/validation/validation";
-import getData from "../../../requestApi/getData";
-import handleChange from "../../../features/handleChange";
-import InputImage from "../../../components/form/InputImage";
-import Select from "../../../components/form/Select";
-import useGetDataList from "../../../hooks/useGetDataList";
-import Filter from "../../../components/form/Filter";
-import Search from "../../../components/form/Search";
-import Empty from "../../../components/empty";
+import Pagination from "components/pagination";
+import Loading from "components/loading";
+import searchData from "requestApi/searchData";
+import postData from "requestApi/postData";
+import deleteData from "requestApi/deleteData";
+import DeleteDialog from "components/dialog/DeleteDialog";
+import FormDialog from "components/dialog/FormDialog";
+import Input from "components/form/Input";
+import handleValidation from "features/validation/validation";
+import getData from "requestApi/getData";
+import handleChange from "features/handleChange";
+import InputImage from "components/form/InputImage";
+import Select from "components/form/Select";
+import useGetDataList from "hooks/useGetDataList";
+import Filter from "components/form/Filter";
+import Search from "components/form/Search";
+import Empty from "components/empty";
 
 export default function Products() {
     let shopId = localStorage.getItem('shopId');
@@ -227,7 +227,7 @@ export default function Products() {
                             <tr className="hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row"
                                     className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                    <img className="w-10 h-10 rounded-md"
+                                    <img className="w-10 h-10 rounded-md object-cover"
                                          src={item.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                          alt={item.name_kh}/>
                                     <div className="pl-3">

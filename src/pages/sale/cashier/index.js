@@ -329,7 +329,7 @@ export default function Cashier() {
                                                 {products.map(product => (
                                                     <div
                                                         className="flex flex-col items-center h-fit w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                                                        <img className="aspect-square h-32 m-4 rounded-md"
+                                                        <img className="aspect-square h-32 m-4 rounded-md object-cover"
                                                              src={product.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                                              alt={product.name_kh}/>
                                                         <div className="px-4 pb-4 w-full">

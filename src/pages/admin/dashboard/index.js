@@ -269,7 +269,7 @@ export default function Dashboard() {
                                                 <div className="flex items-center space-x-4 h-8">
                                                     <div className="flex-shrink-0">
                                                         <img
-                                                            className="w-8 h-8 rounded-md"
+                                                            className="w-8 h-8 rounded-md object-cover"
                                                             src={product.product_info.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                                             alt={product.product_info.name_kh}
                                                         />
