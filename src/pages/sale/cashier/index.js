@@ -14,6 +14,11 @@ import getData from "requestApi/getData";
 import Empty from "components/empty";
 import InputQty from "components/form/InputQty";
 
+const DISCOUNT_TYPE = {
+    VALUE: 'value',
+    PERCENTAGE: 'percentage'
+}
+
 export default function Cashier() {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -71,7 +76,7 @@ export default function Cashier() {
                 img_url: product.img_url,
                 price: product.price,
                 discount: 0,
-                discount_type: 'value',
+                discount_type: DISCOUNT_TYPE.VALUE,
                 qty: 1,
                 totalPrice: product.price
             }]);
@@ -203,10 +208,13 @@ export default function Cashier() {
     }, []);
 
     const sumDiscount = useCallback((data) => {
-        return (data.length === 0 ? 0 : data[0].discount + sumDiscount(data.slice(1)));
-        // if (n === 0) return 0;
-        // else if (n === 1) return data[n - 1].discount;
-        // else return ((sumDiscount(data, n - 1) * (n - 1) + data[n - 1].discount) / n);
+        if (data.length === 0) {
+            return 0;
+        } else if (data[0].discount_type === DISCOUNT_TYPE.VALUE) {
+            return data[0].discount + sumDiscount(data.slice(1));
+        } else {
+            return (data[0].price * data[0].qty * data[0].discount / 100) + sumDiscount(data.slice(1));
+        }
     }, []);
 
     const sumTotalPrice = useCallback(() => {
@@ -375,7 +383,10 @@ export default function Cashier() {
                                             setBranchId(value);
                                         }}
                                         selectOptions={branches}
-                                        className="z-50 me-8"
+                                        className={isModalPayment
+                                            ? "me-8"
+                                            : "z-50 me-8"
+                                        }
                                     />}
                                 </div>
                                 <div className="h-full w-full absolute pt-16 pb-40">
@@ -448,7 +459,9 @@ export default function Cashier() {
                                                                             return {
                                                                                 ...item,
                                                                                 discount: discount,
-                                                                                totalPrice: item.price * item.qty - discount
+                                                                                totalPrice: item.discount_type === DISCOUNT_TYPE.VALUE
+                                                                                    ? item.price * item.qty - discount
+                                                                                    : item.price * item.qty - (item.price * item.qty * discount / 100)
                                                                             };
                                                                         } else return item;
                                                                     }))}
@@ -458,10 +471,22 @@ export default function Cashier() {
                                                                     textEnd={true}
                                                                     selectId="payment-type"
                                                                     selectOptions={[
-                                                                        {value: "value", label: "$"},
-                                                                        // {value: "percentage", label: "%"}
+                                                                        {value: DISCOUNT_TYPE.VALUE, label: "$"},
+                                                                        {value: DISCOUNT_TYPE.PERCENTAGE, label: "%"}
                                                                     ]}
                                                                     selectWidth="pr-12"
+                                                                    onSelected={(e) => {
+                                                                        setItemsProcessing(itemsProcessing.map(item => {
+                                                                            if (item.product_id === product.product_id) {
+                                                                                return {
+                                                                                    ...item,
+                                                                                    discount_type: e.target.value,
+                                                                                    discount: 0,
+                                                                                    totalPrice: item.price * item.qty
+                                                                                };
+                                                                            } else return item;
+                                                                        }));
+                                                                    }}
                                                                 />
                                                             </div>
                                                             <p className="font-bold text-lg text-main w-3/12 text-end">${product.totalPrice}</p>

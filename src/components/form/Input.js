@@ -13,6 +13,7 @@ const Input = (
         selectId,
         selectOptions = [],
         selectWidth,
+        onSelected,
         leading,
         leadingWidth,
         isFocus,
@@ -113,7 +114,9 @@ const Input = (
                         <label htmlFor={selectId} className="sr-only">
                             {selectId}
                         </label>
-                        <select id={selectId} name={selectId} className="h-full select-input">
+                        <select
+                            onChange={onSelected}
+                            id={selectId} name={selectId} className="h-full select-input">
                             {selectOptions.map((item, index) => (
                                 <option key={index} value={item.value}>
                                     {item.label}
