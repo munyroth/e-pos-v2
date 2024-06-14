@@ -213,7 +213,7 @@ export default function Cashier() {
         } else if (data[0].discount_type === DISCOUNT_TYPE.VALUE) {
             return data[0].discount + sumDiscount(data.slice(1));
         } else {
-            return (data[0].price * data[0].qty * data[0].discount / 100) + sumDiscount(data.slice(1));
+            return (data[0].price * data[0].qty * data[0].discount) + sumDiscount(data.slice(1));
         }
     }, []);
 
@@ -458,14 +458,14 @@ export default function Cashier() {
                                                                             }
                                                                             return {
                                                                                 ...item,
-                                                                                discount: discount,
+                                                                                discount: item.discount_type === DISCOUNT_TYPE.VALUE ? discount : discount / 100,
                                                                                 totalPrice: item.discount_type === DISCOUNT_TYPE.VALUE
                                                                                     ? item.price * item.qty - discount
-                                                                                    : item.price * item.qty - (item.price * item.qty * discount / 100)
+                                                                                    : item.price * item.qty - (item.price * item.qty * discount) / 100
                                                                             };
                                                                         } else return item;
                                                                     }))}
-                                                                    value={product.discount}
+                                                                    value={product.discount_type === DISCOUNT_TYPE.VALUE ? product.discount : product.discount * 100}
                                                                     leading="បញ្ចុះតម្លៃ:"
                                                                     leadingWidth="pl-16"
                                                                     textEnd={true}
