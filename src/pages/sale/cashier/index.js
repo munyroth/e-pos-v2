@@ -160,15 +160,21 @@ export default function Cashier() {
     }
 
     const handleOrder = async () => {
-        const pId = branchId === 0 ? branches[0].id : branchId;
-        if (pId === 0) {
-            toast.error('សូមជ្រើសរើសសាខា');
-            return;
-        }
         try {
-            const id = auth.role === 'admin' ? pId : shopId;
+            const id = () => {
+                if (auth.role === 'admin') {
+                    const pId = branchId === 0 ? branches[0].id : branchId;
+                    if (pId === 0) {
+                        toast.error('សូមជ្រើសរើសសាខា');
+                        return;
+                    }
+                    return pId;
+                } else {
+                    return shopId;
+                }
+            }
             const data = {
-                shop_id: Number(id),
+                shop_id: Number(id()),
                 received_usd: payment.receive,
                 received_khr: 0,
                 payment_type: 'Cash',
@@ -268,7 +274,7 @@ export default function Cashier() {
         let isMounted = true;
         const controller = new AbortController();
 
-        getData(
+        auth.role === 'admin' && getData(
             controller,
             isMounted,
             '/shop?is_all=true&business_id=' + shopId,
@@ -276,13 +282,15 @@ export default function Cashier() {
             setBranches,
             null,
             null,
-            auth.role === 'sale' ? 'sale' : 'admin'
+            'admin'
         ).then(r => r).catch(e => e);
 
         getData(
             controller,
             isMounted,
-            '/category?is_all=true&business_id=' + shopId,
+            auth.role === 'admin'
+                ? '/category?is_all=true&business_id=' + shopId
+                : '/category?is_all=true&shop_id=' + shopId,
             0,
             setCategories,
             null,
@@ -357,7 +365,7 @@ export default function Cashier() {
                                     <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                                         កន្ត្រក
                                     </h5>
-                                    {!isLoading && auth.role === 'admin' && <Filter
+                                    {!isLoading && auth.role === 'admin' && branches.length > 1 && <Filter
                                         isHasAll={false}
                                         title="សាខា"
                                         id="filter-branch"
@@ -467,7 +475,7 @@ export default function Cashier() {
                                     <div
                                         className="mt-4 flex justify-between text-base font-medium text-gray-900 dark:text-white">
                                         <p>សរុប</p>
-                                        <p>${subtotal}</p>
+                                        <p>${subtotal.toFixed(2)}</p>
                                     </div>
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
@@ -477,7 +485,7 @@ export default function Cashier() {
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
                                         <p>សរុបចុងក្រោយ</p>
-                                        <p>${total}</p>
+                                        <p>${total.toFixed(2)}</p>
                                     </div>
                                     <div className="mt-4">
                                         <button
@@ -496,7 +504,7 @@ export default function Cashier() {
                 <div className="h-10 mb-4 flex items-center justify-between">
                     <div className="relative flex items-center">
                         <h1 className="me-8">លក់ទំនិញ</h1>
-                        {!isLoading && branches.length > 0 && (
+                        {!isLoading && (
                             <>
                                 <Filter
                                     title="ប្រភេទ"
@@ -590,7 +598,7 @@ export default function Cashier() {
                     ) : ("ទូទាត់")}
                 </button>}>
                 <p className="text-center text-lg text-gray-500 dark:text-gray-200">
-                    ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total}</span>
+                    ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total.toFixed(2)}</span>
                 </p>
                 <Input
                     title="ទឹកប្រាក់ទទួល"
