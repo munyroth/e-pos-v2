@@ -304,18 +304,18 @@ export default function Cashier() {
                         <div
                             className="h-full w-3/6 relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="h-full relative flex flex-col">
-                                <div className="flex items-center justify-between m-4">
+                                <div className="flex items-center space-x-4 mx-6 h-16">
                                     <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                                         ទំនិញ
                                     </h5>
                                 </div>
-                                <div className="h-full w-full absolute pt-12">
+                                <div className="h-full w-full absolute pt-16">
                                     {isLoading
                                         ? <Loading/>
                                         : products.length === 0
                                             ? <Empty title="ទំនិញ"/>
                                             : <div id="product-list"
-                                                 className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4"
+                                                   className="h-full grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-scroll px-4 pb-4"
                                             >
                                                 {products.map(product => (
                                                     <div
@@ -353,12 +353,23 @@ export default function Cashier() {
                         <div
                             className="h-full w-3/6 relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                             <div className="h-full relative flex flex-col">
-                                <div className="flex items-center justify-between m-4">
+                                <div className="flex items-center space-x-4 mx-6 h-16">
                                     <h5 className="text-lg font-bold leading-none text-gray-900 dark:text-white">
                                         កន្ត្រក
                                     </h5>
+                                    {!isLoading && auth.role === 'admin' && <Filter
+                                        isHasAll={false}
+                                        title="សាខា"
+                                        id="filter-branch"
+                                        onChange={async (e) => {
+                                            const {value} = e.target;
+                                            setBranchId(value);
+                                        }}
+                                        selectOptions={branches}
+                                        className="z-50 me-8"
+                                    />}
                                 </div>
-                                <div className="h-full w-full absolute pt-12 pb-40">
+                                <div className="h-full w-full absolute pt-16 pb-40">
                                     <div className="h-full overflow-scroll px-4">
                                         <ul className="-my-3 divide-y divide-gray-200">
                                             {itemsProcessing.map((product) => (
@@ -487,18 +498,6 @@ export default function Cashier() {
                         <h1 className="me-8">លក់ទំនិញ</h1>
                         {!isLoading && branches.length > 0 && (
                             <>
-                                <Filter
-                                    isHasAll={false}
-                                    title="សាខា"
-                                    id="filter-branch"
-                                    onChange={async (e) => {
-                                        const {value} = e.target;
-                                        setBranchId(value);
-                                    }}
-                                    selectOptions={branches}
-                                    className="me-8"
-                                />
-
                                 <Filter
                                     title="ប្រភេទ"
                                     id="filter-category"
