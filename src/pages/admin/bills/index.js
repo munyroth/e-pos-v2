@@ -12,6 +12,11 @@ import searchData from "requestApi/searchData";
 import Filter from "components/form/Filter";
 import getData from "requestApi/getData";
 
+const DISCOUNT_TYPE = {
+    VALUE: 'value',
+    PERCENTAGE: 'percentage'
+}
+
 export default function Bills() {
     const {auth} = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -274,7 +279,10 @@ export default function Bills() {
                                                     x{item.qty}
                                                 </div>
                                                 <div className="font-bold text-red-600">
-                                                    -${item.discount}
+                                                    {item.discount_type === DISCOUNT_TYPE.PERCENTAGE
+                                                        ? `-${item.discount * 100}%`
+                                                        : `-$${item.discount}`
+                                                    }
                                                 </div>
                                                 <div className="font-bold text-lg text-main">
                                                     ${(item.price * item.qty) - item.discount}
