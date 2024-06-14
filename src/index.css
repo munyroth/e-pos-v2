@@ -43,7 +43,7 @@
         @apply cursor-pointer block py-2 text-base bg-red-50 leading-6 rounded-lg border border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500 dark:bg-gray-700 dark:border-red-500 dark:text-red-500;
     }
     .select-input {
-        @apply cursor-pointer block py-2 pl-3 pr-8 text-base rounded-lg border-0 bg-transparent text-gray-500 focus:ring-0 focus:ring-inset focus:ring-main sm:text-sm dark:text-gray-200;
+        @apply cursor-pointer block py-0 pl-3 pr-8 text-base rounded-lg border-0 bg-transparent text-gray-500 focus:ring-0 focus:ring-inset focus:ring-main sm:text-sm dark:text-gray-200;
     }
     .select-filter {
         @apply cursor-pointer block py-2 text-base text-gray-900 leading-6 rounded-lg border-0 bg-gray-200 focus:ring-main dark:bg-gray-700 dark:text-white;

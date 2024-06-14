@@ -382,9 +382,9 @@ export default function Cashier() {
                                     <div className="h-full overflow-scroll px-4">
                                         <ul className="-my-3 divide-y divide-gray-200">
                                             {itemsProcessing.map((product) => (
-                                                <li key={product.id} className="flex py-3 items-center">
+                                                <li key={product.id} className="flex py-3 items-center space-x-2">
                                                     <div
-                                                        className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
+                                                        className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
                                                         <img
                                                             src={product.img_url || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                                                             alt={product.name_kh}
@@ -392,7 +392,7 @@ export default function Cashier() {
                                                         />
                                                     </div>
 
-                                                    <div className="ml-4 flex flex-1 flex-col">
+                                                    <div className="flex flex-1 flex-col space-y-1">
                                                         <div>
                                                             <div
                                                                 className="flex justify-between text-base font-medium text-gray-900 items-center">
@@ -409,14 +409,13 @@ export default function Cashier() {
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <p className="text-sm text-gray-500">{product.barcode}</p>
+                                                            <p className="text-sm text-gray-500">{product.barcode}24432543</p>
                                                         </div>
                                                         <div
-                                                            className="text-base flex flex-1 items-center justify-between w-full space-x-4">
-                                                            <p className="text-main w-1/4">${product.price}</p>
-                                                            <div className="flex space-x-4">
+                                                            className="text-base flex flex-1 items-center justify-between w-full space-x-2">
+                                                            <p className="text-main w-2/12">${product.price}</p>
+                                                            <div className="flex space-x-2 w-7/12 h-8">
                                                                 <InputQty
-                                                                    className="w-40"
                                                                     id="qty"
                                                                     onChange={e => setItemsProcessing(itemsProcessing.map(item => {
                                                                         if (item.product_id === product.product_id) {
@@ -431,7 +430,7 @@ export default function Cashier() {
                                                                     value={product.qty}
                                                                 />
                                                                 <Input
-                                                                    className="w-36"
+                                                                    className="flex-1"
                                                                     id="discount"
                                                                     onChange={e => setItemsProcessing(itemsProcessing.map(item => {
                                                                         if (item.product_id === product.product_id) {
@@ -465,7 +464,7 @@ export default function Cashier() {
                                                                     selectWidth="pr-12"
                                                                 />
                                                             </div>
-                                                            <p className="font-bold text-lg text-main w-1/4 text-end">${product.totalPrice}</p>
+                                                            <p className="font-bold text-lg text-main w-3/12 text-end">${product.totalPrice}</p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -485,7 +484,7 @@ export default function Cashier() {
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
                                         <p>បញ្ចុះតម្លៃ</p>
-                                        <p>${discount}</p>
+                                        <p className="text-red-600">-${discount}</p>
                                     </div>
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
