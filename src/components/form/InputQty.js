@@ -23,7 +23,7 @@ const InputQty = (
     }, [isFocus]);
 
     const inputClassNames = classnames(
-        "w-full pl-9 pr-9 text-end focus:ring-0 input",
+        "w-full pl-9 pr-9 text-center focus:ring-0 input",
         {
             "h-full": className,
         },

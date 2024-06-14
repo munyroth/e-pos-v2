@@ -271,20 +271,20 @@ export default function Bills() {
                                             <p className="text-sm text-gray-600 truncate dark:text-gray-400">
                                                 {item.barcode}
                                             </p>
-                                            <div className="flex justify-between items-end">
-                                                <div className="font-bold text-main">
+                                            <div className="flex justify-between items-center">
+                                                <div className="font-bold text-main w-3/12">
                                                     ${item.price}
                                                 </div>
-                                                <div className="text-gray-600 truncate dark:text-gray-300">
+                                                <div className="text-gray-600 truncate dark:text-gray-300  w-3/12">
                                                     x{item.qty}
                                                 </div>
-                                                <div className="font-bold text-red-600">
+                                                <div className="font-bold text-red-600 w-3/12">
                                                     {item.discount_type === DISCOUNT_TYPE.PERCENTAGE
                                                         ? `-${item.discount * 100}%`
                                                         : `-$${item.discount}`
                                                     }
                                                 </div>
-                                                <div className="font-bold text-lg text-main">
+                                                <div className="font-bold text-lg text-main w-3/12 text-end">
                                                     ${(item.price * item.qty) - item.discount}
                                                 </div>
                                             </div>
