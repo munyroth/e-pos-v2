@@ -4,6 +4,7 @@ import handleChange from "features/handleChange";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import handleValidation from "../../../features/validation/validation";
 import toast, {Toaster} from "react-hot-toast";
+import {Link} from "react-router-dom";
 
 export default function Security() {
     const axiosPrivate = useAxiosPrivate();
@@ -43,6 +44,11 @@ export default function Security() {
         try {
             const res = await axiosPrivate.post('/password/change', data);
             if (res.data.status === 200) {
+                setData({
+                    current_password: '',
+                    password: '',
+                    password_confirmation: ''
+                });
                 toast.success('បានកែប្រែពាក្យសំងាត់បានជោគជ័យ');
             } else {
                 toast.error(res.data.message);
@@ -105,6 +111,13 @@ export default function Security() {
                     isShowPassword={isShowPassword}
                     setShowPassword={setsShowPassword}
                 />
+            </div>
+            <div className="lg:w-72 md:w-64 sm:w-44 mx-auto text-end">
+                <Link
+                    to="/password/forgot"
+                    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+                    ភ្លេចពាក្យសំងាត់?
+                </Link>
             </div>
 
             <div className="lg:w-72 md:w-64 sm:w-44 mx-auto">

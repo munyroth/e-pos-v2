@@ -10,7 +10,7 @@ const InputQty = (
         placeholder,
         autoComplete,
         isFocus,
-        className = "w-28",
+        className = "w-24",
         disabled
     }
 ) => {

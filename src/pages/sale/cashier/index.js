@@ -13,10 +13,16 @@ import Filter from "components/form/Filter";
 import getData from "requestApi/getData";
 import Empty from "components/empty";
 import InputQty from "components/form/InputQty";
+import Select from "components/form/Select";
 
 const DISCOUNT_TYPE = {
     VALUE: 'value',
     PERCENTAGE: 'percentage'
+}
+
+const PAYMENT_TYPE = {
+    CASH: 'Cash',
+    KHQR: 'KHQR Photo'
 }
 
 export default function Cashier() {
@@ -24,6 +30,7 @@ export default function Cashier() {
     const axiosPrivate = useAxiosPrivate();
     const shopId = localStorage.getItem('shopId');
     const [branchId, setBranchId] = useState(0);
+    const [paymentType, setPaymentType] = useState(PAYMENT_TYPE.CASH);
 
     const url = '/product';
     const [params, setParams] = useState(auth.role === 'admin'
@@ -76,7 +83,7 @@ export default function Cashier() {
                 img_url: product.img_url,
                 price: product.price,
                 discount: 0,
-                discount_type: DISCOUNT_TYPE.VALUE,
+                discount_type: DISCOUNT_TYPE.PERCENTAGE,
                 qty: 1,
                 totalPrice: product.price
             }]);
@@ -122,6 +129,11 @@ export default function Cashier() {
             clearSearchRef.current.value = '';
             setIsLoadingSearch(false);
         }
+    }
+
+    const handleCheckoutSubmit = e => {
+        e.preventDefault();
+        handleCheckout().then(r => r);
     }
 
     const handleCheckout = async () => {
@@ -183,7 +195,7 @@ export default function Cashier() {
                 shop_id: Number(id()),
                 received_usd: payment.receive,
                 received_khr: 0,
-                payment_type: 'Cash',
+                payment_type: paymentType,
                 order_details: itemsProcessing
             }
             const u = auth.role === 'admin' ? '/admin/order' : '/order';
@@ -471,8 +483,8 @@ export default function Cashier() {
                                                                     textEnd={true}
                                                                     selectId="payment-type"
                                                                     selectOptions={[
-                                                                        {value: DISCOUNT_TYPE.VALUE, label: "$"},
-                                                                        {value: DISCOUNT_TYPE.PERCENTAGE, label: "%"}
+                                                                        {value: DISCOUNT_TYPE.PERCENTAGE, label: "%"},
+                                                                        {value: DISCOUNT_TYPE.VALUE, label: "$"}
                                                                     ]}
                                                                     selectWidth="pr-12"
                                                                     onSelected={(e) => {
@@ -626,28 +638,53 @@ export default function Cashier() {
                         </>
                     ) : ("ទូទាត់")}
                 </button>}>
-                <p className="text-center text-lg text-gray-500 dark:text-gray-200">
-                    ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total.toFixed(2)}</span>
-                </p>
-                <Input
-                    title="ទឹកប្រាក់ទទួល"
-                    id="receive"
-                    onChange={e => {
-                        handleChange(
-                            e,
-                            setPayment,
-                            setIsValidate
-                        )
-                        setReturnUsd(e.target.value - total);
-                    }}
-                    value={payment.receive}
-                    isValidate={isValidate.receive}
-                    isRequire={true}
-                />
-                {isValidate.return && <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
-                <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
-                    ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd.toFixed(2)}</span>
-                </p>
+                <form
+                    className="space-y-4"
+                    onSubmit={handleCheckoutSubmit}
+                >
+                    <p className="text-center text-lg text-gray-500 dark:text-gray-200">
+                        ទឹកប្រាក់ត្រូវបង់គឺ <span className="text-main font-bold">${total.toFixed(2)}</span>
+                    </p>
+                    <Select
+                        title="ប្រភេទទូទាត់"
+                        id="payment-type"
+                        onChange={e => setPaymentType(e.target.value)}
+                        value={paymentType}
+                        selectOptions={[
+                            {id: PAYMENT_TYPE.CASH, name: "សាច់ប្រាក់"},
+                            {id: PAYMENT_TYPE.KHQR, name: "អនឡាញ"}
+                        ]}
+                    />
+                    <div>
+                        <Input
+                            title="ទឹកប្រាក់ទទួល"
+                            id="receive"
+                            onChange={e => {
+                                handleChange(
+                                    e,
+                                    setPayment,
+                                    setIsValidate
+                                )
+                                setReturnUsd(e.target.value - total);
+                                setIsValidate(prevState => ({
+                                    ...prevState,
+                                    return: false
+                                }));
+                            }}
+                            value={payment.receive}
+                            selectId="currency"
+                            selectOptions={[
+                                {value: "USD", label: "USD"}
+                            ]}
+                            isValidate={isValidate.receive}
+                            isRequire={true}
+                        />
+                        {isValidate.return && <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
+                    </div>
+                    <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
+                        ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd.toFixed(2)}</span>
+                    </p>
+                </form>
             </BaseDialog>
             <Toaster/>
         </>
