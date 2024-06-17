@@ -1,9 +1,9 @@
-import LineChart from "../../../components/charts/LineChart";
+import LineChart from "components/charts/LineChart";
 import React, {useEffect, useState} from "react";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import Loading from "../../../components/loading";
-import Filter from "../../../components/form/Filter";
-import useAuth from "../../../hooks/useAuth";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import Loading from "components/loading";
+import Filter from "components/form/Filter";
+import useAuth from "hooks/useAuth";
 
 
 export default function Dashboard() {
@@ -134,7 +134,7 @@ export default function Dashboard() {
                     : <div
                         className="flex items-center text-xs font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
                         <ul className="flex flex-wrap -mb-px border-b border-gray-200">
-                            <li className="mr-2">
+                            <li className="">
                                 <button
                                     onClick={() => {
                                         setActiveTab(null);
@@ -144,7 +144,7 @@ export default function Dashboard() {
                                     ទាំងអស់
                                 </button>
                             </li>
-                            <li className="mr-2">
+                            <li className="">
                                 <button
                                     onClick={() => {
                                         setActiveTab(7);
@@ -154,7 +154,7 @@ export default function Dashboard() {
                                     ៧ថ្ងៃចុងក្រោយ
                                 </button>
                             </li>
-                            <li className="mr-2">
+                            <li className="">
                                 <button
                                     onClick={() => {
                                         setActiveTab(30);
@@ -164,7 +164,7 @@ export default function Dashboard() {
                                     ៣០ថ្ងៃចុងក្រោយ
                                 </button>
                             </li>
-                            <li className="mr-2">
+                            <li className="">
                                 <button
                                     onClick={() => {
                                         setActiveTab(90);
