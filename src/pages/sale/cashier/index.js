@@ -432,7 +432,7 @@ export default function Cashier() {
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <p className="text-sm text-gray-500">{product.barcode}24432543</p>
+                                                            <p className="text-sm text-gray-500">{product.barcode}</p>
                                                         </div>
                                                         <div
                                                             className="text-base flex flex-1 items-center justify-between w-full space-x-2">
