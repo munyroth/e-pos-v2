@@ -84,8 +84,7 @@ export default function Members() {
         return formData;
     }
 
-    const handleSubmit = async e => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         if (!handleValidation(
             ['image', 'name', 'role', 'phone', 'password'],
             data,

@@ -91,8 +91,7 @@ export default function Products() {
         return formData;
     }
 
-    const handleSubmit = async e => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         if (!handleValidation(
             ['image', 'name', 'category', 'price', 'barcode'],
             data,
