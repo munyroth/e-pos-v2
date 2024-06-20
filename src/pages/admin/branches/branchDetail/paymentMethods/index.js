@@ -43,7 +43,7 @@ export default function PaymentMethods(props) {
 
     const urlPayments = '/payment-method';
     // eslint-disable-next-line
-    const [payments, metaPayments, isLoadingPayments, setPayments, setMetaPayments, setIsLoadingPayments] = useGetDataList(
+    const [payments, metaPayments, isLoadingPayments] = useGetDataList(
         urlPayments, openModalAddItem, null, {
             shop_id: shopId
         }, ''

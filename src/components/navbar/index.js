@@ -95,6 +95,7 @@ export default function Navbar() {
                                 const foundShop = shops.find(shop => shop.id === e);
                                 if (foundShop) {
                                     setSelected(foundShop);
+                                    localStorage.setItem('shopId', foundShop.id)
                                     window.location.reload(); // Refresh the page
                                 }
                             }}>
@@ -119,16 +120,15 @@ export default function Navbar() {
                                                 {shops.map((shop) => (
                                                     <Listbox.Option
                                                         key={shop.id}
-                                                        className={({active}) =>
+                                                        className={({focus}) =>
                                                             classNames(
-                                                                active ? 'bg-gray-200 text-gray-900 dark:bg-gray-700' : 'text-gray-900',
+                                                                focus ? 'bg-gray-200 text-gray-900 dark:bg-gray-700' : 'text-gray-900',
                                                                 'relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white'
                                                             )
                                                         }
                                                         value={shop.id}
                                                     >
-                                                        {({selected, active}) => {
-                                                            selected && localStorage.setItem('shopId', shop.id)
+                                                        {({selected, focus}) => {
                                                             return (
                                                                 <>
                                                                     <div className="flex items-center">
@@ -142,7 +142,7 @@ export default function Navbar() {
                                                                     {selected ? (
                                                                         <span
                                                                             className={classNames(
-                                                                                active ? 'text-main' : 'text-main',
+                                                                                focus ? 'text-main' : 'text-main',
                                                                                 'absolute inset-y-0 right-0 flex items-center px-2'
                                                                             )}
                                                                         >
@@ -233,10 +233,10 @@ export default function Navbar() {
                                         <Menu.Items
                                             className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900">
                                             <Menu.Item>
-                                                {({active}) => (
+                                                {({focus}) => (
                                                     <Link
                                                         to={user.role === 'admin' ? '/admin/profile/information' : '/profile/information'}
-                                                        className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
+                                                        className={classNames(focus ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                     >
                                                         គណនី
                                                     </Link>
@@ -244,17 +244,17 @@ export default function Navbar() {
                                             </Menu.Item>
                                             {(user.role === 'admin')
                                                 && <Menu.Item>
-                                                    {({active}) => (
+                                                    {({focus}) => (
                                                         <Link
                                                             to="/admin/dashboard"
-                                                            className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
+                                                            className={classNames(focus ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                         >
                                                             ផ្ទាំងទិន្នន័យ
                                                         </Link>
                                                     )}
                                                 </Menu.Item>}
                                             <Menu.Item>
-                                                {({active}) => (
+                                                {({focus}) => (
                                                     <button
                                                         onClick={async () => {
                                                             const controller = new AbortController();
@@ -265,7 +265,7 @@ export default function Navbar() {
                                                                 console.error("Error during logout:", err);
                                                             }
                                                         }}
-                                                        className={classNames(active ? 'bg-gray-100 dark:bg-gray-700' : '', 'w-full text-start block px-4 py-2 text-sm text-red-600')}
+                                                        className={classNames(focus ? 'bg-gray-100 dark:bg-gray-700' : '', 'w-full text-start block px-4 py-2 text-sm text-red-600')}
                                                     >
                                                         ចាកចេញ
                                                     </button>

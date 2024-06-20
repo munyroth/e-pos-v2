@@ -28,7 +28,7 @@ export default function Select(props) {
                     >
                         <option value="" selected={true} disabled={true}>ជ្រើសរើស{title}</option>
                         {selectOptions.map(item => (
-                            <option key={item.id} value={item.id} selected={
+                            <option data-key={item.id} value={item.value ?? item.id} selected={
                                 value === item.id ? 'selected' : null
                             }>{item.name}</option>
                         ))}

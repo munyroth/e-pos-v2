@@ -14,6 +14,7 @@ import getData from "requestApi/getData";
 import Empty from "components/empty";
 import InputQty from "components/form/InputQty";
 import Select from "components/form/Select";
+import QRCode from "react-qr-code";
 
 const DISCOUNT_TYPE = {
     VALUE: 'value',
@@ -22,7 +23,16 @@ const DISCOUNT_TYPE = {
 
 const PAYMENT_TYPE = {
     CASH: 'Cash',
-    KHQR: 'KHQR Photo'
+    KHQR: 'KHQR Photo',
+    BANK: 'Bank'
+}
+
+const PAYMENT_METHODS = {
+    'Cash': 'សាច់ប្រាក់',
+    'KHQR Photo': 'រូបថតKHQR',
+    'KHQR': 'ប្រព័ន្ធបាគង',
+    'ABA Bank': 'ធនាគារABA',
+    'Wing Bank': 'ធនាគារWing',
 }
 
 export default function Cashier() {
@@ -63,6 +73,10 @@ export default function Cashier() {
         receive: false,
         return: false
     });
+
+    const [isLoadingQR, setIsLoadingQR] = useState(false);
+    const [qrCodeString, setQrCodeString] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState({});
 
     const addToCart = (product) => {
         if (product) {
@@ -176,6 +190,30 @@ export default function Cashier() {
             }
         }
     }
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const handleGetPaymentMethods = async () => {
+        try {
+            const id = () => {
+                if (auth.role === 'admin') {
+                    const pId = branchId === 0 ? branches[0].id : branchId;
+                    if (pId === 0) {
+                        toast.error('សូមជ្រើសរើសសាខា');
+                        return;
+                    }
+                    return pId;
+                } else {
+                    return shopId;
+                }
+            }
+            const u = auth.role === 'admin' ? '/admin/payment-method?shop_id=' + id() : '/payment-method?shop_id=' + shopId;
+            const res = await axiosPrivate.get(u);
+            if (res.data.status === 200) {
+                setPaymentMethods(res.data.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch payment methods:", error);
+        }
+    }
 
     const handleOrder = async () => {
         try {
@@ -250,6 +288,8 @@ export default function Cashier() {
                 });
                 setReturnUsd(0);
             }, 200);
+        } else {
+            handleGetPaymentMethods().then(r => r);
         }
     }, [isModalPayment]);
 
@@ -615,29 +655,30 @@ export default function Cashier() {
                 openModal={isModalPayment}
                 setOpenModal={setIsModalPayment}
                 cancelModalRef={cancelButtonRef}
-                button={<button
-                    disabled={isLoadingCheckout ? true : ""}
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
-                    onClick={() => handleCheckout()}
-                >
-                    {isLoadingCheckout ? (
-                        <>
-                            <svg aria-hidden="true" role="status"
-                                 className="inline w-4 h-4 mr-1 text-white animate-spin"
-                                 viewBox="0 0 100 101"
-                                 fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="#E5E7EB"/>
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentColor"/>
-                            </svg>
-                            កំពុងទូទាត់...
-                        </>
-                    ) : ("ទូទាត់")}
-                </button>}>
+                button={paymentType !== PAYMENT_TYPE.BANK &&
+                    <button
+                        disabled={isLoadingCheckout ? true : ""}
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
+                        onClick={() => handleCheckout()}
+                    >
+                        {isLoadingCheckout ? (
+                            <>
+                                <svg aria-hidden="true" role="status"
+                                     className="inline w-4 h-4 mr-1 text-white animate-spin"
+                                     viewBox="0 0 100 101"
+                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="#E5E7EB"/>
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentColor"/>
+                                </svg>
+                                កំពុងទូទាត់...
+                            </>
+                        ) : ("ទូទាត់")}
+                    </button>}>
                 <form
                     className="space-y-4"
                     onSubmit={handleCheckoutSubmit}
@@ -648,14 +689,64 @@ export default function Cashier() {
                     <Select
                         title="ប្រភេទទូទាត់"
                         id="payment-type"
-                        onChange={e => setPaymentType(e.target.value)}
+                        onChange={async e => {
+                            if (e.target.value === PAYMENT_TYPE.CASH) {
+                                setPaymentType(PAYMENT_TYPE.CASH);
+                            } else if (e.target.value === PAYMENT_TYPE.KHQR) {
+                                setPaymentType(PAYMENT_TYPE.KHQR);
+                                setIsLoadingQR(true);
+
+                                try {
+                                    const url = '/payment-method/' + e.target.options[e.target.selectedIndex].dataset.key;
+                                    const u = auth.role === 'admin' ? '/admin' + url : url;
+                                    const res = await axiosPrivate.get(u);
+                                    if (res.data.status === 200) {
+                                        setPaymentMethod(res.data.data);
+                                        setIsLoadingQR(false);
+                                    }
+                                } catch (error) {
+                                    console.error('Error fetching data:', error);
+                                }
+                            } else {
+                                setPaymentType(PAYMENT_TYPE.BANK);
+                                setIsLoadingQR(true);
+
+                                try {
+                                    const url = '/payment-method/' + e.target.options[e.target.selectedIndex].dataset.key;
+                                    const u = auth.role === 'admin' ? '/admin' + url : url;
+                                    const resPayment = await axiosPrivate.get(u);
+                                    if (resPayment.data.status === 200) {
+                                        const data = {
+                                            account_number: resPayment.data.data.account_number,
+                                            account_name: resPayment.data.data.account_name,
+                                            currency_type: 'usd',
+                                            amount: total
+                                        }
+                                        const u = auth.role === 'admin' ? '/admin/payment/qr-code' : '/payment/qr-code';
+                                        const resQrCode = await axiosPrivate.post(u, data);
+                                        if (resQrCode.data.status === 200) {
+                                            setQrCodeString(resQrCode.data.data.qr)
+                                            setPaymentMethod(resPayment.data.data);
+                                            setIsLoadingQR(false);
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error('Error fetching data:', error);
+                                }
+                            }
+                        }}
                         value={paymentType}
-                        selectOptions={[
-                            {id: PAYMENT_TYPE.CASH, name: "សាច់ប្រាក់"},
-                            {id: PAYMENT_TYPE.KHQR, name: "អនឡាញ"}
-                        ]}
+                        selectOptions={
+                            paymentMethods
+                                .filter(method => method.status === 'Active')
+                                .map(method => ({
+                                    id: method.id,
+                                    value: method.payment_method,
+                                    name: PAYMENT_METHODS[method.payment_method]
+                                }))
+                        }
                     />
-                    <div>
+                    {paymentType !== PAYMENT_TYPE.BANK && <div>
                         <Input
                             title="ទឹកប្រាក់ទទួល"
                             id="receive"
@@ -679,11 +770,31 @@ export default function Cashier() {
                             isValidate={isValidate.receive}
                             isRequire={true}
                         />
-                        {isValidate.return && <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
-                    </div>
-                    <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
-                        ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd.toFixed(2)}</span>
-                    </p>
+                        {isValidate.return &&
+                            <div className="mt-2 text-sm text-red-600">ទឹកប្រាក់ទទួលមិនគ្រប់គ្រាន់</div>}
+                    </div>}
+                    {paymentType === PAYMENT_TYPE.KHQR && <div className="w-full mx-auto">
+                        {isLoadingQR ? <Loading/> : <img
+                            src={paymentMethod.qr_code_img_url}
+                            alt="QR Code"
+                            className="h-full rounded-lg"/>}
+                    </div>}
+                    {paymentType === PAYMENT_TYPE.BANK && <div className="text-center w-full space-y-2 dark:text-white">
+                        {isLoadingQR ? <Loading/> : <>
+                            <div className="p-2 dark:bg-white h-44 w-44 mx-auto">
+                                <QRCode
+                                    value={qrCodeString}
+                                    style={{height: "auto", maxWidth: "100%", width: "100%"}}/>
+                            </div>
+                            <div>ឈ្មោះគណនី: {paymentMethod.account_name}</div>
+                            <div>លេខគណនី: {paymentMethod.account_number}</div>
+                        </>
+                        }
+                    </div>}
+                    {paymentType !== PAYMENT_TYPE.BANK &&
+                        <p className="mt-6 text-center text-lg text-gray-500 dark:text-gray-200">
+                            ប្រាក់អាប់ <span className="text-main font-bold">${returnUsd.toFixed(2)}</span>
+                        </p>}
                 </form>
             </BaseDialog>
             <Toaster/>
