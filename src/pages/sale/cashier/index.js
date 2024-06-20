@@ -76,6 +76,7 @@ export default function Cashier() {
 
     const [isLoadingQR, setIsLoadingQR] = useState(false);
     const [qrCodeString, setQrCodeString] = useState("");
+    const [md5, setMd5] = useState("");
     const [paymentMethod, setPaymentMethod] = useState({});
 
     const addToCart = (product) => {
@@ -191,7 +192,7 @@ export default function Cashier() {
         }
     }
     const [paymentMethods, setPaymentMethods] = useState([]);
-    const handleGetPaymentMethods = async () => {
+    const handleGetPaymentMethods = useCallback(async () => {
         try {
             const id = () => {
                 if (auth.role === 'admin') {
@@ -213,7 +214,7 @@ export default function Cashier() {
         } catch (error) {
             console.error("Failed to fetch payment methods:", error);
         }
-    }
+    }, [auth.role, branchId, branches, shopId, axiosPrivate]);
 
     const handleOrder = async () => {
         try {
@@ -287,11 +288,78 @@ export default function Cashier() {
                     return: false
                 });
                 setReturnUsd(0);
+                setPaymentType(PAYMENT_TYPE.CASH);
+                setPaymentMethod({});
+                setQrCodeString('');
+                setMd5('');
             }, 200);
         } else {
             handleGetPaymentMethods().then(r => r);
         }
-    }, [isModalPayment]);
+    }, [isModalPayment, handleGetPaymentMethods]);
+
+    useEffect(() => {
+        let interval;
+        if (isModalPayment && paymentType === PAYMENT_TYPE.BANK) {
+            interval = setInterval(async () => {
+                try {
+                    const url = '/payment/verify';
+                    const u = auth.role === 'admin' ? '/admin' + url : url;
+                    const data = {
+                        md5: md5
+                    }
+                    const res = await axiosPrivate.post(u, data);
+                    if (res.data.status === 200) {
+                        clearInterval(interval);
+                        const id = () => {
+                            if (auth.role === 'admin') {
+                                const pId = branchId === 0 ? branches[0].id : branchId;
+                                if (pId === 0) {
+                                    toast.error('សូមជ្រើសរើសសាខា');
+                                    return;
+                                }
+                                return pId;
+                            } else {
+                                return shopId;
+                            }
+                        }
+
+                        const data = {
+                            shop_id: Number(id()),
+                            received_usd: total,
+                            received_khr: 0,
+                            payment_type: paymentType,
+                            order_details: itemsProcessing
+                        }
+                        const u = auth.role === 'admin' ? '/admin/order' : '/order';
+                        const res = await axiosPrivate.post(u, data);
+
+                        if (res.data.status === 201) {
+                            toast.success('បានទូទាត់ជោគជ័យ');
+                        } else {
+                            toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+                        }
+                        setIsModalPayment(false);
+                        setItemsProcessing([]);
+                    } else if (res.data.status === 1) {
+
+                    } else if (res.data.status === 2) {
+                        clearInterval(interval);
+                    } else {
+                        clearInterval(interval);
+                    }
+                } catch (error) {
+                    console.error('Failed to verify payment:', error);
+                }
+            }, 1000);
+        } else {
+            clearInterval(interval);
+        }
+
+        return () => {
+            clearInterval(interval);
+        }
+    }, [isModalPayment, paymentType]);
 
     useEffect(() => {
         setSubtotal(sumPrice(itemsProcessing));
@@ -725,7 +793,8 @@ export default function Cashier() {
                                         const u = auth.role === 'admin' ? '/admin/payment/qr-code' : '/payment/qr-code';
                                         const resQrCode = await axiosPrivate.post(u, data);
                                         if (resQrCode.data.status === 200) {
-                                            setQrCodeString(resQrCode.data.data.qr)
+                                            setQrCodeString(resQrCode.data.data.qr);
+                                            setMd5(resQrCode.data.data.md5);
                                             setPaymentMethod(resPayment.data.data);
                                             setIsLoadingQR(false);
                                         }
