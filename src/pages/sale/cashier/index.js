@@ -300,8 +300,8 @@ export default function Cashier() {
 
     useEffect(() => {
         let interval;
-        if (isModalPayment && paymentType === PAYMENT_TYPE.BANK) {
-            interval = setInterval(async () => {
+        if (isModalPayment && paymentType === PAYMENT_TYPE.BANK && md5 !== '') {
+            const verifyPayment = async () => {
                 try {
                     const url = '/payment/verify';
                     const u = auth.role === 'admin' ? '/admin' + url : url;
@@ -309,6 +309,7 @@ export default function Cashier() {
                         md5: md5
                     }
                     const res = await axiosPrivate.post(u, data);
+                    console.log(res.data);
                     if (res.data.status === 200) {
                         clearInterval(interval);
                         const id = () => {
@@ -345,21 +346,28 @@ export default function Cashier() {
 
                     } else if (res.data.status === 2) {
                         clearInterval(interval);
-                    } else {
+                        toast.error('QR code បានផុតកំណត់');
+                    } else if (res.data.status === 14) {
+
+                    }
+                    else {
                         clearInterval(interval);
+                        toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
                     }
                 } catch (error) {
                     console.error('Failed to verify payment:', error);
                 }
-            }, 1000);
+            };
+
+            interval = setInterval(verifyPayment, 1000);
         } else {
-            clearInterval(interval);
+            if (interval) clearInterval(interval);
         }
 
         return () => {
-            clearInterval(interval);
-        }
-    }, [isModalPayment, paymentType]);
+            if (interval) clearInterval(interval);
+        };
+    }, [isModalPayment, paymentType, auth.role, axiosPrivate, branchId, branches, itemsProcessing, md5, shopId, total]);
 
     useEffect(() => {
         setSubtotal(sumPrice(itemsProcessing));
