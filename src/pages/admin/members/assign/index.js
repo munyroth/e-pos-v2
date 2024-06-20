@@ -25,7 +25,7 @@ export default function Assign() {
     const [shops, meta, isShopsLoading, setShops, setMeta, setIsShopsLoading] = useGetDataList(url, null, null, params);
 
     const [isLoadingAssign, setIsLoadingAssign] = useState({});
-    const [isLoadingUnassign, setIsLoadingUnassign] = useState({});
+    const [isLoadingUnassign, setIsLoadingUnassign] = useState([]);
 
     const handleAssign = async (shopId) => {
         setIsLoadingAssign(prevState => ({...prevState, [shopId]: true}));

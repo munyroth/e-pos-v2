@@ -30,7 +30,7 @@ const PAYMENT_TYPE = {
 const PAYMENT_METHODS = {
     'Cash': 'សាច់ប្រាក់',
     'KHQR Photo': 'រូបថតKHQR',
-    'KHQR': 'ប្រព័ន្ធបាគង',
+    'Bakong (NBC)': 'ប្រព័ន្ធបាគង',
     'ABA Bank': 'ធនាគារABA',
     'Wing Bank': 'ធនាគារWing',
 }

@@ -9,6 +9,9 @@ import useAxiosPrivate from "hooks/useAxiosPrivate";
 import handleValidation from "features/validation/validation";
 import postData from "requestApi/postData";
 import Input from "components/form/Input";
+import deleteData from "requestApi/deleteData";
+import DeleteDialog from "components/dialog/DeleteDialog";
+import {Toaster} from "react-hot-toast";
 
 export default function PaymentMethods(props) {
     const url = '/payment-method';
@@ -20,7 +23,7 @@ export default function PaymentMethods(props) {
     const PAYMENT_METHODS = {
         'Cash': 'សាច់ប្រាក់',
         'KHQR Photo': 'រូបថតKHQR',
-        'KHQR': 'ប្រព័ន្ធបាគង',
+        'Bakong (NBC)': 'ប្រព័ន្ធបាគង',
         'ABA Bank': 'ធនាគារABA',
         'Wing Bank': 'ធនាគារWing',
     }
@@ -41,10 +44,15 @@ export default function PaymentMethods(props) {
     const [bankId, setBankId] = useState(0);
     const [isLoadingAdd, setIsLoadingAdd] = useState(false);
 
+    const [openModalDelete, setOpenModalDelete] = useState(false);
+    const cancelModalDeleteRef = useRef(null);
+    const [deleteId, setDeleteId] = useState(0);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
     const urlPayments = '/payment-method';
     // eslint-disable-next-line
     const [payments, metaPayments, isLoadingPayments] = useGetDataList(
-        urlPayments, openModalAddItem, null, {
+        urlPayments, openModalAddItem, openModalDelete, {
             shop_id: shopId
         }, ''
     );
@@ -108,6 +116,10 @@ export default function PaymentMethods(props) {
         console.log('update');
     }
 
+    const handleDelete = async id => {
+        await deleteData(`${url}/${id}`, setIsLoadingDelete, setOpenModalDelete, 'បានលុបវិធីសាស្រ្តទូទាត់ជោគជ័យ', 'មានបញ្ហាក្នុងការលុបវិធីសាស្រ្តទូទាត់');
+    }
+
     useEffect(() => {
         // Reset form data when modal is closed
         if (!openModalAddItem) {
@@ -137,16 +149,16 @@ export default function PaymentMethods(props) {
                     <thead
                         className="text-base text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="w-4/12 px-6 py-3 rounded-l-lg">
+                        <th scope="col" className="w-3/12 px-6 py-3 rounded-l-lg">
                             វិធីសាស្រ្តទូទាត់
                         </th>
-                        <th scope="col" className="w-4/12 px-6 py-3">
+                        <th scope="col" className="w-3/12 px-6 py-3">
                             ឈ្មោះគណនី
                         </th>
-                        <th scope="col" className="w-2/12 px-6 py-3">
+                        <th scope="col" className="w-3/12 px-6 py-3">
                             លេខគណនី
                         </th>
-                        <th scope="col" className="w-2/12 px-6 py-3 text-center">
+                        <th scope="col" className="w-1/12 px-6 py-3 text-center">
                             ស្ថានភាព
                         </th>
                         <th scope="col" className="text-center w-2/12 px-6 py-3 rounded-r-lg">
@@ -180,51 +192,63 @@ export default function PaymentMethods(props) {
                                     {STATUS[payment.status]}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {payment.payment_method !== 'Cash' ? (
-                                        <div className="flex justify-center">
-                                            <button
-                                                type="button"
-                                                className="button"
-                                                onClick={async () => {
-                                                    setOpenModalAddItem(true);
-                                                    setOpenModalAddItemType(PAYMENT_METHODS[payment.payment_method]);
-                                                    setBankId(payment.bank_id || 0);
+                                    <div className="flex justify-center">
+                                        {payment.payment_method !== 'Cash' ? (
+                                            <div className="flex justify-center">
+                                                {payment.id === null
+                                                    ? <button
+                                                        type="button"
+                                                        className="button"
+                                                        onClick={async () => {
+                                                            setOpenModalAddItem(true);
+                                                            setOpenModalAddItemType(PAYMENT_METHODS[payment.payment_method]);
+                                                            setBankId(payment.bank_id || 0);
 
-                                                    const id = payment.id;
-                                                    if (id) {
-                                                        setUpdateId(id);
+                                                            const id = payment.id;
+                                                            if (id) {
+                                                                setUpdateId(id);
 
-                                                        const controller = new AbortController();
-                                                        let isMounted = true;
+                                                                const controller = new AbortController();
+                                                                let isMounted = true;
 
-                                                        try {
-                                                            const url = '/payment-method/' + id;
-                                                            const u = auth.role === 'admin' ? '/admin' + url : url;
-                                                            const res = await axiosPrivate.get(u, {
-                                                                signal: controller.signal
-                                                            });
-                                                            if (isMounted && res.data.status === 200) {
-                                                                if (payment.payment_method === "KHQR Photo") {
-                                                                    setImageURL(res.data.data.qr_code_img_url);
-                                                                    setIsImage(true);
-                                                                } else {
-                                                                    setData({
-                                                                        account_name: res.data.data.account_name,
-                                                                        account_number: res.data.data.account_number,
-                                                                        image: null
+                                                                try {
+                                                                    const url = '/payment-method/' + id;
+                                                                    const u = auth.role === 'admin' ? '/admin' + url : url;
+                                                                    const res = await axiosPrivate.get(u, {
+                                                                        signal: controller.signal
                                                                     });
+                                                                    if (isMounted && res.data.status === 200) {
+                                                                        if (payment.payment_method === "KHQR Photo") {
+                                                                            setImageURL(res.data.data.qr_code_img_url);
+                                                                            setIsImage(true);
+                                                                        } else {
+                                                                            setData({
+                                                                                account_name: res.data.data.account_name,
+                                                                                account_number: res.data.data.account_number,
+                                                                                image: null
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                } catch (error) {
+                                                                    console.error('Error fetching data:', error);
                                                                 }
                                                             }
-                                                        } catch (error) {
-                                                            console.error('Error fetching data:', error);
-                                                        }
-                                                    }
-                                                }}
-                                            >
-                                                កំណត់
-                                            </button>
-                                        </div>) : null
-                                    }
+                                                        }}
+                                                    >
+                                                        {payment.payment_method === 'KHQR Photo' ? 'បន្ថែម' : 'ភ្ជាប់គណនី'}
+                                                    </button>
+                                                    : <button
+                                                        type="button"
+                                                        className="rounded-md bg-red-600 flex items-center px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
+                                                        onClick={() => {
+                                                            setOpenModalDelete(true)
+                                                            setDeleteId(payment.id)
+                                                        }}
+                                                    >លុប</button>
+                                                }
+                                            </div>) : null
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -279,6 +303,16 @@ export default function PaymentMethods(props) {
                     </>
                 )}
             </FormDialog>
+            <DeleteDialog
+                title="វិធីសាស្រ្តទូទាត់"
+                openModalDelete={openModalDelete}
+                setOpenModalDelete={setOpenModalDelete}
+                cancelModalDeleteRef={cancelModalDeleteRef}
+                isLoadingDelete={isLoadingDelete}
+                handleDelete={handleDelete}
+                deleteId={deleteId}
+            />
+            <Toaster/>
         </>
     )
 }

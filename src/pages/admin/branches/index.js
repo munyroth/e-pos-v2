@@ -272,7 +272,9 @@ export default function Branches() {
                                 ? <Loading/>
                                 : metaMembers?.total === 0
                                     ? <li className="p-2">មិនមានសមាជិក</li>
-                                    : members.map(member => (
+                                    : members
+                                        .filter(member => member.role !== 'admin')
+                                        .map(member => (
                                         <li key={member.id}>
                                             <label htmlFor={`checkbox-item-${member.id}`}
                                                    className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
