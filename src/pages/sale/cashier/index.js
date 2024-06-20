@@ -349,8 +349,7 @@ export default function Cashier() {
                         toast.error('QR code បានផុតកំណត់');
                     } else if (res.data.status === 14) {
 
-                    }
-                    else {
+                    } else {
                         clearInterval(interval);
                         toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
                     }
