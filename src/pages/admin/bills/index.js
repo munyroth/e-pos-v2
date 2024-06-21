@@ -285,7 +285,7 @@ export default function Bills() {
                                                     }
                                                 </div>
                                                 <div className="font-bold text-lg text-main w-3/12 text-end">
-                                                    ${(item.price * item.qty) - item.discount}
+                                                    ${((item.price * item.qty) - item.discount).toFixed(2)}
                                                 </div>
                                             </div>
                                         </div>
@@ -309,7 +309,7 @@ export default function Bills() {
                     <div
                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
                         <p>សរុបចុងក្រោយ:</p>
-                        <p className="font-bold text-main text-lg">${billDetail?.total}</p>
+                        <p className="font-bold text-main text-lg">${billDetail?.total.toFixed(2)}</p>
                     </div>
                 </div>
             </BaseDialog>

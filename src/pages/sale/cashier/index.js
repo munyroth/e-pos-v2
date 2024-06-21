@@ -299,74 +299,78 @@ export default function Cashier() {
     }, [isModalPayment, handleGetPaymentMethods]);
 
     useEffect(() => {
-        let interval;
-        if (isModalPayment && paymentType === PAYMENT_TYPE.BANK && md5 !== '') {
-            const verifyPayment = async () => {
-                try {
-                    const url = '/payment/verify';
-                    const u = auth.role === 'admin' ? '/admin' + url : url;
-                    const data = {
-                        md5: md5
-                    }
-                    const res = await axiosPrivate.post(u, data);
-                    console.log(res.data);
-                    if (res.data.status === 200) {
-                        clearInterval(interval);
-                        const id = () => {
-                            if (auth.role === 'admin') {
-                                const pId = branchId === 0 ? branches[0].id : branchId;
-                                if (pId === 0) {
-                                    toast.error('សូមជ្រើសរើសសាខា');
-                                    return;
-                                }
-                                return pId;
-                            } else {
-                                return shopId;
+        let isMounted = true;
+        const controller = new AbortController();
+
+        const verifyPayment = async () => {
+            try {
+                const url = '/payment/verify';
+                const u = auth.role === 'admin' ? '/admin' + url : url;
+                const data = { md5: md5 }
+                const res = await axiosPrivate.post(u, data, { signal: controller.signal });
+
+                if (res.data.status === 200) {
+                    const id = () => {
+                        if (auth.role === 'admin') {
+                            const pId = branchId === 0 ? branches[0].id : branchId;
+                            if (pId === 0) {
+                                toast.error('សូមជ្រើសរើសសាខា');
+                                return;
                             }
-                        }
-
-                        const data = {
-                            shop_id: Number(id()),
-                            received_usd: total,
-                            received_khr: 0,
-                            payment_type: paymentType,
-                            order_details: itemsProcessing
-                        }
-                        const u = auth.role === 'admin' ? '/admin/order' : '/order';
-                        const res = await axiosPrivate.post(u, data);
-
-                        if (res.data.status === 201) {
-                            toast.success('បានទូទាត់ជោគជ័យ');
+                            return pId;
                         } else {
-                            toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+                            return shopId;
                         }
-                        setIsModalPayment(false);
-                        setItemsProcessing([]);
-                    } else if (res.data.status === 1) {
+                    }
 
-                    } else if (res.data.status === 2) {
-                        clearInterval(interval);
-                        toast.error('QR code បានផុតកំណត់');
-                    } else if (res.data.status === 14) {
+                    const data = {
+                        shop_id: Number(id()),
+                        received_usd: total,
+                        received_khr: 0,
+                        payment_type: paymentType,
+                        order_details: itemsProcessing
+                    }
+                    const u = auth.role === 'admin' ? '/admin/order' : '/order';
+                    const res = await axiosPrivate.post(u, data);
 
+                    if (res.data.status === 201) {
+                        toast.success('បានទូទាត់ជោគជ័យ');
                     } else {
-                        clearInterval(interval);
                         toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
                     }
-                } catch (error) {
+                    setIsModalPayment(false);
+                    setItemsProcessing([]);
+                } else if (res.data.status === 1) {
+                    return isMounted && verifyPayment();
+                } else if (res.data.status === 2) {
+                    toast.error('QR code បានផុតកំណត់');
+                } else if (res.data.status === 14) {
+                    return isMounted && verifyPayment();
+                } else {
+                    toast.error('មានបញ្ហាក្នុងការទូទាត់សូមព្យាយាមម្តងទៀត');
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted');
+                } else {
                     console.error('Failed to verify payment:', error);
                 }
-            };
+            }
+        };
 
-            interval = setInterval(verifyPayment, 1000);
+        if (isModalPayment && paymentType === PAYMENT_TYPE.BANK && md5 !== '') {
+            verifyPayment().then(r => r);
         } else {
-            if (interval) clearInterval(interval);
+            controller.abort();
+            isMounted = false;
         }
 
         return () => {
-            if (interval) clearInterval(interval);
+            controller.abort();
+            isMounted = false;
         };
-    }, [isModalPayment, paymentType, auth.role, axiosPrivate, branchId, branches, itemsProcessing, md5, shopId, total]);
+
+        }, [isModalPayment, paymentType, auth.role, axiosPrivate, branchId, branches, itemsProcessing, md5, shopId, total]);
 
     useEffect(() => {
         setSubtotal(sumPrice(itemsProcessing));
@@ -616,7 +620,7 @@ export default function Cashier() {
                                                                     }}
                                                                 />
                                                             </div>
-                                                            <p className="font-bold text-lg text-main w-3/12 text-end">${product.totalPrice}</p>
+                                                            <p className="font-bold text-lg text-main w-3/12 text-end">${product.totalPrice.toFixed(2)}</p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -795,7 +799,7 @@ export default function Cashier() {
                                             account_number: resPayment.data.data.account_number,
                                             account_name: resPayment.data.data.account_name,
                                             currency_type: 'usd',
-                                            amount: total
+                                            amount: total.toFixed(2)
                                         }
                                         const u = auth.role === 'admin' ? '/admin/payment/qr-code' : '/payment/qr-code';
                                         const resQrCode = await axiosPrivate.post(u, data);
