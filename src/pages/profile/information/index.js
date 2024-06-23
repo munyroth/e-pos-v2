@@ -4,7 +4,7 @@ import handleChange from "features/handleChange";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import {useOutletContext} from "react-router-dom";
 import handleValidation from "features/validation/validation";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function Information() {
     const axiosPrivate = useAxiosPrivate();
@@ -181,7 +181,6 @@ export default function Information() {
                 ) : ('រក្សាទុក')}
                 </button>
             </div>
-            <Toaster/>
         </>
     )
 }

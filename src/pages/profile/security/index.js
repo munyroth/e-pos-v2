@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import handleChange from "features/handleChange";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import handleValidation from "../../../features/validation/validation";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 import {Link} from "react-router-dom";
 
 export default function Security() {
@@ -148,7 +148,6 @@ export default function Security() {
                 ) : ('រក្សាទុក')}
                 </button>
             </div>
-            <Toaster/>
         </>
     )
 }

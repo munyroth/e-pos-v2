@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import handleChange from "features/handleChange";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import handleValidation from "features/validation/validation";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 import useGetDataObject from "hooks/useGetDataObject";
 import Loading from "components/loading";
 
@@ -125,7 +125,6 @@ export default function Business() {
                     </>
                 )
             }
-            <Toaster/>
         </>
     )
 }

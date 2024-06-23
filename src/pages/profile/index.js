@@ -5,6 +5,7 @@ import {NavLink, Outlet} from "react-router-dom";
 import classNames from "classnames";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import useAuth from "hooks/useAuth";
+import {Toaster} from "react-hot-toast";
 
 const USER_API_URL = '/user';
 
@@ -84,94 +85,97 @@ export default function Profile() {
     } = user || {};
 
     return (
-        <div className="pb-4 h-full">
-            {isLoading ? (
-                <Loading/>
-            ) : (
-                <div className="flex h-full space-x-4">
-                    <div
-                        className="min-w-64 p-4 space-y-4 w-1/3 border border-gray-200 rounded-lg shadow dark:border-gray-700">
-                        {/* Basic Profile */}
-                        <div className="text-center space-y-2">
-                            <div className="relative w-32 h-32 mx-auto">
-                                <img className="w-full h-full rounded-full object-contain"
-                                     src={img_url || `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`}
-                                     alt="profile"/>
+        <>
+            <div className="pb-4 h-full">
+                {isLoading ? (
+                    <Loading/>
+                ) : (
+                    <div className="flex h-full space-x-4">
+                        <div
+                            className="min-w-64 p-4 space-y-4 w-1/3 border border-gray-200 rounded-lg shadow dark:border-gray-700">
+                            {/* Basic Profile */}
+                            <div className="text-center space-y-2">
+                                <div className="relative w-32 h-32 mx-auto">
+                                    <img className="w-full h-full rounded-full object-contain"
+                                         src={img_url || `https://ui-avatars.com/api/?name=${name}&background=random&color=fff`}
+                                         alt="profile"/>
+                                </div>
+                                <h2 className="text-2xl font-semibold">{name}</h2>
+                                <div className="text-gray-600 dark:text-gray-400">
+                                    {role === "admin" ? "ម្ចាស់ហាង" :
+                                        role === "manager" ? "អ្នកគ្រប់គ្រង" :
+                                            role === "sale" ? "អ្នកលក់" : "សមាជិក"}
+                                </div>
                             </div>
-                            <h2 className="text-2xl font-semibold">{name}</h2>
-                            <div className="text-gray-600 dark:text-gray-400">
-                                {role === "admin" ? "ម្ចាស់ហាង" :
-                                    role === "manager" ? "អ្នកគ្រប់គ្រង" :
-                                        role === "sale" ? "អ្នកលក់" : "សមាជិក"}
-                            </div>
-                        </div>
 
-                        {/* Total income and order */}
-                        <div className="flex space-x-4 dark:text-white w-full justify-center items-center">
-                            <div className="w-1/2 flex flex-col items-center space-y-1">
-                                <div className="text-2xl font-semibold">${orders_sum_total.toFixed(2)}</div>
-                                <div className="text-gray-600 dark:text-gray-400">ចំណូល</div>
+                            {/* Total income and order */}
+                            <div className="flex space-x-4 dark:text-white w-full justify-center items-center">
+                                <div className="w-1/2 flex flex-col items-center space-y-1">
+                                    <div className="text-2xl font-semibold">${orders_sum_total.toFixed(2)}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">ចំណូល</div>
+                                </div>
+                                <div className="border-r h-16 border-gray-300 dark:border-gray-700"></div>
+                                <div className="w-1/2 flex flex-col items-center space-y-1">
+                                    <div className="text-2xl font-semibold">{orders_count}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">ការបញ្ជាទិញ</div>
+                                </div>
                             </div>
-                            <div className="border-r h-16 border-gray-300 dark:border-gray-700"></div>
-                            <div className="w-1/2 flex flex-col items-center space-y-1">
-                                <div className="text-2xl font-semibold">{orders_count}</div>
-                                <div className="text-gray-600 dark:text-gray-400">ការបញ្ជាទិញ</div>
-                            </div>
-                        </div>
 
-                        {/* Divider */}
-                        <div className="border-b w-full border-gray-300 dark:border-gray-700"></div>
+                            {/* Divider */}
+                            <div className="border-b w-full border-gray-300 dark:border-gray-700"></div>
 
-                        {/* Items */}
-                        <ul className="space-y-2 font-medium">
-                            {items.map(n => (
+                            {/* Items */}
+                            <ul className="space-y-2 font-medium">
+                                {items.map(n => (
+                                    <li>
+                                        <NavLink
+                                            to={n.link}
+                                            className={({isActive}) => classNames(
+                                                "flex items-center w-full p-2 transition duration-75 rounded-lg group",
+                                                {"bg-main text-white": isActive},
+                                                {"text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700": !isActive}
+                                            )}
+                                        >
+                                            {n.icon}
+                                            <span className="ml-3">{n.name}</span>
+                                        </NavLink>
+                                    </li>
+                                ))}
                                 <li>
-                                    <NavLink
-                                        to={n.link}
-                                        className={({isActive}) => classNames(
-                                            "flex items-center w-full p-2 transition duration-75 rounded-lg group",
-                                            {"bg-main text-white": isActive},
-                                            {"text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700": !isActive}
-                                        )}
+                                    <button
+                                        onClick={async () => {
+                                            const controller = new AbortController();
+                                            try {
+                                                await axiosPrivate.get('/logout', {signal: controller.signal});
+                                                logout(auth.token);
+                                            } catch (err) {
+                                                console.error("Error during logout:", err);
+                                            }
+                                        }}
+                                        className='flex items-center w-full p-2 transition duration-75 rounded-lg group text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700'
                                     >
-                                        {n.icon}
-                                        <span className="ml-3">{n.name}</span>
-                                    </NavLink>
+                                        <svg className="w-6 h-6" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                             viewBox="0 0 24 24">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                                  strokeWidth="2"
+                                                  d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
+                                        </svg>
+                                        <span className="ml-3">ចាកចេញ</span>
+                                    </button>
                                 </li>
-                            ))}
-                            <li>
-                                <button
-                                    onClick={async () => {
-                                        const controller = new AbortController();
-                                        try {
-                                            await axiosPrivate.get('/logout', {signal: controller.signal});
-                                            logout(auth.token);
-                                        } catch (err) {
-                                            console.error("Error during logout:", err);
-                                        }
-                                    }}
-                                    className='flex items-center w-full p-2 transition duration-75 rounded-lg group text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                >
-                                    <svg className="w-6 h-6" aria-hidden="true"
-                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                         viewBox="0 0 24 24">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                                              strokeWidth="2"
-                                              d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
-                                    </svg>
-                                    <span className="ml-3">ចាកចេញ</span>
-                                </button>
-                            </li>
-                        </ul>
+                            </ul>
+                        </div>
+                        <div
+                            className="relative p-4 space-y-4 w-2/3 border border-gray-200 rounded-lg shadow dark:border-gray-700">
+                            <Outlet
+                                context={[user, setUser]}
+                            />
+                        </div>
                     </div>
-                    <div
-                        className="relative p-4 space-y-4 w-2/3 border border-gray-200 rounded-lg shadow dark:border-gray-700">
-                        <Outlet
-                            context={[user, setUser]}
-                        />
-                    </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+            <Toaster/>
+        </>
     )
 }
