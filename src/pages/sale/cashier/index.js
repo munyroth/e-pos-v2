@@ -640,7 +640,7 @@ export default function Cashier() {
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
                                         <p>បញ្ចុះតម្លៃ</p>
-                                        <p className="text-red-600">-${discount}</p>
+                                        <p className="text-red-600">-${discount.toFixed(2)}</p>
                                     </div>
                                     <div
                                         className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
