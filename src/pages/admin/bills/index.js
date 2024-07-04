@@ -195,10 +195,10 @@ export default function Bills() {
                                 {auth.role === 'admin'
                                     ? <>
                                         <td className="px-6 py-4">
-                                            {bill.user.name}
+                                            {bill.user?.name || "អ្នកលក់បានលុប"}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {bill.shop.name}
+                                            {bill.shop?.name}
                                         </td>
                                     </>
                                     : null}
