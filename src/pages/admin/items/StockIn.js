@@ -148,7 +148,7 @@ export default function StockIn() {
             }
         });
 
-        if (files && files[0]) {
+        if (files?.[0]) {
             setImageURL(URL.createObjectURL(e.target.files[0]));
             setIsImage(true);
         }
