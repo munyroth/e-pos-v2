@@ -1,5 +1,5 @@
 import {useRef, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import useAuth from "hooks/useAuth";
 import axios from "api/axios";
 import BaseForm from "components/form";
@@ -128,7 +128,7 @@ export default function Login() {
                         </label>
                     </div>
                     <Link
-                        to="/password/forgot"
+                        to="../password/forgot"
                         className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                         ភ្លេចពាក្យសំងាត់?
                     </Link>

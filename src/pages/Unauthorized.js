@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 
 export default function Unauthorized() {
     return (
@@ -10,7 +10,7 @@ export default function Unauthorized() {
                 សូមអភ័យទោស, អ្នកមិនមានសិទ្ធិមើលទំព័រនេះទេ។</p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
                     <Link
-                        to="/"
+                        to="../"
                         className="button"
                     >
                         ត្រឡប់​ទៅ​ទំព័រ​ដើម

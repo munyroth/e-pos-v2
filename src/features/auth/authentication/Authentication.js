@@ -1,5 +1,5 @@
 import React, {useEffect, useCallback} from "react";
-import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router";
 import useAuth from "hooks/useAuth";
 import axios from "api/axios";
 

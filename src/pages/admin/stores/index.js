@@ -2,7 +2,7 @@ import BaseForm from "../../../components/form";
 import {useEffect, useState} from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Loading from "../../../components/loading";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import useAuth from "../../../hooks/useAuth";
 
 export default function Stores() {

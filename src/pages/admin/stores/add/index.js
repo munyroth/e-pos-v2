@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import BaseForm from "../../../../components/form";
 

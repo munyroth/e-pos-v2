@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 
 export default function Page404() {
     return (
@@ -10,7 +10,7 @@ export default function Page404() {
                     សូមអភ័យទោស, យើង​មិន​អាច​រក​ឃើញ​ទំព័រ​ដែល​អ្នក​កំពុង​ស្វែង​រក។</p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
                     <Link
-                        to="/"
+                        to="../"
                         className="button"
                     >
                         ត្រឡប់​ទៅ​ទំព័រ​ដើម

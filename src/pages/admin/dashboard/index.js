@@ -9,7 +9,7 @@ import useAuth from "hooks/useAuth";
 export default function Dashboard() {
     const {auth} = useAuth();
     let businessId = localStorage.getItem('shopId');
-    let url = auth.role === 'admin' ? '/admin/report/sale' : '/report/sale';
+    let url = auth?.role === 'admin' ? '/admin/report/sale' : '/report/sale';
     const axiosPrivate = useAxiosPrivate();
 
     const [report, setReport] = useState({
@@ -70,7 +70,7 @@ export default function Dashboard() {
             try {
                 const res = await axiosPrivate.get(url, {
                     signal: controller.signal,
-                    params: auth.role === 'admin'
+                    params: auth?.role === 'admin'
                         ? {
                             business_id: businessId,
                             past_day: activeTab,
@@ -93,7 +93,7 @@ export default function Dashboard() {
         }
 
         getReport().then();
-    }, [url, axiosPrivate, activeTab, activeYear, activeMonth, businessId, auth.role]);
+    }, [url, axiosPrivate, activeTab, activeYear, activeMonth, businessId, auth?.role]);
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
@@ -239,7 +239,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                     <div className={
-                        auth.role === 'admin'
+                        auth?.role === 'admin'
                             ? "col-span-2 flex items-start row-span-2 mb-4"
                             : "col-span-4 flex items-start row-span-2 mb-4"
                     }>
@@ -293,7 +293,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    {auth.role === 'admin' ? <div className="col-span-2 flex items-start row-span-2 mb-4">
+                    {auth?.role === 'admin' ? <div className="col-span-2 flex items-start row-span-2 mb-4">
                         <div
                             className="w-full h-full border border-gray-200 rounded-lg shadow sm:pt-4 sm:px-4 sm:pb-2 dark:bg-gray-800 dark:border-gray-700">
                             <div className="flex items-center justify-between mb-4">

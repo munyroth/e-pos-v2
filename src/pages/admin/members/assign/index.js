@@ -5,7 +5,7 @@ import useGetDataList from "hooks/useGetDataList";
 import Search from "components/form/Search";
 import Empty from "components/empty";
 import {useParams} from "react-router";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {axiosPrivate} from "api/axios";
 import useGetDataObject from "hooks/useGetDataObject";
 import toast, {Toaster} from "react-hot-toast";
@@ -85,7 +85,7 @@ export default function Assign() {
             } else {
                 toast.error(response.data.message);
             }
-        }).catch(error => {
+        }).catch(_ => {
             toast.error('មានបញ្ហាកើតឡើងនៅពេលដកចេញ');
         }).finally(() => {
             setIsLoadingUnassign(prevState => ({...prevState, [shopId]: false}));

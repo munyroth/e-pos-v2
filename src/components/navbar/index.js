@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState} from 'react'
 import {Disclosure, Listbox, Menu, Transition} from '@headlessui/react'
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import {CheckIcon} from "@heroicons/react/20/solid";
 import useAuth from "hooks/useAuth";
@@ -57,8 +57,7 @@ export default function Navbar() {
 
     const [user, isLoadingUser] = useGetDataObject('/user')
     let url = auth.role === 'admin' ? '/business?is_all=true' : '/shop?is_all=true';
-    // eslint-disable-next-line
-    const [shops, meta, isLoadingShops] = useGetDataList(url)
+    const [shops, , isLoadingShops] = useGetDataList(url)
     const [selected, setSelected] = useState({
         id: 0,
         name: ""
@@ -76,7 +75,7 @@ export default function Navbar() {
 
     return (
         <Disclosure as="nav" className="px-4 border-b dark:bg-gray-800 dark:border-gray-700">
-            {({open}) => (
+            {() => (
                 <>
                     <div className="relative flex h-16 items-center justify-between">
                         {isLoadingShops
@@ -110,7 +109,6 @@ export default function Navbar() {
 
                                         <Transition
                                             show={open}
-                                            as={Fragment}
                                             leave="transition ease-in duration-100"
                                             leaveFrom="opacity-100"
                                             leaveTo="opacity-0"
@@ -222,7 +220,6 @@ export default function Navbar() {
                                         </div>
                                     </Menu.Button>
                                     <Transition
-                                        as={Fragment}
                                         enter="transition ease-out duration-100"
                                         enterFrom="transform opacity-0 scale-95"
                                         enterTo="transform opacity-100 scale-100"
@@ -235,7 +232,7 @@ export default function Navbar() {
                                             <Menu.Item>
                                                 {({focus}) => (
                                                     <Link
-                                                        to={user.role === 'admin' ? '/admin/profile/information' : '/profile/information'}
+                                                        to={user.role === 'admin' ? '../admin/profile/information' : '../profile/information'}
                                                         className={classNames(focus ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                     >
                                                         គណនី
@@ -246,7 +243,7 @@ export default function Navbar() {
                                                 && <Menu.Item>
                                                     {({focus}) => (
                                                         <Link
-                                                            to="/admin/dashboard"
+                                                            to="../admin/dashboard"
                                                             className={classNames(focus ? 'bg-gray-100 dark:bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-700 dark:text-white')}
                                                         >
                                                             ផ្ទាំងទិន្នន័យ

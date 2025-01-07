@@ -1,5 +1,5 @@
 import React from "react";
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import useAuth from "hooks/useAuth";
 import Unauthorized from "pages/Unauthorized";
 

@@ -2,7 +2,7 @@ import Input from "components/form/Input";
 import React, {useEffect, useState} from "react";
 import handleChange from "features/handleChange";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
-import {useOutletContext} from "react-router-dom";
+import {useOutletContext} from "react-router";
 import handleValidation from "features/validation/validation";
 import toast from "react-hot-toast";
 

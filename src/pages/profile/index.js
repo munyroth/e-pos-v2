@@ -1,7 +1,7 @@
 import useGetDataObject from "hooks/useGetDataObject";
 import Loading from "components/loading";
 import React from "react";
-import {NavLink, Outlet} from "react-router-dom";
+import {NavLink, Outlet} from "react-router";
 import classNames from "classnames";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import useAuth from "hooks/useAuth";

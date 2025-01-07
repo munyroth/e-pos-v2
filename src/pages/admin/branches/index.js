@@ -10,7 +10,7 @@ import DeleteDialog from "components/dialog/DeleteDialog";
 import {Toaster} from "react-hot-toast";
 import FormDialog from "components/dialog/FormDialog";
 import useGetDataList from "hooks/useGetDataList";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router";
 import Search from "components/form/Search";
 import Empty from "components/empty";
 
@@ -39,8 +39,7 @@ export default function Branches() {
         name: false,
     });
 
-    // eslint-disable-next-line
-    const [contentMembers, setContentMembers] = useState('');
+    const [, setContentMembers] = useState('');
     const [members, metaMembers, isLoadMembers, setMembers, setMetaMembers, setIsLoadMembers] = useGetDataList('/employee', !openModalAddItem, null, {
         business_id: shopId
     });

@@ -14,7 +14,7 @@ import Select from "components/form/Select";
 import useGetDataList from "hooks/useGetDataList";
 import Search from "components/form/Search";
 import Empty from "components/empty";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 
 export default function Members() {
     const navigate = useNavigate();

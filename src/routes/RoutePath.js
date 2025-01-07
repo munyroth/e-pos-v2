@@ -1,4 +1,5 @@
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router";
+import React from "react";
 import Admin from "pages/admin";
 import Dashboard from "pages/admin/dashboard";
 import Products from "pages/admin/products";
@@ -15,7 +16,6 @@ import Authentication from "features/auth/authentication/Authentication";
 import Authorization from "features/auth/authorization/Authorization";
 import PERMISSIONS from "features/auth/permissions/Permissions";
 import {AuthProvider} from "features/auth/AuthProvider";
-import React from "react";
 import CheckAuth from "pages/CheckAuth";
 import Register from "pages/Register";
 import Stores from "pages/admin/stores";
@@ -33,29 +33,29 @@ const RoutePath = () => {
             <AuthProvider>
                 <Routes>
                     <Route element={<Authentication/>}>
-                        <Route exact path="stores" element={<Stores/>}/>
-                        <Route exact path="stores/add" element={<AddStore/>}/>
-                        <Route path="/admin/" element={<Admin/>}>
+                        <Route path="stores" element={<Stores/>}/>
+                        <Route path="stores/add" element={<AddStore/>}/>
+
+                        {/* Admin Routes */}
+                        <Route path="admin" element={<Admin/>}>
                             <Route index element={<Navigate to="dashboard"/>}/>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
                                 <Route path="profile" element={<Profile/>}>
                                     <Route index element={<Navigate to="information"/>}/>
-                                    <Route exact path="information" element={<Information/>}/>
-                                    <Route exact path="security" element={<Security/>}/>
-                                    <Route exact path="business" element={<Business/>}/>
+                                    <Route path="information" element={<Information/>}/>
+                                    <Route path="security" element={<Security/>}/>
+                                    <Route path="business" element={<Business/>}/>
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
-                                <Route exact path="dashboard" element={<Dashboard/>}/>
+                                <Route path="dashboard" element={<Dashboard/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_PRODUCTS]}/>}>
-                                <Route exact path="products" element={<Products/>}/>
-                            </Route>
-                            <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_PRODUCTS]}/>}>
-                                <Route exact path="categories" element={<Categories/>}/>
+                                <Route path="products" element={<Products/>}/>
+                                <Route path="categories" element={<Categories/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BILLS]}/>}>
-                                <Route exact path="bills" element={<Bills/>}/>
+                                <Route path="bills" element={<Bills/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_MEMBERS]}/>}>
                                 <Route path="members">
@@ -70,39 +70,43 @@ const RoutePath = () => {
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
-                                <Route exact path="cashier" element={<Cashier/>}/>
+                                <Route path="cashier" element={<Cashier/>}/>
                             </Route>
                         </Route>
 
+                        {/* Sale Routes */}
                         <Route element={<Sale/>}>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
                                 <Route path="profile" element={<Profile/>}>
                                     <Route index element={<Navigate to="information"/>}/>
-                                    <Route exact path="information" element={<Information/>}/>
-                                    <Route exact path="security" element={<Security/>}/>
+                                    <Route path="information" element={<Information/>}/>
+                                    <Route path="security" element={<Security/>}/>
                                 </Route>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_DASHBOARD]}/>}>
-                                <Route exact path="dashboard" element={<Dashboard/>}/>
+                                <Route path="dashboard" element={<Dashboard/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_BILLS]}/>}>
-                                <Route exact path="bills" element={<Bills/>}/>
+                                <Route path="bills" element={<Bills/>}/>
                             </Route>
                             <Route element={<Authorization permissions={[PERMISSIONS.CAN_VIEW_CASHIER]}/>}>
-                                <Route exact path="cashier" element={<Cashier/>}/>
+                                <Route path="cashier" element={<Cashier/>}/>
                             </Route>
                         </Route>
                     </Route>
 
-                    <Route exact path="login" element={<Login/>}/>
-                    <Route exact path="register" element={<Register/>}/>
-                    <Route exact path="password/forgot" element={<ForgotPassword/>}/>
-                    <Route exact path="/" element={<CheckAuth/>}/>
+                    {/* Authentication Routes */}
+                    <Route path="login" element={<Login/>}/>
+                    <Route path="register" element={<Register/>}/>
+                    <Route path="password/forgot" element={<ForgotPassword/>}/>
+
+                    {/* Root and Fallback Routes */}
+                    <Route path="/" element={<CheckAuth/>}/>
                     <Route path="*" element={<Page404/>}/>
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
     );
-}
+};
 
 export default RoutePath;

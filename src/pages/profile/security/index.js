@@ -4,7 +4,7 @@ import handleChange from "features/handleChange";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import handleValidation from "../../../features/validation/validation";
 import toast from "react-hot-toast";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 
 export default function Security() {
     const axiosPrivate = useAxiosPrivate();
@@ -114,7 +114,7 @@ export default function Security() {
             </div>
             <div className="lg:w-72 md:w-64 sm:w-44 mx-auto text-end">
                 <Link
-                    to="/password/forgot"
+                    to="../password/forgot"
                     className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                     ភ្លេចពាក្យសំងាត់?
                 </Link>
